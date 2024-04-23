@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:money_manager/data/dummy_data.dart';
 import 'package:money_manager/models/account.dart';
 import 'package:money_manager/models/transaction_record.dart';
@@ -79,8 +78,19 @@ class RecordItem extends StatelessWidget {
       leading: Icon(record.recordType == RecordType.income
           ? categoryIcons[record.incomeCategory]
           : categoryIcons[record.expenseCategory]),
-      title: Text(record.title),
-      trailing: Text(record.formattedAmount),
+      title: Text(record.recordType == RecordType.income
+          ? record.incomeCategory.toString()
+          : record.expenseCategory.toString()),
+      subtitle: Text(record.title),
+      trailing: Text(
+        record.recordType == RecordType.income
+            ? '+ ${record.formattedAmount}'
+            : '- ${record.formattedAmount}',
+        style: Theme.of(context)
+                .textTheme
+                .bodySmall!
+                .copyWith(color: record.recordType == RecordType.income? Colors.green : Colors.red ),
+      ),
     );
   }
 }

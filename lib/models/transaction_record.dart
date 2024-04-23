@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/widgets/balance_card.dart';
 import 'package:uuid/uuid.dart';
 
 const uuid = Uuid();
