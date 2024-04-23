@@ -31,13 +31,29 @@ class _TabsScreenState extends State<TabsScreen> {
       3 => const ProfileScreen(),
       _ => throw UnimplementedError(),
     };
-    var pageTitle = "Home";
+    var pageTitle =
+        activePage.toString().substring(0, activePage.toString().length - 6);
     return Scaffold(
-      appBar: AppBar(title: Text(pageTitle)),
+      appBar: AppBar(
+        title: Text(pageTitle),
+        centerTitle: true,
+      ),
       body: activePage,
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {},
+        shape: const CircleBorder(),
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(Icons.add, size: 40 ,),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         onTap: _selectPage,
         currentIndex: _selectedPageIndex,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.black,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
               icon: Icon(Icons.home_outlined),
@@ -45,7 +61,7 @@ class _TabsScreenState extends State<TabsScreen> {
               activeIcon: Icon(Icons.home)),
           BottomNavigationBarItem(
               icon: Icon(Icons.bar_chart_outlined),
-              label: "Stats",
+              label: "Statistics",
               activeIcon: Icon(Icons.bar_chart)),
           BottomNavigationBarItem(
               icon: Icon(Icons.rocket_launch_outlined),
