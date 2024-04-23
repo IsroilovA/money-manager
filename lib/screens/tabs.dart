@@ -44,7 +44,10 @@ class _TabsScreenState extends State<TabsScreen> {
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
-        child: const Icon(Icons.add, size: 40 ,),
+        child: const Icon(
+          Icons.add,
+          size: 40,
+        ),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(

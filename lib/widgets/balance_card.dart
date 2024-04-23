@@ -1,5 +1,3 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -20,7 +18,7 @@ class _BalanceCardState extends State<BalanceCard> {
   Widget build(BuildContext context) {
     int totalBalance = income - expenses;
     return Card(
-      margin: const EdgeInsets.all(15),
+      margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(20),
       ),
