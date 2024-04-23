@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:money_manager/data/dummy_data.dart';
+import 'package:money_manager/models/account.dart';
+import 'package:money_manager/models/transaction_record.dart';
 import 'package:money_manager/widgets/balance_card.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -6,12 +10,14 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    Account account = dummyAccount;
+    //account.records = account.records.sort((a, b) => a.date.compareTo(b.date),);
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 12),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        //crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const BalanceCard(),
+          BalanceCard(account: account),
           const SizedBox(height: 20),
           Text(
             "Top Spendings",
@@ -34,9 +40,47 @@ class HomeScreen extends StatelessWidget {
               TopSpendingCard(
                   icon: Icons.shopping_cart_outlined, category: "Shopping"),
             ],
+          ),
+          const SizedBox(height: 20),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                "Recent Transactions",
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              TextButton(
+                onPressed: () {},
+                child: const Text("View all"),
+              )
+            ],
+          ),
+          Column(
+            children: [
+              for (var record in account.records.sublist(1, 8))
+                RecordItem(record: record)
+            ],
           )
         ],
       ),
+    );
+  }
+}
+
+class RecordItem extends StatelessWidget {
+  RecordItem({super.key, required this.record});
+  TransactionRecord record;
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      leading: Icon(record.recordType == RecordType.income
+          ? categoryIcons[record.incomeCategory]
+          : categoryIcons[record.expenseCategory]),
+      title: Text(record.title),
+      trailing: Text(record.formattedAmount),
     );
   }
 }

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:money_manager/models/account.dart';
 
 class BalanceCard extends StatefulWidget {
-  const BalanceCard({super.key});
+  BalanceCard({super.key, required this.account});
+  Account account;
   @override
   State<BalanceCard> createState() {
     return _BalanceCardState();
@@ -16,7 +18,7 @@ class _BalanceCardState extends State<BalanceCard> {
   int income = 2000000;
   @override
   Widget build(BuildContext context) {
-    int totalBalance = income - expenses;
+    double totalBalance = widget.account.balance;
     return Card(
       margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
@@ -84,9 +86,9 @@ class _BalanceCardState extends State<BalanceCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IncomeExpenseWidget(
-                    value: currencyFormatter.format(income), isIncome: true),
+                    value: widget.account.formattedIncomeLast30Days, isIncome: true),
                 IncomeExpenseWidget(
-                    value: currencyFormatter.format(expenses), isIncome: false),
+                    value: widget.account.formattedExpenseLast30Days, isIncome: false),
               ],
             ),
           ],
@@ -121,7 +123,9 @@ class IncomeExpenseWidget extends StatelessWidget {
               size: 37,
               color: isIncome ? Colors.green : Colors.red,
             ),
-            const SizedBox(width: 3,),
+            const SizedBox(
+              width: 3,
+            ),
             Column(children: [
               Text(
                 isIncome ? "Income" : "Expense",
