@@ -5,7 +5,7 @@ import 'package:money_manager/screens/tabs.dart';
 final theme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    seedColor: Colors.deepPurple,
+    seedColor: const Color.fromARGB(255, 86, 38, 190),
     brightness: Brightness.light,
   ),
   textTheme: GoogleFonts.poppinsTextTheme(),
