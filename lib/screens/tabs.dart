@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:money_manager/screens/goals.dart';
-import 'package:money_manager/screens/home.dart';
-import 'package:money_manager/screens/profile.dart';
-import 'package:money_manager/screens/statistics.dart';
+import 'package:money_manager/screens/goals_screen.dart';
+import 'package:money_manager/screens/home_screen.dart';
+import 'package:money_manager/screens/profile_screen.dart';
+import 'package:money_manager/screens/statistics_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
