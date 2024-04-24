@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:money_manager/screens/add_transaction_screen.dart';
 import 'package:money_manager/screens/goals_screen.dart';
 import 'package:money_manager/screens/home_screen.dart';
 import 'package:money_manager/screens/profile_screen.dart';
@@ -22,6 +23,15 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  void _openAddExpenseOverlay() {
+    showModalBottomSheet(
+      useSafeArea: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) => AddNewTransaction(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     Widget activePage = switch (_selectedPageIndex) {
@@ -40,7 +50,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       body: activePage,
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
+        onPressed: _openAddExpenseOverlay,
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
