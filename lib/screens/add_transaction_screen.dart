@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:money_manager/models/transaction_record.dart';
-import 'package:money_manager/widgets/income_expense_widget.dart';
 
 class AddNewTransaction extends StatefulWidget {
   AddNewTransaction({super.key});

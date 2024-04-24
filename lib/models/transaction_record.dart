@@ -21,6 +21,7 @@ enum IncomeCategory {
   freelance,
 }
 
+
 enum RecordType {
   income,
   expense,

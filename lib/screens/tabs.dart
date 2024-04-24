@@ -43,6 +43,7 @@ class _TabsScreenState extends State<TabsScreen> {
     };
     var pageTitle =
         activePage.toString().substring(0, activePage.toString().length - 6);
+        
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),

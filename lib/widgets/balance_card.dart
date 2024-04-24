@@ -4,15 +4,12 @@ import 'package:money_manager/models/account.dart';
 import 'package:money_manager/widgets/income_expense_widget.dart';
 
 class BalanceCard extends StatefulWidget {
-  BalanceCard({super.key, required this.account});
-  Account account;
-  @override
-  State<BalanceCard> createState() {
-    return _BalanceCardState();
-  }
-}
+   const BalanceCard({super.key, required this.account});
+ final Account account;
 
-var currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
+  @override
+  State<BalanceCard> createState() => _BalanceCardState();
+}
 
 class _BalanceCardState extends State<BalanceCard> {
   @override
@@ -100,3 +97,5 @@ class _BalanceCardState extends State<BalanceCard> {
     );
   }
 }
+
+var currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
