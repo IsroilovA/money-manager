@@ -12,9 +12,7 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Account account = dummyAccount;
-    //account.records = account.records.sort((a, b) => a.date.compareTo(b.date),);
-
+    Account account = cash;
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: SingleChildScrollView(

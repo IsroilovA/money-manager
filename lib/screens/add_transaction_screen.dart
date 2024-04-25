@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:money_manager/models/transaction_record.dart';
 
+final formatter = DateFormat.yMd();
+
 class AddNewTransaction extends StatefulWidget {
-  AddNewTransaction({super.key});
+  const AddNewTransaction({super.key});
 
   @override
   State<AddNewTransaction> createState() {
@@ -11,96 +14,117 @@ class AddNewTransaction extends StatefulWidget {
 }
 
 class _AddNewTransactionState extends State<AddNewTransaction> {
-  final _formKey = GlobalKey<FormState>();
-  final _titleController = TextEditingController();
-  final _amountController = TextEditingController();
-  DateTime? _selectedDate;
-  ExpenseCategory? _expenseCategory;
-  IncomeCategory? _incomeCategory;
-  RecordType? _recordType;
+  RecordType _recordType = RecordType.income;
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: ((context, constraints) {
-      final width = constraints.maxWidth;
-      return SizedBox(
-        height: double.infinity,
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: EdgeInsets.all(15),
-            child: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    TextButton(onPressed: () {}, child: const Text('Cancel')),
-                    TextButton(
-                      onPressed: () {},
-                      child: const Text('Save'),
-                    )
-                  ],
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('New Transaction'),
+        centerTitle: true,
+      ),
+      body: DefaultTabController(
+        length: 3,
+        initialIndex: 0,
+        child: Column(
+          children: [
+            TabBar(
+              //make the indicator the size of the full tab
+              indicatorSize: TabBarIndicatorSize.tab,
+              //remove deivder
+              dividerHeight: 0,
+              onTap: (index) {
+                _recordType = RecordType.values[index];
+              },
+              indicator: BoxDecoration(
+                border: Border.all(
+                    width: 1, color: Theme.of(context).colorScheme.primary),
+              ),
+              padding: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              tabs: const [
+                Tab(
+                  text: 'Income',
                 ),
-                NavigationBar(
-                    labelBehavior:
-                        NavigationDestinationLabelBehavior.alwaysHide,
-                    height: 30,
-                    indicatorShape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.zero),
-                    destinations: [
-                      NavigationDestination(
-                          icon: Container(
-                              width: width / 3,
-                              child: const Center(child: Text("Expense"))),
-                          label: 'Expense'),
-                      const NavigationDestination(
-                          icon: Text("Income"), label: 'Income'),
-                      NavigationDestination(
-                          icon: Container(
-                              width: width / 3,
-                              child: const Center(child: Text("Transfer"))),
-                          label: 'Transfer'),
-                    ]),
-                Form(
-                  key: _formKey,
-                  child: Column(
-                    children: [
-                      TextFormField(
-                        controller: _titleController,
-                        decoration: const InputDecoration(label: Text('Title')),
-                        validator: (value) {
-                          if (value!.isEmpty) {
-                            return 'Please enter expense name';
-                          }
-                          return null;
-                        },
-                      ),
-                      DropdownButtonFormField(items: [
-                        for (final category in ExpenseCategory.values)
-                          DropdownMenuItem(
-                            value: category,
-                            child: Row(
-                              children: [
-                                Container(
-                                  width: 16,
-                                  height: 16,
-                                ),
-                                const SizedBox(
-                                  width: 6,
-                                ),
-                                Text(category.toString()),
-                              ],
-                            ),
-                          )
-                      ], onChanged: (value){
-                        _expenseCategory = value;
-                      })
-                    ],
-                  ),
+                Tab(
+                  text: 'Expense',
                 ),
+                Tab(
+                  text: 'Transfer',
+                )
               ],
             ),
+            Expanded(
+              child: TabBarView(
+                //to not change the tabs when swiped
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  TransactionForm(
+                    recordType: _recordType,
+                  ),
+                  Column(),
+                  Text('data3'),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class TransactionForm extends StatefulWidget {
+  const TransactionForm({super.key, required this.recordType});
+
+  final RecordType recordType;
+
+  @override
+  State<TransactionForm> createState() => _TransactionFormState();
+}
+
+class _TransactionFormState extends State<TransactionForm> {
+  final _noteController = TextEditingController();
+  final _amountController = TextEditingController();
+  DateTime _selectedDate = DateTime.now();
+  ExpenseCategory? _expenseCategory;
+  IncomeCategory? _incomeCategory;
+  void _presentDatePicker() async {
+    final now = DateTime.now();
+    final firstDate = DateTime(now.year - 1, now.month, now.day);
+
+    final pickedDate = await showDatePicker(
+      context: context,
+      initialDate: now,
+      firstDate: firstDate,
+      lastDate: now,
+    );
+    setState(() {
+      if (pickedDate != null) {
+        _selectedDate = pickedDate;
+      }
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        ListTile(
+          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+          leading: const Text("Date"),
+          title: Text(formatter.format(_selectedDate)),
+          minLeadingWidth: 70,
+          onTap: _presentDatePicker,
+        ),
+        ListTile(
+          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+          leading: const Text('Amount'),
+          minLeadingWidth: 70,
+          title: TextField(
+            keyboardType: const TextInputType.numberWithOptions(),
+            controller: _amountController,
           ),
         ),
-      );
-    }));
+      ],
+    );
   }
 }

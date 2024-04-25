@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:money_manager/data/dummy_data.dart';
+import 'package:money_manager/models/transaction_record.dart';
 import 'package:money_manager/screens/add_transaction_screen.dart';
 import 'package:money_manager/screens/goals_screen.dart';
 import 'package:money_manager/screens/home_screen.dart';
-import 'package:money_manager/screens/profile_screen.dart';
+import 'package:money_manager/screens/accounts_screen.dart';
 import 'package:money_manager/screens/statistics_screen.dart';
 
 class TabsScreen extends StatefulWidget {
@@ -23,13 +25,18 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
-  void _openAddExpenseOverlay() {
-    showModalBottomSheet(
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (ctx) => AddNewTransaction(),
+  void _addTtansaction() async {
+    final newTransaction = await Navigator.of(context).push<TransactionRecord>(
+      MaterialPageRoute(
+        builder: (ctx) => const AddNewTransaction(),
+      ),
     );
+    if (newTransaction == null) {
+      return;
+    }
+    setState(() {
+      dummyRecords.add(newTransaction);
+    });
   }
 
   @override
@@ -38,12 +45,12 @@ class _TabsScreenState extends State<TabsScreen> {
       0 => const HomeScreen(),
       1 => const StatisticsScreen(),
       2 => const GoalsScreen(),
-      3 => const ProfileScreen(),
+      3 => const AccountsScreen(),
       _ => throw UnimplementedError(),
     };
     var pageTitle =
         activePage.toString().substring(0, activePage.toString().length - 6);
-        
+
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
@@ -51,7 +58,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       body: activePage,
       floatingActionButton: FloatingActionButton(
-        onPressed: _openAddExpenseOverlay,
+        onPressed: _addTtansaction,
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,
@@ -83,8 +90,8 @@ class _TabsScreenState extends State<TabsScreen> {
               activeIcon: Icon(Icons.rocket_launch)),
           BottomNavigationBarItem(
               icon: Icon(Icons.person_outline),
-              label: "Profile",
-              activeIcon: Icon(Icons.person))
+              label: "Accounts",
+              activeIcon: Icon(Icons.account_balance_outlined))
         ],
       ),
     );

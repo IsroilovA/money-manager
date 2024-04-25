@@ -7,12 +7,7 @@ const uuid = Uuid();
 final formatter = DateFormat.yMd();
 final currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
 
-enum ExpenseCategory {
-  food,
-  travel,
-  shopping,
-  leisure
-}
+enum ExpenseCategory { food, travel, shopping, leisure }
 
 enum IncomeCategory {
   salary,
@@ -21,10 +16,10 @@ enum IncomeCategory {
   freelance,
 }
 
-
 enum RecordType {
   income,
   expense,
+  transfer,
 }
 
 const categoryIcons = {
@@ -40,7 +35,7 @@ const categoryIcons = {
 
 class TransactionRecord {
   TransactionRecord({
-    required this.title,
+    required this.note,
     required this.date,
     required this.amount,
     required this.recordType,
@@ -49,7 +44,7 @@ class TransactionRecord {
   }) : id = uuid.v4();
 
   final String id;
-  final String title;
+  final String note;
   final DateTime date;
   final double amount;
   final RecordType recordType;
