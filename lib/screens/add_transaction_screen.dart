@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:money_manager/models/transaction_record.dart';
-import 'package:money_manager/widgets/custom_input_button.dart';
 import 'package:money_manager/widgets/transaction_form.dart';
 
 class AddNewTransaction extends StatefulWidget {
@@ -64,7 +61,9 @@ class _AddNewTransactionState extends State<AddNewTransaction> {
                   TransactionForm(
                     recordType: _recordType,
                   ),
-                  Text('data3'),
+                  TransactionForm(
+                    recordType: _recordType,
+                  ),
                 ],
               ),
             ),

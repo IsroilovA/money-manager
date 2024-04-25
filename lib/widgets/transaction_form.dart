@@ -1,8 +1,10 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manager/models/transaction_record.dart';
 import 'package:money_manager/widgets/custom_input_button.dart';
+import 'package:money_manager/widgets/top_spending_card.dart';
 
 final formatter = DateFormat.yMd();
 
@@ -38,6 +40,38 @@ class _TransactionFormState extends State<TransactionForm> {
     });
   }
 
+  void _openBottomSheet() {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      builder: (ctx) {
+        return Container(
+          height: MediaQuery.of(context).size.height / 2,
+          padding: const EdgeInsets.all(20),
+          child: GridView(
+            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 3,
+                mainAxisSpacing: 20,
+                crossAxisSpacing: 20,
+                childAspectRatio: 1.1),
+            children: [
+              for (final category in ExpenseCategory.values)
+                InkWell(
+                  onTap: () {
+                    setState(() {
+                      _expenseCategory = category;
+                    });
+                  },
+                  child: TopSpendingCard(
+                      icon: categoryIcons[category]!, category: category.name),
+                )
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -49,7 +83,7 @@ class _TransactionFormState extends State<TransactionForm> {
           leading: const Text("Date"),
           title: CustomInputButton(
             onClick: _presentDatePicker,
-            selectedValue: formatter.format(_selectedDate),
+            selectedDate: formatter.format(_selectedDate),
           ),
           minLeadingWidth: width / 5,
         ),
@@ -77,17 +111,17 @@ class _TransactionFormState extends State<TransactionForm> {
           leading: const Text("Category"),
           minLeadingWidth: width / 5,
           title: CustomInputButton(
-            selectedValue: widget.recordType == RecordType.expense
+            selectedCategory: widget.recordType == RecordType.expense
                 ? _expenseCategory
                 : _incomeCategory,
-            onClick: () {},
+            onClick: _openBottomSheet,
           ),
         ),
         ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
             leading: const Text("Account"),
             minLeadingWidth: width / 5,
-            title: CustomInputButton(onClick: () {}, selectedValue: " ")),
+            title: CustomInputButton(onClick: () {})),
         ListTile(
           leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
           leading: const Text("Note"),
