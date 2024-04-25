@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manager/models/transaction_record.dart';
-
-final formatter = DateFormat.yMd();
+import 'package:money_manager/widgets/custom_input_button.dart';
+import 'package:money_manager/widgets/transaction_form.dart';
 
 class AddNewTransaction extends StatefulWidget {
   const AddNewTransaction({super.key});
@@ -60,7 +61,9 @@ class _AddNewTransactionState extends State<AddNewTransaction> {
                   TransactionForm(
                     recordType: _recordType,
                   ),
-                  Column(),
+                  TransactionForm(
+                    recordType: _recordType,
+                  ),
                   Text('data3'),
                 ],
               ),
@@ -68,63 +71,6 @@ class _AddNewTransactionState extends State<AddNewTransaction> {
           ],
         ),
       ),
-    );
-  }
-}
-
-class TransactionForm extends StatefulWidget {
-  const TransactionForm({super.key, required this.recordType});
-
-  final RecordType recordType;
-
-  @override
-  State<TransactionForm> createState() => _TransactionFormState();
-}
-
-class _TransactionFormState extends State<TransactionForm> {
-  final _noteController = TextEditingController();
-  final _amountController = TextEditingController();
-  DateTime _selectedDate = DateTime.now();
-  ExpenseCategory? _expenseCategory;
-  IncomeCategory? _incomeCategory;
-  void _presentDatePicker() async {
-    final now = DateTime.now();
-    final firstDate = DateTime(now.year - 1, now.month, now.day);
-
-    final pickedDate = await showDatePicker(
-      context: context,
-      initialDate: now,
-      firstDate: firstDate,
-      lastDate: now,
-    );
-    setState(() {
-      if (pickedDate != null) {
-        _selectedDate = pickedDate;
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Date"),
-          title: Text(formatter.format(_selectedDate)),
-          minLeadingWidth: 70,
-          onTap: _presentDatePicker,
-        ),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text('Amount'),
-          minLeadingWidth: 70,
-          title: TextField(
-            keyboardType: const TextInputType.numberWithOptions(),
-            controller: _amountController,
-          ),
-        ),
-      ],
     );
   }
 }
