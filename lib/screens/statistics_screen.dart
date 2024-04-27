@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class StatisticsScreen extends StatelessWidget{
+class StatisticsScreen extends StatelessWidget {
   const StatisticsScreen({super.key});
 
   @override

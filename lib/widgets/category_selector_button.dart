@@ -35,10 +35,10 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
           padding: const EdgeInsets.all(20),
           child: GridView(
             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 1.1),
+              crossAxisCount: 3,
+              mainAxisSpacing: 20,
+              crossAxisSpacing: 20,
+            ),
             children: [
               if (widget.recordType == RecordType.expense)
                 for (final category in ExpenseCategory.values)

@@ -10,13 +10,13 @@ class TopSpendingCard extends StatelessWidget {
     return Card(
         color: Theme.of(context).colorScheme.surfaceVariant,
         child: Container(
-          width: 85,
+          width: MediaQuery.of(context).size.width / 4.7,
           padding: const EdgeInsets.all(3),
           child: Column(
             children: [
               Icon(
                 icon,
-                size: 50,
+                size: 55,
                 color: Theme.of(context).colorScheme.primary,
               ),
               const SizedBox(
