@@ -9,52 +9,52 @@ class Account {
   final String name;
   final double balance;
   final List<TransactionRecord> records;
-  double income = 0.0;
-  double expense = 0.0;
   final String id;
   Account({
     required this.name,
     required this.balance,
     required this.records,
-  }) : id = uuid.v4() {
-    final DateTime today = DateTime.now();
-    final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-    for (var record in records) {
-      if (record.date.isAfter(thirtyDaysAgo)) {
-        if (record.recordType == RecordType.income) {
-          income += record.amount;
-        } else {
-          expense += record.amount;
-        }
-      }
-    }
-  }
+  }) : id = uuid.v4();
 
-  // String get formattedIncomeLast30Days {
-  //   double income = 0.0;
+  // {
   //   final DateTime today = DateTime.now();
   //   final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
   //   for (var record in records) {
   //     if (record.date.isAfter(thirtyDaysAgo)) {
   //       if (record.recordType == RecordType.income) {
   //         income += record.amount;
-  //       }
-  //     }
-  //   }
-  //   return currencyFormatter.format(income);
-  // }
-
-  // String get formattedExpenseLast30Days {
-  //   double expense = 0.0;
-  //   final DateTime today = DateTime.now();
-  //   final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-  //   for (var record in records) {
-  //     if (record.date.isAfter(thirtyDaysAgo)) {
-  //       if (record.recordType == RecordType.expense) {
+  //       } else {
   //         expense += record.amount;
   //       }
   //     }
   //   }
-  //   return currencyFormatter.format(expense);
   // }
+
+  String get formattedIncomeLast30Days {
+    double income = 0.0;
+    final DateTime today = DateTime.now();
+    final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
+    for (var record in records) {
+      if (record.date.isAfter(thirtyDaysAgo)) {
+        if (record.recordType == RecordType.income) {
+          income += record.amount;
+        }
+      }
+    }
+    return currencyFormatter.format(income);
+  }
+
+  String get formattedExpenseLast30Days {
+    double expense = 0.0;
+    final DateTime today = DateTime.now();
+    final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
+    for (var record in records) {
+      if (record.date.isAfter(thirtyDaysAgo)) {
+        if (record.recordType == RecordType.expense) {
+          expense += record.amount;
+        }
+      }
+    }
+    return currencyFormatter.format(expense);
+  }
 }

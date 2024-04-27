@@ -92,9 +92,9 @@ class _TabsScreenState extends State<TabsScreen> {
               label: "Goals",
               activeIcon: Icon(Icons.rocket_launch)),
           BottomNavigationBarItem(
-              icon: Icon(Icons.person_outline),
+              icon: Icon(Icons.account_balance_outlined),
               label: "Accounts",
-              activeIcon: Icon(Icons.account_balance_outlined))
+              activeIcon: Icon(Icons.account_balance))
         ],
       ),
     );

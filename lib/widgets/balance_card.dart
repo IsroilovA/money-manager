@@ -4,8 +4,8 @@ import 'package:money_manager/models/account.dart';
 import 'package:money_manager/widgets/income_expense_widget.dart';
 
 class BalanceCard extends StatefulWidget {
-   const BalanceCard({super.key, required this.account});
- final Account account;
+  const BalanceCard({super.key, required this.account});
+  final Account account;
 
   @override
   State<BalanceCard> createState() => _BalanceCardState();
@@ -15,8 +15,6 @@ class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
     double totalBalance = widget.account.balance;
-    double income = widget.account.income;
-    double expenses = widget.account.expense;
     return Card(
       margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
@@ -57,7 +55,7 @@ class _BalanceCardState extends State<BalanceCard> {
               padding: const EdgeInsets.symmetric(vertical: 3),
               child: LinearProgressIndicator(
                 valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-                value: expenses / income,
+                value: 2 / 3,
                 minHeight: 10,
                 borderRadius: BorderRadius.circular(8),
               ),
@@ -66,7 +64,7 @@ class _BalanceCardState extends State<BalanceCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  currencyFormatter.format(expenses),
+                  widget.account.formattedExpenseLast30Days,
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -84,10 +82,10 @@ class _BalanceCardState extends State<BalanceCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 IncomeExpenseWidget(
-                    value: currencyFormatter.format(widget.account.income),
+                    value: widget.account.formattedIncomeLast30Days,
                     isIncome: true),
                 IncomeExpenseWidget(
-                    value: currencyFormatter.format(widget.account.expense),
+                    value: widget.account.formattedExpenseLast30Days,
                     isIncome: false),
               ],
             ),
