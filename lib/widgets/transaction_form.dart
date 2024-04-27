@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:money_manager/data/dummy_data.dart';
 import 'package:money_manager/models/transaction_record.dart';
 import 'package:money_manager/widgets/category_selector_button.dart';
 import 'package:money_manager/widgets/date_selector_button.dart';
@@ -93,75 +92,35 @@ class _TransactionFormState extends State<TransactionForm> {
       if (noteEntered) {
         newRecord = TransactionRecord(
             date: _selectedDate,
-            amount: enteredAmount!,
+            amount: enteredAmount,
             recordType: widget.recordType,
             expenseCategory: _expenseCategory);
       } else {
         newRecord = TransactionRecord(
             date: _selectedDate,
-            amount: enteredAmount!,
+            amount: enteredAmount,
             recordType: widget.recordType,
             expenseCategory: _expenseCategory,
             note: _noteController.text);
       }
-      setState(() {
-        dummyRecords.add(newRecord);
-      });
     } else {
       if (noteEntered) {
         newRecord = TransactionRecord(
             date: _selectedDate,
-            amount: enteredAmount!,
+            amount: enteredAmount,
             recordType: widget.recordType,
             incomeCategory: _incomeCategory);
       } else {
         newRecord = TransactionRecord(
             date: _selectedDate,
-            amount: enteredAmount!,
+            amount: enteredAmount,
             recordType: widget.recordType,
             incomeCategory: _incomeCategory,
             note: _noteController.text);
       }
-      setState(() {
-        dummyRecords.add(newRecord);
-      });
     }
-    setState(() {
-      Navigator.of(context).pop();
-    });
+    Navigator.of(context).pop(newRecord);
   }
-
-  // void _openBottomSheet() {
-  //   showModalBottomSheet(
-  //     isScrollControlled: true,
-  //     context: context,
-  //     builder: (ctx) {
-  //       return Container(
-  //         height: MediaQuery.of(context).size.height / 2,
-  //         padding: const EdgeInsets.all(20),
-  //         child: GridView(
-  //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-  //               crossAxisCount: 3,
-  //               mainAxisSpacing: 20,
-  //               crossAxisSpacing: 20,
-  //               childAspectRatio: 1.1),
-  //           children: [
-  //             for (final category in ExpenseCategory.values)
-  //               InkWell(
-  //                 onTap: () {
-  //                   setState(() {
-  //                     _expenseCategory = category;
-  //                   });
-  //                 },
-  //                 child: TopSpendingCard(
-  //                     icon: categoryIcons[category]!, category: category.name),
-  //               )
-  //           ],
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
 
   @override
   Widget build(BuildContext context) {

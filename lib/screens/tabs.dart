@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/dummy_data.dart';
+import 'package:money_manager/models/account.dart';
 import 'package:money_manager/models/transaction_record.dart';
 import 'package:money_manager/screens/add_transaction_screen.dart';
 import 'package:money_manager/screens/goals_screen.dart';
@@ -25,6 +26,8 @@ class _TabsScreenState extends State<TabsScreen> {
     });
   }
 
+  Account account = cash;
+
   void _addTtansaction() async {
     final newTransaction = await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(
@@ -35,14 +38,14 @@ class _TabsScreenState extends State<TabsScreen> {
       return;
     }
     setState(() {
-      dummyRecords.add(newTransaction);
+      cash.records.add(newTransaction);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     Widget activePage = switch (_selectedPageIndex) {
-      0 => const HomeScreen(),
+      0 => HomeScreen(account: cash),
       1 => const StatisticsScreen(),
       2 => const GoalsScreen(),
       3 => const AccountsScreen(),
