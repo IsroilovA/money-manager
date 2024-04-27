@@ -1,12 +1,10 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manager/models/transaction_record.dart';
-import 'package:money_manager/widgets/custom_input_button.dart';
+import 'package:money_manager/widgets/category_selector_button.dart';
+import 'package:money_manager/widgets/date_selector_button.dart';
 import 'package:money_manager/widgets/top_spending_card.dart';
-
-final formatter = DateFormat.yMd();
 
 class TransactionForm extends StatefulWidget {
   const TransactionForm({super.key, required this.recordType});
@@ -40,37 +38,37 @@ class _TransactionFormState extends State<TransactionForm> {
     });
   }
 
-  void _openBottomSheet() {
-    showModalBottomSheet(
-      isScrollControlled: true,
-      context: context,
-      builder: (ctx) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 2,
-          padding: const EdgeInsets.all(20),
-          child: GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 3,
-                mainAxisSpacing: 20,
-                crossAxisSpacing: 20,
-                childAspectRatio: 1.1),
-            children: [
-              for (final category in ExpenseCategory.values)
-                InkWell(
-                  onTap: () {
-                    setState(() {
-                      _expenseCategory = category;
-                    });
-                  },
-                  child: TopSpendingCard(
-                      icon: categoryIcons[category]!, category: category.name),
-                )
-            ],
-          ),
-        );
-      },
-    );
-  }
+  // void _openBottomSheet() {
+  //   showModalBottomSheet(
+  //     isScrollControlled: true,
+  //     context: context,
+  //     builder: (ctx) {
+  //       return Container(
+  //         height: MediaQuery.of(context).size.height / 2,
+  //         padding: const EdgeInsets.all(20),
+  //         child: GridView(
+  //           gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+  //               crossAxisCount: 3,
+  //               mainAxisSpacing: 20,
+  //               crossAxisSpacing: 20,
+  //               childAspectRatio: 1.1),
+  //           children: [
+  //             for (final category in ExpenseCategory.values)
+  //               InkWell(
+  //                 onTap: () {
+  //                   setState(() {
+  //                     _expenseCategory = category;
+  //                   });
+  //                 },
+  //                 child: TopSpendingCard(
+  //                     icon: categoryIcons[category]!, category: category.name),
+  //               )
+  //           ],
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -81,9 +79,9 @@ class _TransactionFormState extends State<TransactionForm> {
         ListTile(
           leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
           leading: const Text("Date"),
-          title: CustomInputButton(
+          title: DateSelectorButton(
             onClick: _presentDatePicker,
-            selectedDate: formatter.format(_selectedDate),
+            selectedDate: _selectedDate,
           ),
           minLeadingWidth: width / 5,
         ),
@@ -107,21 +105,24 @@ class _TransactionFormState extends State<TransactionForm> {
           ),
         ),
         ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Category"),
-          minLeadingWidth: width / 5,
-          title: CustomInputButton(
-            selectedCategory: widget.recordType == RecordType.expense
-                ? _expenseCategory
-                : _incomeCategory,
-            onClick: _openBottomSheet,
-          ),
-        ),
-        ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Account"),
+            leading: const Text("Category"),
             minLeadingWidth: width / 5,
-            title: CustomInputButton(onClick: () {})),
+            title: CategorySelectorButton(
+              recordType: widget.recordType,
+              onExpenseChanged: (value) {
+                _expenseCategory = value;
+              },
+              onIncomeChanged: (value) {
+                _incomeCategory = value;
+              },
+            )),
+        ListTile(
+          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+          leading: const Text("Account"),
+          minLeadingWidth: width / 5,
+          title: Text(""),
+        ),
         ListTile(
           leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
           leading: const Text("Note"),

@@ -31,7 +31,9 @@ class _AddNewTransactionState extends State<AddNewTransaction> {
               //remove deivder
               dividerHeight: 0,
               onTap: (index) {
-                _recordType = RecordType.values[index];
+                setState(() {
+                  _recordType = RecordType.values[index];
+                });
               },
               indicator: BoxDecoration(
                 border: Border.all(
