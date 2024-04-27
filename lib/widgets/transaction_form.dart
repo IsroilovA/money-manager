@@ -1,10 +1,12 @@
+import 'dart:io';
+
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
+import 'package:money_manager/data/dummy_data.dart';
 import 'package:money_manager/models/transaction_record.dart';
 import 'package:money_manager/widgets/category_selector_button.dart';
 import 'package:money_manager/widgets/date_selector_button.dart';
-import 'package:money_manager/widgets/top_spending_card.dart';
 
 class TransactionForm extends StatefulWidget {
   const TransactionForm({super.key, required this.recordType});
@@ -35,6 +37,97 @@ class _TransactionFormState extends State<TransactionForm> {
       if (pickedDate != null) {
         _selectedDate = pickedDate;
       }
+    });
+  }
+
+  void _showDialog(String text) {
+    if (Platform.isIOS) {
+      showCupertinoDialog(
+        context: context,
+        builder: (ctx) => CupertinoAlertDialog(
+          title: const Text("Invalid Input!"),
+          content: Text(text),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text("Okay"),
+            ),
+          ],
+        ),
+      );
+    } else {
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text("Invalid Input!"),
+          content: Text(text),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(ctx);
+              },
+              child: const Text("Okay"),
+            ),
+          ],
+        ),
+      );
+    }
+  }
+
+  void _saveTransaction() {
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    final noteEntered = _noteController.text.trim().isEmpty;
+    TransactionRecord newRecord;
+    if (amountIsInvalid) {
+      _showDialog("enter a valid amount");
+      return;
+    } else if (_expenseCategory == null && _incomeCategory == null) {
+      _showDialog("Select the category");
+      return;
+    }
+
+    if (_expenseCategory != null) {
+      if (noteEntered) {
+        newRecord = TransactionRecord(
+            date: _selectedDate,
+            amount: enteredAmount!,
+            recordType: widget.recordType,
+            expenseCategory: _expenseCategory);
+      } else {
+        newRecord = TransactionRecord(
+            date: _selectedDate,
+            amount: enteredAmount!,
+            recordType: widget.recordType,
+            expenseCategory: _expenseCategory,
+            note: _noteController.text);
+      }
+      setState(() {
+        dummyRecords.add(newRecord);
+      });
+    } else {
+      if (noteEntered) {
+        newRecord = TransactionRecord(
+            date: _selectedDate,
+            amount: enteredAmount!,
+            recordType: widget.recordType,
+            incomeCategory: _incomeCategory);
+      } else {
+        newRecord = TransactionRecord(
+            date: _selectedDate,
+            amount: enteredAmount!,
+            recordType: widget.recordType,
+            incomeCategory: _incomeCategory,
+            note: _noteController.text);
+      }
+      setState(() {
+        dummyRecords.add(newRecord);
+      });
+    }
+    setState(() {
+      Navigator.of(context).pop();
     });
   }
 
@@ -119,12 +212,6 @@ class _TransactionFormState extends State<TransactionForm> {
             )),
         ListTile(
           leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Account"),
-          minLeadingWidth: width / 5,
-          title: Text(""),
-        ),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
           leading: const Text("Note"),
           minLeadingWidth: width / 5,
           title: TextField(
@@ -138,7 +225,7 @@ class _TransactionFormState extends State<TransactionForm> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             TextButton(
-              onPressed: () {},
+              onPressed: _saveTransaction,
               style: TextButton.styleFrom(
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -153,7 +240,9 @@ class _TransactionFormState extends State<TransactionForm> {
               child: const Text("Save"),
             ),
             TextButton(
-              onPressed: () {},
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
               style: TextButton.styleFrom(
                 textStyle: Theme.of(context).textTheme.titleMedium,
                 shape: const RoundedRectangleBorder(

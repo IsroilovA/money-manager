@@ -35,7 +35,7 @@ const categoryIcons = {
 
 class TransactionRecord {
   TransactionRecord({
-    required this.note,
+    this.note,
     required this.date,
     required this.amount,
     required this.recordType,
@@ -44,9 +44,9 @@ class TransactionRecord {
   }) : id = uuid.v4();
 
   final String id;
-  final String note;
   final DateTime date;
   final double amount;
+  final String? note;
   final RecordType recordType;
   final ExpenseCategory? expenseCategory;
   final IncomeCategory? incomeCategory;

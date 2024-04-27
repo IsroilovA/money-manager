@@ -7,9 +7,14 @@ import 'package:money_manager/widgets/balance_card.dart';
 import 'package:money_manager/widgets/record_item.dart';
 import 'package:money_manager/widgets/top_spending_card.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     Account account = cash;
@@ -62,7 +67,7 @@ class HomeScreen extends StatelessWidget {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: 8,
+              itemCount: account.records.length,
               itemBuilder: (context, index) {
                 final record = account.records[index];
                 return RecordItem(record: record);

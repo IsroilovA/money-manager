@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/models/transaction_record.dart';
-import 'package:money_manager/widgets/top_spending_card.dart';
 
 final formatter = DateFormat.yMd();
 
