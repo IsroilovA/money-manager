@@ -1,5 +1,8 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
+import 'package:money_manager/add_transaction/widgets/category_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
 
@@ -29,43 +32,64 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
+      shape: const ContinuousRectangleBorder(),
       builder: (ctx) {
-        return Container(
-          height: MediaQuery.of(context).size.height / 2,
-          padding: const EdgeInsets.all(20),
-          child: GridView(
-            gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 3,
-              mainAxisSpacing: 20,
-              crossAxisSpacing: 20,
-            ),
+        return SizedBox(
+          height: MediaQuery.of(context).size.height / 2.5,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              if (widget.recordType == RecordType.expense)
-                for (final category in ExpenseCategory.values)
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _expenseCategory = category;
-                      });
-                      widget.onExpenseChanged!(category);
-                    },
-                    child: TopSpendingCard(
-                        icon: categoryIcons[category]!,
-                        category: category.name),
-                  )
-              else
-                for (final category in IncomeCategory.values)
-                  InkWell(
-                    onTap: () {
-                      setState(() {
-                        _incomeCategory = category;
-                      });
-                      widget.onIncomeChanged!(category);
-                    },
-                    child: TopSpendingCard(
-                        icon: categoryIcons[category]!,
-                        category: category.name),
-                  )
+              Container(
+                padding: const EdgeInsets.only(left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      "Category",
+                      style: Theme.of(context).textTheme.titleMedium,
+                    ),
+                    IconButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        icon: const Icon(Icons.close))
+                  ],
+                ),
+              ),
+              Expanded(
+                child: GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 2.2,
+                  ),
+                  children: [
+                    if (widget.recordType == RecordType.expense)
+                      for (final category in ExpenseCategory.values)
+                        CategoryItem(
+                            onCLick: () {
+                              setState(() {
+                                _expenseCategory = category;
+                              });
+                              widget.onExpenseChanged!(category);
+                              Navigator.of(context).pop();
+                            },
+                            icon: categoryIcons[category]!,
+                            category: category.name)
+                    else
+                      for (final category in IncomeCategory.values)
+                        CategoryItem(
+                            onCLick: () {
+                              setState(() {
+                                _incomeCategory = category;
+                              });
+                              widget.onIncomeChanged!(category);
+                              Navigator.of(context).pop();
+                            },
+                            icon: categoryIcons[category]!,
+                            category: category.name)
+                  ],
+                ),
+              ),
             ],
           ),
         );
