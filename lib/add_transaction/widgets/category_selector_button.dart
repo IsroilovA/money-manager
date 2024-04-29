@@ -1,10 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manager/add_transaction/widgets/category_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/home/widgets/top_spending_card.dart';
 
 final formatter = DateFormat.yMd();
 
