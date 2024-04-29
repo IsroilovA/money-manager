@@ -1,28 +1,34 @@
 import 'package:flutter/material.dart';
+import 'package:money_manager/all_transactions/transactions_list_screen.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
 import 'package:money_manager/home/widgets/record_item.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key, required this.account});
 
   final Account account;
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  @override
   Widget build(BuildContext context) {
+    void viewAllTransactions() {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (ctx) => TransactionsListScreen(
+            account: account,
+          ),
+        ),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 12),
       child: SingleChildScrollView(
         primary: true,
         child: Column(
           children: [
-            BalanceCard(account: widget.account),
+            BalanceCard(account: account),
             const SizedBox(height: 20),
             Text(
               "Top Spendings",
@@ -57,7 +63,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       .copyWith(fontWeight: FontWeight.bold),
                 ),
                 TextButton(
-                  onPressed: () {},
+                  onPressed: viewAllTransactions,
                   child: const Text("View all"),
                 )
               ],
@@ -65,9 +71,9 @@ class _HomeScreenState extends State<HomeScreen> {
             ListView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              itemCount: widget.account.records.length,
+              itemCount: 5,
               itemBuilder: (context, index) {
-                final record = widget.account.records[index];
+                final record = account.records[index];
                 return RecordItem(record: record);
               },
             ),
