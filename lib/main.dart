@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_manager/screens/tabs.dart';
+import 'package:money_manager/tabs/tabs.dart';
 
 final theme = ThemeData(
   useMaterial3: true,

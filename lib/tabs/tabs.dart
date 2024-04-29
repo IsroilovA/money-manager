@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:money_manager/data/dummy_data.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/screens/add_transaction_screen.dart';
-import 'package:money_manager/screens/goals_screen.dart';
-import 'package:money_manager/screens/home_screen.dart';
-import 'package:money_manager/screens/accounts_screen.dart';
-import 'package:money_manager/screens/statistics_screen.dart';
+import 'package:money_manager/add_transaction/add_transaction_screen.dart';
+import 'package:money_manager/goals/goals_screen.dart';
+import 'package:money_manager/home/home_screen.dart';
+import 'package:money_manager/accounts/accounts_screen.dart';
+import 'package:money_manager/statistics/statistics_screen.dart';
 
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});

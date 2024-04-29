@@ -4,8 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/widgets/category_selector_button.dart';
-import 'package:money_manager/widgets/date_selector_button.dart';
+import 'package:money_manager/add_transaction/widgets/category_selector_button.dart';
+import 'package:money_manager/add_transaction/widgets/date_selector_button.dart';
 
 class TransactionForm extends StatefulWidget {
   const TransactionForm({super.key, required this.recordType});

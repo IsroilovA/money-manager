@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/widgets/balance_card.dart';
-import 'package:money_manager/widgets/record_item.dart';
-import 'package:money_manager/widgets/top_spending_card.dart';
+import 'package:money_manager/home/widgets/balance_card.dart';
+import 'package:money_manager/home/widgets/record_item.dart';
+import 'package:money_manager/home/widgets/top_spending_card.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.account});

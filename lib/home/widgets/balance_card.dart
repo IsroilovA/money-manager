@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/widgets/income_expense_widget.dart';
+import 'package:money_manager/home/widgets/income_expense_widget.dart';
 
 class BalanceCard extends StatefulWidget {
   const BalanceCard({super.key, required this.account});
