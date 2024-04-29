@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/dummy_data.dart';
-import 'package:money_manager/models/account.dart';
-import 'package:money_manager/models/transaction_record.dart';
+import 'package:money_manager/data/models/account.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/screens/add_transaction_screen.dart';
 import 'package:money_manager/screens/goals_screen.dart';
 import 'package:money_manager/screens/home_screen.dart';

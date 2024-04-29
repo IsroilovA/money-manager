@@ -1,5 +1,5 @@
-import 'package:money_manager/models/account.dart';
-import 'package:money_manager/models/transaction_record.dart';
+import 'package:money_manager/data/models/account.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
 
 Account cash = Account(name: 'cash', balance: 20000, records: dummyRecords);
 

@@ -1,5 +1,5 @@
 import 'package:intl/intl.dart';
-import 'package:money_manager/models/transaction_record.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:uuid/uuid.dart';
 
 final currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');

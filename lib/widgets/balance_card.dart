@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/models/account.dart';
+import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/widgets/income_expense_widget.dart';
 
 class BalanceCard extends StatefulWidget {

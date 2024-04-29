@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_manager/models/transaction_record.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
 
 class RecordItem extends StatelessWidget {
   const RecordItem({super.key, required this.record});
