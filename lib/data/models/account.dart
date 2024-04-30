@@ -12,13 +12,12 @@ const uuid = Uuid();
 class Account {
   final String name;
   final double balance;
-  // final List<TransactionRecord> records;
   final String id;
   Account({
     required this.name,
     required this.balance,
-    // required this.records,
-  }) : id = uuid.v4();
+    id,
+  }) : id = id ?? uuid.v4();
 
   factory Account.fromJson(Map<String, dynamic> json) =>
       _$AccountFromJson(json);

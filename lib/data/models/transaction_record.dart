@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:money_manager/data/models/account.dart';
+import 'package:money_manager/services/database_helper.dart';
 import 'package:uuid/uuid.dart';
 part 'transaction_record.g.dart';
 
@@ -43,12 +44,13 @@ class TransactionRecord {
     required this.date,
     required this.amount,
     required this.recordType,
-    // required this.account,
+    required this.account,
     this.expenseCategory,
     this.incomeCategory,
-  }) : id = uuid.v4();
+    id,
+  }) : id = id ?? uuid.v4();
 
-  // final Account account;
+  final Account account;
   final String id;
   final DateTime date;
   final double amount;

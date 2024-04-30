@@ -6,20 +6,28 @@ part of 'transaction_record.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
+Account _GetAcoount(String id) {
+  return DatabaseHelper.getAccountById(id) as Account;
+}
+
 TransactionRecord _$TransactionRecordFromJson(Map<String, dynamic> json) =>
     TransactionRecord(
       note: json['note'] as String?,
       date: DateTime.parse(json['date'] as String),
       amount: (json['amount'] as num).toDouble(),
       recordType: $enumDecode(_$RecordTypeEnumMap, json['recordType']),
+      account: _GetAcoount(json['id'] as String),
       expenseCategory: $enumDecodeNullable(
           _$ExpenseCategoryEnumMap, json['expenseCategory']),
       incomeCategory:
           $enumDecodeNullable(_$IncomeCategoryEnumMap, json['incomeCategory']),
+      id: json['id'] as String,
     );
 
 Map<String, dynamic> _$TransactionRecordToJson(TransactionRecord instance) =>
     <String, dynamic>{
+      'account': instance.account.id,
+      'id': instance.id,
       'date': instance.date.toIso8601String(),
       'amount': instance.amount,
       'note': instance.note,

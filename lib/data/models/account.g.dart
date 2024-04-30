@@ -9,9 +9,11 @@ part of 'account.dart';
 Account _$AccountFromJson(Map<String, dynamic> json) => Account(
       name: json['name'] as String,
       balance: (json['balance'] as num).toDouble(),
+      id: json['id'] as String,
     );
 
 Map<String, dynamic> _$AccountToJson(Account instance) => <String, dynamic>{
       'name': instance.name,
       'balance': instance.balance,
+      'id': instance.id,
     };
