@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/database_helper.dart';
-
-final formatter = DateFormat.yMd();
 
 class AccountSelectorButton extends StatefulWidget {
   const AccountSelectorButton({
@@ -21,10 +18,6 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
   Account? _account;
 
   Future<List<Account>?> accounts = DatabaseHelper.getAllAccounts();
-
-  // void _getAccounts() async {
-  //   accounts = await DatabaseHelper.getAllAccounts();
-  // }
 
   void _openBottomSheet() {
     showModalBottomSheet(

@@ -71,16 +71,10 @@ class _AddNewAccountState extends State<AddNewAccount> {
 
     await DatabaseHelper.addAccount(newAccount);
 
-    List<Account>? accounts = await DatabaseHelper.getAllAccounts();
-
     Navigator.of(context).pushReplacement(
       MaterialPageRoute(builder: (context) => const TabsScreen()),
     );
   }
-
-  // void _getAccounts() async {
-  //   accounts = await DatabaseHelper.getAllAccounts();
-  // }
 
   @override
   Widget build(BuildContext context) {

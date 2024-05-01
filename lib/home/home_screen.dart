@@ -17,10 +17,6 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // void _getRecords() async {
-  //   records = await DatabaseHelper.getAllTransactionRecords();
-  // }
-
   @override
   Widget build(BuildContext context) {
     Future<List<TransactionRecord>?> records =

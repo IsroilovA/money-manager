@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
 
@@ -15,6 +14,9 @@ class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
     double totalBalance = widget.account.balance;
+    Future<String> incomeLast30Days = widget.account.formattedIncomeLast30Days;
+    Future<String> expenseLast30Days =
+        widget.account.formattedExpenseLast30Days;
     return Card(
       margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
@@ -78,11 +80,11 @@ class _BalanceCardState extends State<BalanceCard> {
               ],
             ),
             const SizedBox(height: 15),
-            const Row(
+            Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IncomeExpenseWidget(value: "100", isIncome: true),
-                IncomeExpenseWidget(value: "100", isIncome: false),
+                IncomeExpenseWidget(value: incomeLast30Days, isIncome: true),
+                IncomeExpenseWidget(value: expenseLast30Days, isIncome: false),
               ],
             ),
           ],
@@ -91,5 +93,3 @@ class _BalanceCardState extends State<BalanceCard> {
     );
   }
 }
-
-var currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');

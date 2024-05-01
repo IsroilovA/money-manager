@@ -1,4 +1,6 @@
 import 'package:intl/intl.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/services/database_helper.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -22,45 +24,52 @@ class Account {
       _$AccountFromJson(json);
 
   Map<String, dynamic> toJson() => _$AccountToJson(this);
-  // {
-  //   final DateTime today = DateTime.now();
-  //   final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-  //   for (var record in records) {
-  //     if (record.date.isAfter(thirtyDaysAgo)) {
-  //       if (record.recordType == RecordType.income) {
-  //         income += record.amount;
-  //       } else {
-  //         expense += record.amount;
-  //       }
-  //     }
-  //   }
-  // }
 
-//   String get formattedIncomeLast30Days {
-//     double income = 0.0;
-//     final DateTime today = DateTime.now();
-//     final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-//     for (var record in records) {
-//       if (record.date.isAfter(thirtyDaysAgo)) {
-//         if (record.recordType == RecordType.income) {
-//           income += record.amount;
-//         }
-//       }
-//     }
-//     return currencyFormatter.format(income);
-//   }
+  Future<String> get formattedIncomeLast30Days async {
+    Future<List<TransactionRecord>?> records =
+        DatabaseHelper.getAccountTransactionRecords(this.id);
+    double income = 0.0;
+    return records.then(
+      (records) {
+        final DateTime today = DateTime.now();
+        final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
+        if (records == null) {
+          return currencyFormatter.format(0);
+        } else {
+          for (var record in records) {
+            if (record.date.isAfter(thirtyDaysAgo)) {
+              if (record.recordType == RecordType.income) {
+                income += record.amount;
+              }
+            }
+          }
+          return currencyFormatter.format(income);
+        }
+      },
+    );
+  }
 
-//   String get formattedExpenseLast30Days {
-//     double expense = 0.0;
-//     final DateTime today = DateTime.now();
-//     final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-//     for (var record in records) {
-//       if (record.date.isAfter(thirtyDaysAgo)) {
-//         if (record.recordType == RecordType.expense) {
-//           expense += record.amount;
-//         }
-//       }
-//     }
-//     return currencyFormatter.format(expense);
-//   }
+  Future<String> get formattedExpenseLast30Days {
+    Future<List<TransactionRecord>?> records =
+        DatabaseHelper.getAccountTransactionRecords(this.id);
+    double expense = 0.0;
+    return records.then(
+      (records) {
+        final DateTime today = DateTime.now();
+        final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
+        if (records == null) {
+          return currencyFormatter.format(0);
+        } else {
+          for (var record in records) {
+            if (record.date.isAfter(thirtyDaysAgo)) {
+              if (record.recordType == RecordType.expense) {
+                expense += record.amount;
+              }
+            }
+          }
+          return currencyFormatter.format(expense);
+        }
+      },
+    );
+  }
 }

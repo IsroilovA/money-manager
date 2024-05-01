@@ -18,7 +18,9 @@ class RecordItem extends StatelessWidget {
             title: Text(record.recordType == RecordType.income
                 ? record.incomeCategory!.name.toUpperCase()
                 : record.expenseCategory!.name.toUpperCase()),
-            subtitle: record.note != null ? Text(record.note!) : null,
+            subtitle: record.note != null
+                ? Text("${record.note!} | ${formatter.format(record.date)}")
+                : Text(formatter.format(record.date)),
             trailing: Text(
               record.recordType == RecordType.income
                   ? '+ ${record.formattedAmount}'

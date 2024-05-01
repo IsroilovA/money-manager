@@ -7,7 +7,7 @@ class IncomeExpenseWidget extends StatelessWidget {
     required this.isIncome,
   });
 
-  final String value;
+  final Future<String> value;
   final bool isIncome;
 
   @override
@@ -28,20 +28,33 @@ class IncomeExpenseWidget extends StatelessWidget {
             const SizedBox(
               width: 3,
             ),
-            Column(children: [
-              Text(
-                isIncome ? "Income" : "Expense",
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-              Text(
-                value,
-                style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-              ),
-            ])
+            Column(
+              children: [
+                Text(
+                  isIncome ? "Income" : "Expense",
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+                FutureBuilder(
+                  future: value,
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(
+                        child: CircularProgressIndicator(),
+                      );
+                    } else {
+                      return Text(
+                        snapshot.data!,
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      );
+                    }
+                  },
+                )
+              ],
+            )
           ],
         ),
       ),

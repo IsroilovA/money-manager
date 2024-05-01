@@ -61,8 +61,8 @@ class DatabaseHelper {
       String AccountId) async {
     final db = await _openDB();
 
-    final List<Map<String, dynamic>> maps = await db
-        .query("transactions", where: 'accountId = ?', whereArgs: [AccountId]);
+    final List<Map<String, dynamic>> maps = await db.query("transactions",
+        where: 'accountId = ?', whereArgs: [AccountId], orderBy: 'date DESC');
 
     if (maps.isEmpty) {
       return null;
@@ -77,7 +77,8 @@ class DatabaseHelper {
   static Future<List<TransactionRecord>?> getAllTransactionRecords() async {
     final db = await _openDB();
 
-    final List<Map<String, dynamic>> maps = await db.query("transactions");
+    final List<Map<String, dynamic>> maps =
+        await db.query("transactions", orderBy: 'date DESC');
 
     if (maps.isEmpty) {
       return null;
