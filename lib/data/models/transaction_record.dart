@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:uuid/uuid.dart';
+part 'transaction_record.g.dart';
 
 const uuid = Uuid();
 
@@ -33,16 +35,20 @@ const categoryIcons = {
   IncomeCategory.freelance: Icons.laptop_chromebook,
 };
 
+@JsonSerializable()
 class TransactionRecord {
   TransactionRecord({
     this.note,
     required this.date,
     required this.amount,
     required this.recordType,
+    required this.accountId,
     this.expenseCategory,
     this.incomeCategory,
-  }) : id = uuid.v4();
+    id,
+  }) : id = id ?? uuid.v4();
 
+  final String accountId;
   final String id;
   final DateTime date;
   final double amount;
@@ -58,4 +64,9 @@ class TransactionRecord {
   String get formattedAmount {
     return currencyFormatter.format(amount);
   }
+
+  factory TransactionRecord.fromJson(Map<String, dynamic> json) =>
+      _$TransactionRecordFromJson(json);
+
+  Map<String, dynamic> toJson() => _$TransactionRecordToJson(this);
 }

@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:money_manager/add_transaction/widgets/account_selector_button.dart';
+import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/category_selector_button.dart';
 import 'package:money_manager/add_transaction/widgets/date_selector_button.dart';
@@ -22,6 +24,7 @@ class _TransactionFormState extends State<TransactionForm> {
   DateTime _selectedDate = DateTime.now();
   ExpenseCategory? _expenseCategory;
   IncomeCategory? _incomeCategory;
+  Account? _account;
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
@@ -78,7 +81,7 @@ class _TransactionFormState extends State<TransactionForm> {
   void _saveTransaction() {
     final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
-    final noteEntered = _noteController.text.trim().isEmpty;
+    final noteNotEntered = _noteController.text.trim().isEmpty;
     TransactionRecord newRecord;
     if (amountIsInvalid) {
       _showDialog("enter a valid amount");
@@ -86,17 +89,22 @@ class _TransactionFormState extends State<TransactionForm> {
     } else if (_expenseCategory == null && _incomeCategory == null) {
       _showDialog("Select the category");
       return;
+    } else if (_account == null) {
+      _showDialog("Select account");
+      return;
     }
 
     if (_expenseCategory != null) {
-      if (noteEntered) {
+      if (noteNotEntered) {
         newRecord = TransactionRecord(
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
             expenseCategory: _expenseCategory);
       } else {
         newRecord = TransactionRecord(
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
@@ -104,14 +112,16 @@ class _TransactionFormState extends State<TransactionForm> {
             note: _noteController.text);
       }
     } else {
-      if (noteEntered) {
+      if (noteNotEntered) {
         newRecord = TransactionRecord(
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
             incomeCategory: _incomeCategory);
       } else {
         newRecord = TransactionRecord(
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
@@ -169,6 +179,16 @@ class _TransactionFormState extends State<TransactionForm> {
                 _incomeCategory = value;
               },
             )),
+        ListTile(
+          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+          leading: const Text("Account"),
+          minLeadingWidth: width / 5,
+          title: AccountSelectorButton(
+            onAccountChanged: (value) {
+              _account = value;
+            },
+          ),
+        ),
         ListTile(
           leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
           leading: const Text("Note"),

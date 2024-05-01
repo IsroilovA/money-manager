@@ -3,7 +3,6 @@ import 'package:intl/intl.dart';
 import 'package:money_manager/add_transaction/widgets/category_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 
-final formatter = DateFormat.yMd();
 
 class CategorySelectorButton extends StatefulWidget {
   const CategorySelectorButton({
