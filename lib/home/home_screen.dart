@@ -17,15 +17,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<TransactionRecord>? records;
-
-  void _getRecords() async {
-    records = await DatabaseHelper.getAllTransactionRecords();
-  }
+  // void _getRecords() async {
+  //   records = await DatabaseHelper.getAllTransactionRecords();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    _getRecords();
+    Future<List<TransactionRecord>?> records =
+        DatabaseHelper.getAccountTransactionRecords(widget.account.id);
+
     void viewAllTransactions() {
       Navigator.of(context).push(
         MaterialPageRoute(
@@ -82,19 +82,30 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
-            records == null
-                ? const Center(
-                    child: Text("No records yet"),
-                  )
-                : ListView.builder(
-                    shrinkWrap: true,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: 5,
-                    itemBuilder: (context, index) {
-                      final record = records![index];
-                      return RecordItem(record: record);
-                    },
-                  ),
+            FutureBuilder(
+              future: records,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                } else {
+                  return snapshot.data == null
+                      ? const Center(
+                          child: Text("No records yet"),
+                        )
+                      : ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemCount: 5,
+                          itemBuilder: (context, index) {
+                            final record = snapshot.data![index];
+                            return RecordItem(record: record);
+                          },
+                        );
+                }
+              },
+            )
           ],
         ),
       ),

@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:money_manager/add_account/add_account.dart';
-import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/services/database_helper.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
 final theme = ThemeData(
@@ -25,7 +22,7 @@ class App extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: theme,
-      home: const AddNewAccount(),
+      home: const TabsScreen(),
     );
   }
 }

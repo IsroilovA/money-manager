@@ -19,8 +19,6 @@ class AddNewAccount extends StatefulWidget {
 class _AddNewAccountState extends State<AddNewAccount> {
   final _nameController = TextEditingController();
   final _balanceController = TextEditingController();
-  List<Account>? accounts;
-
   void _showDialog(String text) {
     if (Platform.isIOS) {
       showCupertinoDialog(
@@ -73,17 +71,19 @@ class _AddNewAccountState extends State<AddNewAccount> {
 
     await DatabaseHelper.addAccount(newAccount);
 
-    await Navigator.of(context).pushReplacement(MaterialPageRoute(
-        builder: (context) => TabsScreen(accounts: accounts)));
+    List<Account>? accounts = await DatabaseHelper.getAllAccounts();
+
+    Navigator.of(context).pushReplacement(
+      MaterialPageRoute(builder: (context) => const TabsScreen()),
+    );
   }
 
-  void _getAccounts() async {
-    accounts = await DatabaseHelper.getAccounts();
-  }
+  // void _getAccounts() async {
+  //   accounts = await DatabaseHelper.getAllAccounts();
+  // }
 
   @override
   Widget build(BuildContext context) {
-    _getAccounts();
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
@@ -95,7 +95,7 @@ class _AddNewAccountState extends State<AddNewAccount> {
         children: [
           ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Note"),
+            leading: const Text("Name"),
             minLeadingWidth: width / 5,
             title: TextField(
               controller: _nameController,
@@ -123,49 +123,21 @@ class _AddNewAccountState extends State<AddNewAccount> {
               ),
             ),
           ),
-          Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              TextButton(
-                onPressed: _saveAccount,
-                style: TextButton.styleFrom(
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                  minimumSize: Size(width * 2 / 3, 0),
-                  textStyle: Theme.of(context).textTheme.titleMedium,
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
+          const SizedBox(height: 20),
+          TextButton(
+            onPressed: _saveAccount,
+            style: TextButton.styleFrom(
+              backgroundColor: Theme.of(context).colorScheme.primary,
+              foregroundColor: Theme.of(context).colorScheme.onPrimary,
+              minimumSize: Size(width * 2 / 3, 0),
+              textStyle: Theme.of(context).textTheme.titleMedium,
+              shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(
+                  Radius.circular(10),
                 ),
-                child: const Text("Save"),
               ),
-              TextButton(
-                onPressed: () {
-                  if (accounts != null) {
-                    Navigator.of(context).pushReplacement(MaterialPageRoute(
-                        builder: (context) => TabsScreen(
-                              accounts: accounts,
-                            )));
-                  } else {
-                    _showDialog("Add an account first");
-                    return;
-                  }
-                },
-                style: TextButton.styleFrom(
-                  textStyle: Theme.of(context).textTheme.titleMedium,
-                  shape: const RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: Colors.deepPurple),
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                ),
-                child: const Text('Cancel'),
-              )
-            ],
+            ),
+            child: const Text("Save"),
           )
         ],
       ),

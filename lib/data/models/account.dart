@@ -1,5 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 

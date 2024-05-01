@@ -97,14 +97,14 @@ class _TransactionFormState extends State<TransactionForm> {
     if (_expenseCategory != null) {
       if (noteNotEntered) {
         newRecord = TransactionRecord(
-            account: _account!,
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
             expenseCategory: _expenseCategory);
       } else {
         newRecord = TransactionRecord(
-            account: _account!,
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
@@ -114,14 +114,14 @@ class _TransactionFormState extends State<TransactionForm> {
     } else {
       if (noteNotEntered) {
         newRecord = TransactionRecord(
-            account: _account!,
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
             incomeCategory: _incomeCategory);
       } else {
         newRecord = TransactionRecord(
-            account: _account!,
+            accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,

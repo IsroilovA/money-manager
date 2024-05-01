@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:money_manager/add_transaction/widgets/category_item.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/database_helper.dart';
 
 final formatter = DateFormat.yMd();
@@ -23,7 +21,7 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
   Account? _account;
   List<Account>? accounts;
   void _getAccounts() async {
-    accounts = await DatabaseHelper.getAccounts();
+    accounts = await DatabaseHelper.getAllAccounts();
   }
 
   void _openBottomSheet() {
