@@ -41,6 +41,21 @@ class DatabaseHelper {
     await db.insert("accounts", account.toJson());
   }
 
+  static Future<void> updateAccountBalance(
+      TransactionRecord newRecord, String accountId) async {
+    final db = await _openDB();
+    final account = await getAccountById(accountId);
+    final newBalance;
+    if (newRecord.recordType == RecordType.income) {
+      newBalance = account.balance + newRecord.amount;
+    } else {
+      newBalance = account.balance - newRecord.amount;
+    }
+
+    await db.update("accounts", {'balance': newBalance},
+        where: 'id = ?', whereArgs: [accountId]);
+  }
+
   static Future<Account> getAccountById(String id) async {
     final db = await _openDB();
 
@@ -57,12 +72,20 @@ class DatabaseHelper {
     await db.insert("transactions", transactionRecord.toJson());
   }
 
+  static Future<void> deleteTransationRecord(
+      TransactionRecord transactionRecord) async {
+    final db = await _openDB();
+
+    await db.delete("transactions",
+        where: 'id = ?', whereArgs: [transactionRecord.id]);
+  }
+
   static Future<List<TransactionRecord>?> getAccountTransactionRecords(
-      String AccountId) async {
+      String accountId) async {
     final db = await _openDB();
 
     final List<Map<String, dynamic>> maps = await db.query("transactions",
-        where: 'accountId = ?', whereArgs: [AccountId], orderBy: 'date DESC');
+        where: 'accountId = ?', whereArgs: [accountId], orderBy: 'date DESC');
 
     if (maps.isEmpty) {
       return null;

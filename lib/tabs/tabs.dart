@@ -20,7 +20,7 @@ class TabsScreen extends StatefulWidget {
 
 class _TabsScreenState extends State<TabsScreen> {
   int _selectedPageIndex = 0;
-
+  Future<List<Account>?> accounts = DatabaseHelper.getAllAccounts();
   void _selectPage(int index) {
     setState(() {
       _selectedPageIndex = index;
@@ -38,12 +38,13 @@ class _TabsScreenState extends State<TabsScreen> {
     }
     setState(() {
       DatabaseHelper.addTransationRecord(newTransaction);
+      DatabaseHelper.updateAccountBalance(
+          newTransaction, newTransaction.accountId);
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    Future<List<Account>?> accounts = DatabaseHelper.getAllAccounts();
     return FutureBuilder(
       future: accounts,
       builder: (context, snapshot) {

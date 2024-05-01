@@ -98,7 +98,20 @@ class _HomeScreenState extends State<HomeScreen> {
                               : 5,
                           itemBuilder: (context, index) {
                             final record = snapshot.data![index];
-                            return RecordItem(record: record);
+                            return RecordItem(
+                              record: record,
+                              onRecordDeleted: (value) {
+                                setState(() {
+                                  DatabaseHelper.deleteTransationRecord(record);
+                                });
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text("Transaction deleted"),
+                                    duration: Duration(seconds: 3),
+                                  ),
+                                );
+                              },
+                            );
                           },
                         );
                 }

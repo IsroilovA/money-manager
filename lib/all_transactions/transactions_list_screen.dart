@@ -34,7 +34,10 @@ class TransactionsListScreen extends StatelessWidget {
                       itemCount: snapshot.data!.length,
                       itemBuilder: (context, index) {
                         final record = snapshot.data![index];
-                        return RecordItem(record: record);
+                        return RecordItem(
+                          record: record,
+                          onRecordDeleted: (value) {},
+                        );
                       },
                     );
             }
