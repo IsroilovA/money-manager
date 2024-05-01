@@ -180,14 +180,15 @@ class _TransactionFormState extends State<TransactionForm> {
               },
             )),
         ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Account"),
-            minLeadingWidth: width / 5,
-            title: AccountSelectorButton(
-              onAccountChanged: (value) {
-                _account = value;
-              },
-            )),
+          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+          leading: const Text("Account"),
+          minLeadingWidth: width / 5,
+          title: AccountSelectorButton(
+            onAccountChanged: (value) {
+              _account = value;
+            },
+          ),
+        ),
         ListTile(
           leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
           leading: const Text("Note"),

@@ -19,10 +19,12 @@ class AccountSelectorButton extends StatefulWidget {
 
 class _AccountSelectorButtonState extends State<AccountSelectorButton> {
   Account? _account;
-  List<Account>? accounts;
-  void _getAccounts() async {
-    accounts = await DatabaseHelper.getAllAccounts();
-  }
+
+  Future<List<Account>?> accounts = DatabaseHelper.getAllAccounts();
+
+  // void _getAccounts() async {
+  //   accounts = await DatabaseHelper.getAllAccounts();
+  // }
 
   void _openBottomSheet() {
     showModalBottomSheet(
@@ -52,38 +54,50 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                   ],
                 ),
               ),
-              Expanded(
-                child: GridView(
-                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3,
-                    childAspectRatio: 2.2,
-                  ),
-                  children: [
-                    for (final account in accounts!)
-                      InkWell(
-                        onTap: () {
-                          setState(() {
-                            _account = account;
-                          });
-                          widget.onAccountChanged(account);
-                          Navigator.of(context).pop();
-                        },
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black26,
-                            border: Border.all(
-                              width: 0.3,
-                            ),
-                          ),
-                          child: Center(
-                              child: Text(
-                            account.name,
-                            style: Theme.of(context).textTheme.bodySmall,
-                          )),
+              FutureBuilder(
+                future: accounts,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else {
+                    return Expanded(
+                      child: GridView(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 3,
+                          childAspectRatio: 2.2,
                         ),
-                      )
-                  ],
-                ),
+                        children: [
+                          for (final account in snapshot.data!)
+                            InkWell(
+                              onTap: () {
+                                setState(() {
+                                  _account = account;
+                                });
+                                widget.onAccountChanged(account);
+                                Navigator.of(context).pop();
+                              },
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  color: Colors.black26,
+                                  border: Border.all(
+                                    width: 0.3,
+                                  ),
+                                ),
+                                child: Center(
+                                    child: Text(
+                                  account.name,
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                )),
+                              ),
+                            )
+                        ],
+                      ),
+                    );
+                  }
+                },
               ),
             ],
           ),
@@ -94,7 +108,6 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
 
   @override
   Widget build(BuildContext context) {
-    _getAccounts();
     Widget content = const Text("");
     if (_account != null) {
       content = Text(_account!.name);
