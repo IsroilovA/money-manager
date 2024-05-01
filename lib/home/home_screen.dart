@@ -97,7 +97,9 @@ class _HomeScreenState extends State<HomeScreen> {
                       : ListView.builder(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemCount: 5,
+                          itemCount: snapshot.data!.length < 5
+                              ? snapshot.data!.length
+                              : 5,
                           itemBuilder: (context, index) {
                             final record = snapshot.data![index];
                             return RecordItem(record: record);

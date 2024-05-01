@@ -9,7 +9,7 @@ part of 'transaction_record.dart';
 TransactionRecord _$TransactionRecordFromJson(Map<String, dynamic> json) {
   return TransactionRecord(
     note: json['note'] as String?,
-    date: DateTime.parse(json['date'] as String),
+    date: DateTime.fromMicrosecondsSinceEpoch(json['date'] as int),
     amount: (json['amount'] as num).toDouble(),
     recordType: $enumDecode(_$RecordTypeEnumMap, json['recordType']),
     accountId: json['id'] as String,
@@ -25,7 +25,7 @@ Map<String, dynamic> _$TransactionRecordToJson(TransactionRecord instance) =>
     <String, dynamic>{
       'accountId': instance.accountId,
       'id': instance.id,
-      'date': instance.date.toIso8601String(),
+      'date': instance.date.millisecondsSinceEpoch,
       'amount': instance.amount,
       'note': instance.note,
       'recordType': _$RecordTypeEnumMap[instance.recordType]!,

@@ -64,7 +64,7 @@ class _BalanceCardState extends State<BalanceCard> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 Text(
-                  "widget.account.formattedExpenseLast30Days",
+                  "100",
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         color: Theme.of(context).colorScheme.onPrimary,
                       ),
@@ -81,12 +81,8 @@ class _BalanceCardState extends State<BalanceCard> {
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IncomeExpenseWidget(
-                    value: "widget.account.formattedIncomeLast30Days",
-                    isIncome: true),
-                IncomeExpenseWidget(
-                    value: "widget.account.formattedExpenseLast30Days",
-                    isIncome: false),
+                IncomeExpenseWidget(value: "100", isIncome: true),
+                IncomeExpenseWidget(value: "100", isIncome: false),
               ],
             ),
           ],

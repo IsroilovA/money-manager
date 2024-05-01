@@ -14,7 +14,7 @@ class DatabaseHelper {
         await db.execute(
             "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
         await db.execute(
-            "CREATE TABLE transactions(id TEXT PRIMARY KEY, date TEXT, amount REAL, account TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
+            "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
       },
       version: _version,
     );

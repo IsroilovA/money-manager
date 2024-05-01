@@ -55,7 +55,7 @@ class _TabsScreenState extends State<TabsScreen> {
           if (snapshot.data == null) {
             return const AddNewAccount();
           } else {
-            Account account = snapshot.data![0];
+            Account account = snapshot.data!.first;
             Widget activePage = switch (_selectedPageIndex) {
               0 => HomeScreen(account: account),
               1 => const StatisticsScreen(),
