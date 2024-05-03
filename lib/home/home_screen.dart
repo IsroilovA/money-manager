@@ -48,11 +48,11 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ],
           ),
-          if (isLoading)
+          if (isLoading && transactionRecords.isEmpty)
             const Center(
               child: CircularProgressIndicator.adaptive(),
             ),
-          if (transactionRecords.isEmpty)
+          if (transactionRecords.isEmpty && !isLoading)
             Center(
               child: Text(
                 "No records yet",
@@ -116,7 +116,9 @@ class _HomeScreenState extends State<HomeScreen> {
                 listener: (context, state) {
                   if (state is HomeTransactionsDeleted) {
                     setState(
-                      () {},
+                      () {
+                        BalanceCard(account: widget.account);
+                      },
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
