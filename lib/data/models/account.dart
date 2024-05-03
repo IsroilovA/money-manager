@@ -27,7 +27,7 @@ class Account {
 
   Future<String> get formattedIncomeLast30Days async {
     Future<List<TransactionRecord>?> records =
-        DatabaseHelper.getAccountTransactionRecords(this.id);
+        DatabaseHelper.getAccountTransactionRecords(id);
     double income = 0.0;
     return records.then(
       (records) {
@@ -51,7 +51,7 @@ class Account {
 
   Future<String> get formattedExpenseLast30Days {
     Future<List<TransactionRecord>?> records =
-        DatabaseHelper.getAccountTransactionRecords(this.id);
+        DatabaseHelper.getAccountTransactionRecords(id);
     double expense = 0.0;
     return records.then(
       (records) {
