@@ -13,7 +13,7 @@ TransactionRecord _$TransactionRecordFromJson(Map<String, dynamic> json) {
         DateTime.fromMillisecondsSinceEpoch(json['date'] as int, isUtc: false),
     amount: (json['amount'] as num).toDouble(),
     recordType: $enumDecode(_$RecordTypeEnumMap, json['recordType']),
-    accountId: json['id'] as String,
+    accountId: json['accountId'] as String,
     expenseCategory:
         $enumDecodeNullable(_$ExpenseCategoryEnumMap, json['expenseCategory']),
     incomeCategory:
