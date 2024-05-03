@@ -56,7 +56,9 @@ class _HomeScreenState extends State<HomeScreen> {
             Center(
               child: Text(
                 "No records yet",
-                style: Theme.of(context).textTheme.titleLarge,
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      fontSize: 20,
+                    ),
               ),
             ),
           if (transactionRecords.isNotEmpty)
@@ -116,9 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 listener: (context, state) {
                   if (state is HomeTransactionsDeleted) {
                     setState(
-                      () {
-                        BalanceCard(account: widget.account);
-                      },
+                      () {},
                     );
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(

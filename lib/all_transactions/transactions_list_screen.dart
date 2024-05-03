@@ -17,50 +17,26 @@ class TransactionsListScreen extends StatelessWidget {
       body: Padding(
         padding: const EdgeInsets.all(12.0),
         child: transactionRecords.isEmpty
-                  ? const Center(
-                      child: Text("No records yet"),
-                    )
-                  : ListView.builder(
-                      shrinkWrap: true,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemCount: transactionRecords.length,
-                      itemBuilder: (context, index) {
-                        final record = transactionRecords[index];
-                        return RecordItem(
-                          record: record,
-                          onRecordDeleted: (value) {},
-                        );
-                      },
-                    ),
-        
-        
-        // FutureBuilder(
-        //   future: records,
-        //   builder: (context, snapshot) {
-        //     if (snapshot.connectionState == ConnectionState.waiting) {
-        //       return const Center(
-        //         child: CircularProgressIndicator.adaptive(),
-        //       );
-        //     } else {
-        //       return snapshot.data == null
-        //           ? const Center(
-        //               child: Text("No records yet"),
-        //             )
-        //           : ListView.builder(
-        //               shrinkWrap: true,
-        //               physics: const NeverScrollableScrollPhysics(),
-        //               itemCount: snapshot.data!.length,
-        //               itemBuilder: (context, index) {
-        //                 final record = snapshot.data![index];
-        //                 return RecordItem(
-        //                   record: record,
-        //                   onRecordDeleted: (value) {},
-        //                 );
-        //               },
-        //             );
-        //     }
-        //   },
-        // ),
+            ? Center(
+                child: Text(
+                  "No records yet",
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                        fontSize: 20,
+                      ),
+                ),
+              )
+            : ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: transactionRecords.length,
+                itemBuilder: (context, index) {
+                  final record = transactionRecords[index];
+                  return RecordItem(
+                    record: record,
+                    onRecordDeleted: (value) {},
+                  );
+                },
+              ),
       ),
     );
   }

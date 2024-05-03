@@ -25,7 +25,6 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeTransactionsLoading());
     try {
       final transactions = await DatabaseHelper.getAllTransactionRecords();
-      print(transactionRecord.accountId);
       await DatabaseHelper.deleteTransationRecord(transactionRecord);
       if (transactions != null && transactions.isNotEmpty) {
         emit(HomeTransactionsDeleted(transactions));

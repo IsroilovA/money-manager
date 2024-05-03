@@ -41,10 +41,10 @@ class DatabaseHelper {
     await db.insert("accounts", account.toJson());
   }
 
-  static Future<void> updateAccountBalance(
-      TransactionRecord newRecord, String accountId) async {
+  static Future<void> updateAccountBalanceAdd(
+      TransactionRecord newRecord) async {
     final db = await _openDB();
-    final account = await getAccountById(accountId);
+    final account = await getAccountById(newRecord.accountId);
     final newBalance;
     if (newRecord.recordType == RecordType.income) {
       newBalance = account.balance + newRecord.amount;
@@ -53,7 +53,22 @@ class DatabaseHelper {
     }
 
     await db.update("accounts", {'balance': newBalance},
-        where: 'id = ?', whereArgs: [accountId]);
+        where: 'id = ?', whereArgs: [account.id]);
+  }
+
+  static Future<void> updateAccountBalanceDelete(
+      TransactionRecord deletedRecord) async {
+    final db = await _openDB();
+    final account = await getAccountById(deletedRecord.accountId);
+    final newBalance;
+    if (deletedRecord.recordType == RecordType.income) {
+      newBalance = account.balance - deletedRecord.amount;
+    } else {
+      newBalance = account.balance + deletedRecord.amount;
+    }
+
+    await db.update("accounts", {'balance': newBalance},
+        where: 'id = ?', whereArgs: [account.id]);
   }
 
   static Future<Account> getAccountById(String id) async {
@@ -70,6 +85,7 @@ class DatabaseHelper {
     final db = await _openDB();
 
     await db.insert("transactions", transactionRecord.toJson());
+    await updateAccountBalanceAdd(transactionRecord);
   }
 
   static Future<void> deleteTransationRecord(
@@ -78,6 +94,7 @@ class DatabaseHelper {
 
     await db.delete("transactions",
         where: 'id = ?', whereArgs: [transactionRecord.id]);
+    await updateAccountBalanceDelete(transactionRecord);
   }
 
   static Future<List<TransactionRecord>?> getAccountTransactionRecords(
