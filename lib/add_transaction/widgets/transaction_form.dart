@@ -135,107 +135,111 @@ class _TransactionFormState extends State<TransactionForm> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Date"),
-          title: DateSelectorButton(
-            onClick: _presentDatePicker,
-            selectedDate: _selectedDate,
-          ),
-          minLeadingWidth: width / 5,
-        ),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text('Amount'),
-          minLeadingWidth: width / 5,
-          title: TextField(
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            controller: _amountController,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'^\d+\.?\d{0,2}'),
-              ),
-            ],
-            maxLines: 1,
-            maxLength: 20,
-            decoration: const InputDecoration(
-              prefixText: '\$ ',
-            ),
-          ),
-        ),
-        ListTile(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Category"),
-            minLeadingWidth: width / 5,
-            title: CategorySelectorButton(
-              recordType: widget.recordType,
-              onExpenseChanged: (value) {
-                _expenseCategory = value;
-              },
-              onIncomeChanged: (value) {
-                _incomeCategory = value;
-              },
-            )),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Account"),
-          minLeadingWidth: width / 5,
-          title: AccountSelectorButton(
-            onAccountChanged: (value) {
-              _account = value;
-            },
-          ),
-        ),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Note"),
-          minLeadingWidth: width / 5,
-          title: TextField(
-            controller: _noteController,
-            maxLines: 1,
-            maxLength: 60,
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextButton(
-              onPressed: _saveTransaction,
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                minimumSize: Size(width * 2 / 3, 0),
-                textStyle: Theme.of(context).textTheme.titleMedium,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-              ),
-              child: const Text("Save"),
+            leading: const Text("Date"),
+            title: DateSelectorButton(
+              onClick: _presentDatePicker,
+              selectedDate: _selectedDate,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+            minLeadingWidth: width / 5,
+          ),
+          ListTile(
+            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+            leading: const Text('Amount'),
+            minLeadingWidth: width / 5,
+            title: TextField(
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              controller: _amountController,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'^\d+\.?\d{0,2}'),
+                ),
+              ],
+              maxLines: 1,
+              maxLength: 20,
+              decoration: const InputDecoration(
+                prefixText: '\$ ',
+              ),
+            ),
+          ),
+          ListTile(
+              leadingAndTrailingTextStyle:
+                  Theme.of(context).textTheme.bodyLarge,
+              leading: const Text("Category"),
+              minLeadingWidth: width / 5,
+              title: CategorySelectorButton(
+                recordType: widget.recordType,
+                onExpenseChanged: (value) {
+                  _expenseCategory = value;
+                },
+                onIncomeChanged: (value) {
+                  _incomeCategory = value;
+                },
+              )),
+          ListTile(
+            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+            leading: const Text("Account"),
+            minLeadingWidth: width / 5,
+            title: AccountSelectorButton(
+              onAccountChanged: (value) {
+                _account = value;
               },
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.titleMedium,
-                shape: const RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Colors.deepPurple),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
+            ),
+          ),
+          ListTile(
+            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+            leading: const Text("Note"),
+            minLeadingWidth: width / 5,
+            title: TextField(
+              controller: _noteController,
+              maxLines: 1,
+              maxLength: 60,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: _saveTransaction,
+                style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  minimumSize: Size(width * 2 / 3, 0),
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
                   ),
                 ),
+                child: const Text("Save"),
               ),
-              child: const Text('Cancel'),
-            )
-          ],
-        )
-      ],
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                  shape: const RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: Colors.deepPurple),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                child: const Text('Cancel'),
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 }

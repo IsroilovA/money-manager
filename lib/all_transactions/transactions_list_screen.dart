@@ -3,9 +3,9 @@ import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/widgets/record_item.dart';
 
 class TransactionsListScreen extends StatelessWidget {
-  const TransactionsListScreen({super.key, required this.records});
+  const TransactionsListScreen({super.key, required this.transactionRecords});
 
-  final Future<List<TransactionRecord>?> records;
+  final List<TransactionRecord> transactionRecords;
 
   @override
   Widget build(BuildContext context) {
@@ -16,33 +16,51 @@ class TransactionsListScreen extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: FutureBuilder(
-          future: records,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            } else {
-              return snapshot.data == null
+        child: transactionRecords.isEmpty
                   ? const Center(
                       child: Text("No records yet"),
                     )
                   : ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
-                      itemCount: snapshot.data!.length,
+                      itemCount: transactionRecords.length,
                       itemBuilder: (context, index) {
-                        final record = snapshot.data![index];
+                        final record = transactionRecords[index];
                         return RecordItem(
                           record: record,
                           onRecordDeleted: (value) {},
                         );
                       },
-                    );
-            }
-          },
-        ),
+                    ),
+        
+        
+        // FutureBuilder(
+        //   future: records,
+        //   builder: (context, snapshot) {
+        //     if (snapshot.connectionState == ConnectionState.waiting) {
+        //       return const Center(
+        //         child: CircularProgressIndicator.adaptive(),
+        //       );
+        //     } else {
+        //       return snapshot.data == null
+        //           ? const Center(
+        //               child: Text("No records yet"),
+        //             )
+        //           : ListView.builder(
+        //               shrinkWrap: true,
+        //               physics: const NeverScrollableScrollPhysics(),
+        //               itemCount: snapshot.data!.length,
+        //               itemBuilder: (context, index) {
+        //                 final record = snapshot.data![index];
+        //                 return RecordItem(
+        //                   record: record,
+        //                   onRecordDeleted: (value) {},
+        //                 );
+        //               },
+        //             );
+        //     }
+        //   },
+        // ),
       ),
     );
   }

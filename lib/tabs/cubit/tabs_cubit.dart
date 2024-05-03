@@ -38,12 +38,18 @@ class TabsCubit extends Cubit<TabsState> {
     if (newTransaction == null) {
       return;
     }
-    await DatabaseHelper.addTransationRecord(newTransaction);
-    await DatabaseHelper.updateAccountBalance(
-        newTransaction, newTransaction.accountId);
-    final accounts = await DatabaseHelper.getAllAccounts();
-    if (accounts != null && accounts.isNotEmpty) {
-      emit(TabsTransactionAdded(accounts.first, pageIndex));
+    try {
+      await DatabaseHelper.addTransationRecord(newTransaction);
+      await DatabaseHelper.updateAccountBalance(
+          newTransaction, newTransaction.accountId);
+      final accounts = await DatabaseHelper.getAllAccounts();
+      if (accounts != null && accounts.isNotEmpty) {
+        emit(TabsTransactionAdded(accounts.first, pageIndex));
+      } else {
+        emit(TabsNoAccounts());
+      }
+    } catch (e) {
+      emit(TabsError(e.toString()));
     }
   }
 }
