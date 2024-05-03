@@ -55,6 +55,17 @@ class TabsScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text(pageTitle),
         centerTitle: true,
+        actions: [
+          if (pageTitle == "Accounts")
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const AddNewAccount()),
+                  );
+                },
+                icon: const Icon(Icons.add))
+        ],
       ),
       body: IndexedStack(
         index: pageIndex,
