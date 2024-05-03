@@ -2,40 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_new_account/add_account.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/add_transaction/add_transaction_screen.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/home_screen.dart';
 import 'package:money_manager/accounts/accounts_screen.dart';
-import 'package:money_manager/services/database_helper.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends StatelessWidget {
   const TabsScreen({super.key});
-
-  @override
-  State<TabsScreen> createState() {
-    return _TabsScreenState();
-  }
-}
-
-class _TabsScreenState extends State<TabsScreen> {
-  void _addTtansaction() async {
-    final newTransaction = await Navigator.of(context).push<TransactionRecord>(
-      MaterialPageRoute(
-        builder: (ctx) => const AddNewTransaction(),
-      ),
-    );
-    if (newTransaction == null) {
-      return;
-    }
-    setState(() {
-      DatabaseHelper.addTransationRecord(newTransaction);
-      DatabaseHelper.updateAccountBalance(
-          newTransaction, newTransaction.accountId);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +32,8 @@ class _TabsScreenState extends State<TabsScreen> {
             );
           } else if (state is TabsPageChanged) {
             return _buildTabsScreen(context, state.account, state.pageIndex);
+          } else if (state is TabsTransactionAdded) {
+            return _buildTabsScreen(context, state.account, state.pageIndex);
           } else {
             return const Center(child: Text("Something is wrond"));
           }
@@ -68,13 +44,16 @@ class _TabsScreenState extends State<TabsScreen> {
 
   Widget _buildTabsScreen(
       BuildContext context, Account account, int pageIndex) {
-    
-    switch(pageIndex){
-      
-    }
+    String pageTitle = switch (pageIndex) {
+      0 => "Home",
+      1 => "Statistics",
+      2 => "Goals",
+      3 => "Accounts",
+      _ => throw UnimplementedError(),
+    };
     return Scaffold(
       appBar: AppBar(
-        title: const Text("pageTitle"),
+        title: Text(pageTitle),
         centerTitle: true,
       ),
       body: IndexedStack(
@@ -87,7 +66,9 @@ class _TabsScreenState extends State<TabsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: _addTtansaction,
+        onPressed: () {
+          context.read<TabsCubit>().addTtansaction(context, pageIndex);
+        },
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
         backgroundColor: Theme.of(context).colorScheme.primary,

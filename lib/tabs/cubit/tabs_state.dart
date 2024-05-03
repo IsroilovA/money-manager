@@ -27,3 +27,10 @@ class TabsPageChanged extends TabsState {
   final int pageIndex;
   TabsPageChanged(this.pageIndex, this.account);
 }
+
+class TabsTransactionAdded extends TabsState {
+  final Account account;
+  final int pageIndex;
+
+  TabsTransactionAdded(this.account, this.pageIndex);
+}
