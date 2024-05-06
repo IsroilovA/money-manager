@@ -39,7 +39,7 @@ class TabsCubit extends Cubit<TabsState> {
     }
     try {
       if (newTransaction.recordType == RecordType.transfer) {
-        await DatabaseHelper.updateAccountBalanceTransfer(newTransaction);
+        await DatabaseHelper.addTransferTransaction(newTransaction);
       } else {
         await DatabaseHelper.addTransationRecord(newTransaction);
       }
