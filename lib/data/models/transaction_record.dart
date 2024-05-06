@@ -24,17 +24,6 @@ enum RecordType {
   transfer,
 }
 
-const categoryIcons = {
-  ExpenseCategory.food: Icons.lunch_dining,
-  ExpenseCategory.travel: Icons.flight_takeoff,
-  ExpenseCategory.leisure: Icons.movie,
-  ExpenseCategory.shopping: Icons.shopping_cart,
-  IncomeCategory.salary: Icons.work,
-  IncomeCategory.gift: Icons.card_giftcard,
-  IncomeCategory.investment: Icons.auto_graph,
-  IncomeCategory.freelance: Icons.laptop_chromebook,
-};
-
 const categoryColors = {
   ExpenseCategory.food: Colors.red,
   ExpenseCategory.leisure: Colors.blue,
@@ -44,6 +33,17 @@ const categoryColors = {
   IncomeCategory.gift: Colors.pink,
   IncomeCategory.investment: Colors.deepPurple,
   IncomeCategory.freelance: Colors.amber,
+};
+
+const categoryIcons = {
+  ExpenseCategory.food: Icons.lunch_dining,
+  ExpenseCategory.travel: Icons.flight_takeoff,
+  ExpenseCategory.leisure: Icons.movie,
+  ExpenseCategory.shopping: Icons.shopping_cart,
+  IncomeCategory.salary: Icons.work,
+  IncomeCategory.gift: Icons.card_giftcard,
+  IncomeCategory.investment: Icons.auto_graph,
+  IncomeCategory.freelance: Icons.laptop_chromebook,
 };
 
 @JsonSerializable()

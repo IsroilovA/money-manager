@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
-import 'package:syncfusion_flutter_charts/charts.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -12,11 +10,6 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
-  Widget buildIncomeStatisticsScreen(
-      List<TransactionRecord> transactionRecords) {
-    return;
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -56,12 +49,9 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                   child: Text("No data"),
                 );
               } else if (state is HomeTransactionsLoaded) {
-                return Expanded(
+                return const Expanded(
                   child: TabBarView(
-                    children: [
-                      buildIncomeStatisticsScreen(state.transactionRecords),
-                      buildIncomeStatisticsScreen(state.transactionRecords)
-                    ],
+                    children: [Text("data"), Text("data")],
                   ),
                 );
               } else if (state is HomeError) {
@@ -80,11 +70,4 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       ),
     );
   }
-}
-
-class PieData {
-  PieData(this.category, this.value, [this.color]);
-  final String category;
-  final double value;
-  final Color? color;
 }
