@@ -1,120 +1,120 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_new_account/add_account.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/add_transaction/add_transaction_screen.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/home_screen.dart';
 import 'package:money_manager/accounts/accounts_screen.dart';
-import 'package:money_manager/services/database_helper.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
-class TabsScreen extends StatefulWidget {
+class TabsScreen extends StatelessWidget {
   const TabsScreen({super.key});
 
   @override
-  State<TabsScreen> createState() {
-    return _TabsScreenState();
-  }
-}
-
-class _TabsScreenState extends State<TabsScreen> {
-  int _selectedPageIndex = 0;
-  Future<List<Account>?> accounts = DatabaseHelper.getAllAccounts();
-  void _selectPage(int index) {
-    setState(() {
-      _selectedPageIndex = index;
-    });
-  }
-
-  void _addTtansaction() async {
-    final newTransaction = await Navigator.of(context).push<TransactionRecord>(
-      MaterialPageRoute(
-        builder: (ctx) => const AddNewTransaction(),
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) => TabsCubit(),
+      child: BlocBuilder<TabsCubit, TabsState>(
+        builder: (context, state) {
+          if (state is TabsInitial) {
+            BlocProvider.of<TabsCubit>(context).loadAccounts();
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (state is TabsNoAccounts) {
+            return const AddNewAccount();
+          } else if (state is TabsLoaded) {
+            return _buildTabsScreen(context, state.accounts, 0);
+          } else if (state is TabsError) {
+            return Center(
+              child: Text("Error: ${state.message}"),
+            );
+          } else if (state is TabsPageChanged) {
+            return _buildTabsScreen(context, state.accounts, state.pageIndex);
+          } else if (state is TabsTransactionAdded) {
+            return _buildTabsScreen(context, state.accounts, state.pageIndex);
+          } else {
+            return const Center(child: Text("Something is wrond"));
+          }
+        },
       ),
     );
-    if (newTransaction == null) {
-      return;
-    }
-    setState(() {
-      DatabaseHelper.addTransationRecord(newTransaction);
-      DatabaseHelper.updateAccountBalance(
-          newTransaction, newTransaction.accountId);
-    });
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder(
-      future: accounts,
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else {
-          if (snapshot.data == null) {
-            return const AddNewAccount();
-          } else {
-            Account account = snapshot.data!.first;
-            Widget activePage = switch (_selectedPageIndex) {
-              0 => HomeScreen(account: account),
-              1 => const StatisticsScreen(),
-              2 => const GoalsScreen(),
-              3 => const AccountsScreen(),
-              _ => throw UnimplementedError(),
-            };
-            var pageTitle = activePage
-                .toString()
-                .substring(0, activePage.toString().length - 6);
-            return Scaffold(
-              appBar: AppBar(
-                title: Text(pageTitle),
-                centerTitle: true,
-              ),
-              body: activePage,
-              floatingActionButton: FloatingActionButton(
-                onPressed: _addTtansaction,
-                shape: const CircleBorder(),
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                child: const Icon(
-                  Icons.add,
-                  size: 40,
-                ),
-              ),
-              floatingActionButtonLocation:
-                  FloatingActionButtonLocation.centerDocked,
-              bottomNavigationBar: BottomNavigationBar(
-                onTap: _selectPage,
-                currentIndex: _selectedPageIndex,
-                selectedItemColor: Theme.of(context).colorScheme.primary,
-                unselectedItemColor: Colors.black,
-                showUnselectedLabels: true,
-                type: BottomNavigationBarType.fixed,
-                items: const [
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.home_outlined),
-                      label: "Home",
-                      activeIcon: Icon(Icons.home)),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.bar_chart_outlined),
-                      label: "Statistics",
-                      activeIcon: Icon(Icons.bar_chart)),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.rocket_launch_outlined),
-                      label: "Goals",
-                      activeIcon: Icon(Icons.rocket_launch)),
-                  BottomNavigationBarItem(
-                      icon: Icon(Icons.account_balance_outlined),
-                      label: "Accounts",
-                      activeIcon: Icon(Icons.account_balance))
-                ],
-              ),
-            );
-          }
-        }
-      },
+  Widget _buildTabsScreen(
+      BuildContext context, List<Account> accounts, int pageIndex) {
+    String pageTitle = switch (pageIndex) {
+      0 => "Home",
+      1 => "Statistics",
+      2 => "Goals",
+      3 => "Accounts",
+      _ => throw UnimplementedError(),
+    };
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(pageTitle),
+        centerTitle: true,
+        actions: [
+          if (pageTitle == "Accounts")
+            IconButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                        builder: (context) => const AddNewAccount()),
+                  );
+                },
+                icon: const Icon(Icons.add))
+        ],
+      ),
+      body: IndexedStack(
+        index: pageIndex,
+        children: [
+          HomeScreen(accounts: accounts),
+          const StatisticsScreen(),
+          const GoalsScreen(),
+          AccountsScreen(acocunts: accounts)
+        ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          context.read<TabsCubit>().addTtansaction(context, pageIndex);
+        },
+        shape: const CircleBorder(),
+        foregroundColor: Theme.of(context).colorScheme.onPrimary,
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        child: const Icon(
+          Icons.add,
+          size: 40,
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: context.read<TabsCubit>().selectPage,
+        currentIndex: pageIndex,
+        selectedItemColor: Theme.of(context).colorScheme.primary,
+        unselectedItemColor: Colors.black,
+        showUnselectedLabels: true,
+        type: BottomNavigationBarType.fixed,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.home_outlined),
+              label: "Home",
+              activeIcon: Icon(Icons.home)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.bar_chart_outlined),
+              label: "Statistics",
+              activeIcon: Icon(Icons.bar_chart)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.rocket_launch_outlined),
+              label: "Goals",
+              activeIcon: Icon(Icons.rocket_launch)),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.account_balance_outlined),
+              label: "Accounts",
+              activeIcon: Icon(Icons.account_balance))
+        ],
+      ),
     );
   }
 }

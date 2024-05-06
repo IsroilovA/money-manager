@@ -3,8 +3,8 @@ import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
 
 class BalanceCard extends StatefulWidget {
-  const BalanceCard({super.key, required this.account});
-  final Account account;
+  const BalanceCard({super.key, required this.accounts});
+  final List<Account> accounts;
 
   @override
   State<BalanceCard> createState() => _BalanceCardState();
@@ -13,10 +13,10 @@ class BalanceCard extends StatefulWidget {
 class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
-    double totalBalance = widget.account.balance;
-    Future<String> incomeLast30Days = widget.account.formattedIncomeLast30Days;
-    Future<String> expenseLast30Days =
-        widget.account.formattedExpenseLast30Days;
+    double totalBalance = 0;
+    for (var account in widget.accounts) {
+      totalBalance += account.balance;
+    }
     return Card(
       margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
@@ -80,11 +80,11 @@ class _BalanceCardState extends State<BalanceCard> {
               ],
             ),
             const SizedBox(height: 15),
-            Row(
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IncomeExpenseWidget(value: incomeLast30Days, isIncome: true),
-                IncomeExpenseWidget(value: expenseLast30Days, isIncome: false),
+                IncomeExpenseWidget(isIncome: true),
+                IncomeExpenseWidget(isIncome: false),
               ],
             ),
           ],

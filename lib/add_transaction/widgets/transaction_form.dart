@@ -25,6 +25,7 @@ class _TransactionFormState extends State<TransactionForm> {
   ExpenseCategory? _expenseCategory;
   IncomeCategory? _incomeCategory;
   Account? _account;
+  Account? _transferAccount2Id;
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
@@ -86,47 +87,73 @@ class _TransactionFormState extends State<TransactionForm> {
     if (amountIsInvalid) {
       _showDialog("enter a valid amount");
       return;
-    } else if (_expenseCategory == null && _incomeCategory == null) {
-      _showDialog("Select the category");
-      return;
-    } else if (_account == null) {
-      _showDialog("Select account");
-      return;
     }
 
-    if (_expenseCategory != null) {
+    if (widget.recordType == RecordType.transfer) {
+      if (_account == null || _transferAccount2Id == null) {
+        _showDialog("Select both account");
+        return;
+      }
       if (noteNotEntered) {
         newRecord = TransactionRecord(
-            accountId: _account!.id,
-            date: _selectedDate,
-            amount: enteredAmount,
-            recordType: widget.recordType,
-            expenseCategory: _expenseCategory);
+          transferAccount2Id: _transferAccount2Id!.id,
+          accountId: _account!.id,
+          date: _selectedDate,
+          amount: enteredAmount,
+          recordType: widget.recordType,
+        );
       } else {
         newRecord = TransactionRecord(
+            transferAccount2Id: _transferAccount2Id!.id,
             accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
-            expenseCategory: _expenseCategory,
             note: _noteController.text);
       }
     } else {
-      if (noteNotEntered) {
-        newRecord = TransactionRecord(
-            accountId: _account!.id,
-            date: _selectedDate,
-            amount: enteredAmount,
-            recordType: widget.recordType,
-            incomeCategory: _incomeCategory);
+      if (_expenseCategory == null && _incomeCategory == null) {
+        _showDialog("Select the category");
+        return;
+      } else if (_account == null) {
+        _showDialog("Select account");
+        return;
+      }
+
+      if (_expenseCategory != null) {
+        if (noteNotEntered) {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              expenseCategory: _expenseCategory);
+        } else {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              expenseCategory: _expenseCategory,
+              note: _noteController.text);
+        }
       } else {
-        newRecord = TransactionRecord(
-            accountId: _account!.id,
-            date: _selectedDate,
-            amount: enteredAmount,
-            recordType: widget.recordType,
-            incomeCategory: _incomeCategory,
-            note: _noteController.text);
+        if (noteNotEntered) {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              incomeCategory: _incomeCategory);
+        } else {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              incomeCategory: _incomeCategory,
+              note: _noteController.text);
+        }
       }
     }
     Navigator.of(context).pop(newRecord);
@@ -135,107 +162,126 @@ class _TransactionFormState extends State<TransactionForm> {
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Date"),
-          title: DateSelectorButton(
-            onClick: _presentDatePicker,
-            selectedDate: _selectedDate,
-          ),
-          minLeadingWidth: width / 5,
-        ),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text('Amount'),
-          minLeadingWidth: width / 5,
-          title: TextField(
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            controller: _amountController,
-            inputFormatters: [
-              FilteringTextInputFormatter.allow(
-                RegExp(r'^\d+\.?\d{0,2}'),
-              ),
-            ],
-            maxLines: 1,
-            maxLength: 20,
-            decoration: const InputDecoration(
-              prefixText: '\$ ',
-            ),
-          ),
-        ),
-        ListTile(
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Category"),
-            minLeadingWidth: width / 5,
-            title: CategorySelectorButton(
-              recordType: widget.recordType,
-              onExpenseChanged: (value) {
-                _expenseCategory = value;
-              },
-              onIncomeChanged: (value) {
-                _incomeCategory = value;
-              },
-            )),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Account"),
-          minLeadingWidth: width / 5,
-          title: AccountSelectorButton(
-            onAccountChanged: (value) {
-              _account = value;
-            },
-          ),
-        ),
-        ListTile(
-          leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-          leading: const Text("Note"),
-          minLeadingWidth: width / 5,
-          title: TextField(
-            controller: _noteController,
-            maxLines: 1,
-            maxLength: 60,
-          ),
-        ),
-        Row(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            TextButton(
-              onPressed: _saveTransaction,
-              style: TextButton.styleFrom(
-                backgroundColor: Theme.of(context).colorScheme.primary,
-                foregroundColor: Theme.of(context).colorScheme.onPrimary,
-                minimumSize: Size(width * 2 / 3, 0),
-                textStyle: Theme.of(context).textTheme.titleMedium,
-                shape: const RoundedRectangleBorder(
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
-                  ),
-                ),
-              ),
-              child: const Text("Save"),
+            leading: const Text("Date"),
+            title: DateSelectorButton(
+              onClick: _presentDatePicker,
+              selectedDate: _selectedDate,
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(context).pop();
+            minLeadingWidth: width / 5,
+          ),
+          ListTile(
+            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+            leading: const Text('Amount'),
+            minLeadingWidth: width / 5,
+            title: TextField(
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
+              controller: _amountController,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(
+                  RegExp(r'^\d+\.?\d{0,2}'),
+                ),
+              ],
+              maxLines: 1,
+              maxLength: 20,
+              decoration: const InputDecoration(
+                prefixText: '\$ ',
+              ),
+            ),
+          ),
+          ListTile(
+            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+            leading: Text(widget.recordType == RecordType.transfer
+                ? "Account Sender"
+                : "Account"),
+            minLeadingWidth: width / 5,
+            title: AccountSelectorButton(
+              onAccountChanged: (value) {
+                _account = value;
               },
-              style: TextButton.styleFrom(
-                textStyle: Theme.of(context).textTheme.titleMedium,
-                shape: const RoundedRectangleBorder(
-                  side: BorderSide(width: 1, color: Colors.deepPurple),
-                  borderRadius: BorderRadius.all(
-                    Radius.circular(10),
+            ),
+          ),
+          widget.recordType == RecordType.transfer
+              ? ListTile(
+                  leadingAndTrailingTextStyle:
+                      Theme.of(context).textTheme.bodyLarge,
+                  leading: const Text("Account Receiver"),
+                  minLeadingWidth: width / 5,
+                  title: AccountSelectorButton(
+                    onAccountChanged: (value) {
+                      _transferAccount2Id = value;
+                    },
+                  ),
+                )
+              : ListTile(
+                  leadingAndTrailingTextStyle:
+                      Theme.of(context).textTheme.bodyLarge,
+                  leading: const Text("Category"),
+                  minLeadingWidth: width / 5,
+                  title: CategorySelectorButton(
+                    recordType: widget.recordType,
+                    onExpenseChanged: (value) {
+                      _expenseCategory = value;
+                    },
+                    onIncomeChanged: (value) {
+                      _incomeCategory = value;
+                    },
                   ),
                 ),
+          ListTile(
+            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
+            leading: const Text("Note"),
+            minLeadingWidth: width / 5,
+            title: TextField(
+              controller: _noteController,
+              maxLines: 1,
+              maxLength: 60,
+            ),
+          ),
+          Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              TextButton(
+                onPressed: _saveTransaction,
+                style: TextButton.styleFrom(
+                  backgroundColor: Theme.of(context).colorScheme.primary,
+                  foregroundColor: Theme.of(context).colorScheme.onPrimary,
+                  minimumSize: Size(width * 2 / 3, 0),
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                child: const Text("Save"),
               ),
-              child: const Text('Cancel'),
-            )
-          ],
-        )
-      ],
+              TextButton(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+                style: TextButton.styleFrom(
+                  textStyle: Theme.of(context).textTheme.titleMedium,
+                  shape: const RoundedRectangleBorder(
+                    side: BorderSide(width: 1, color: Colors.deepPurple),
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                child: const Text('Cancel'),
+              )
+            ],
+          )
+        ],
+      ),
     );
   }
 }

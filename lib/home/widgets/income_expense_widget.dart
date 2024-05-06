@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/home/cubit/home_cubit.dart';
 
 class IncomeExpenseWidget extends StatelessWidget {
   const IncomeExpenseWidget({
     super.key,
-    required this.value,
     required this.isIncome,
   });
 
-  final Future<String> value;
   final bool isIncome;
 
   @override
@@ -36,23 +37,82 @@ class IncomeExpenseWidget extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                FutureBuilder(
-                  future: value,
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else {
-                      return Text(
-                        snapshot.data!,
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
-                      );
-                    }
-                  },
+                BlocProvider(
+                  create: (context) => HomeCubit(),
+                  child: BlocBuilder<HomeCubit, HomeState>(
+                    builder: (context, state) {
+                      BlocProvider.of<HomeCubit>(context).loadTransactions();
+                      if (state is HomeTransactionsLoading) {
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        );
+                      } else if (state is HomeNoTransactions) {
+                        return Text(
+                          '0',
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        );
+                      } else if (state is HomeTransactionsLoaded) {
+                        final DateTime today = DateTime.now();
+                        final DateTime thirtyDaysAgo =
+                            today.subtract(const Duration(days: 30));
+                        double expense = 0.0;
+                        double income = 0.0;
+                        for (var transactionRecord
+                            in state.transactionRecords) {
+                          if (transactionRecord.date.isAfter(thirtyDaysAgo)) {
+                            if (transactionRecord.recordType ==
+                                RecordType.expense) {
+                              expense += transactionRecord.amount;
+                            } else if (transactionRecord.recordType ==
+                                RecordType.income) {
+                              income += transactionRecord.amount;
+                            }
+                          }
+                        }
+
+                        return Text(
+                          isIncome
+                              ? currencyFormatter.format(income)
+                              : currencyFormatter.format(expense),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                        );
+                      } else if (state is HomeError) {
+                        return Center(
+                          child: Text(
+                            "Error: ${state.message}",
+                            style: Theme.of(context).textTheme.titleLarge,
+                          ),
+                        );
+                      } else {
+                        return const Center(child: Text("Something is wrond"));
+                      }
+                    },
+                  ),
                 )
+
+                // FutureBuilder(
+                //   future: value,
+                //   builder: (context, snapshot) {
+                //     if (snapshot.connectionState == ConnectionState.waiting) {
+                //       return const Center(
+                //         child: CircularProgressIndicator(),
+                //       );
+                //     } else {
+                //       return Text(
+                //         snapshot.data!,
+                //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                //               fontWeight: FontWeight.bold,
+                //             ),
+                //       );
+                //     }
+                //   },
+                // )
               ],
             )
           ],

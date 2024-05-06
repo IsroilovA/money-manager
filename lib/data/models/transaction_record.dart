@@ -43,11 +43,13 @@ class TransactionRecord {
     required this.amount,
     required this.recordType,
     required this.accountId,
+    this.transferAccount2Id,
     this.expenseCategory,
     this.incomeCategory,
     id,
   }) : id = id ?? uuid.v4();
 
+  final String? transferAccount2Id;
   final String accountId;
   final String id;
   final DateTime date;
