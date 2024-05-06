@@ -35,6 +35,17 @@ const categoryIcons = {
   IncomeCategory.freelance: Icons.laptop_chromebook,
 };
 
+const categoryColors = {
+  ExpenseCategory.food: Colors.red,
+  ExpenseCategory.leisure: Colors.blue,
+  ExpenseCategory.shopping: Colors.green,
+  ExpenseCategory.travel: Colors.orange,
+  IncomeCategory.salary: Colors.purple,
+  IncomeCategory.gift: Colors.pink,
+  IncomeCategory.investment: Colors.deepPurple,
+  IncomeCategory.freelance: Colors.amber,
+};
+
 @JsonSerializable()
 class TransactionRecord {
   TransactionRecord({
