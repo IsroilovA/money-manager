@@ -39,6 +39,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (ctx) => TransactionsListScreen(
+                        accounts: widget.accounts,
                         transactionRecords: transactionRecords,
                       ),
                     ),
@@ -70,6 +71,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final record = transactionRecords[index];
                 return RecordItem(
+                  accounts: widget.accounts,
                   transactionRecord: record,
                   onRecordDeleted: (value) {
                     BlocProvider.of<HomeCubit>(context)

@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
 
 class TransactionsListScreen extends StatelessWidget {
-  const TransactionsListScreen({super.key, required this.transactionRecords});
+  const TransactionsListScreen(
+      {super.key, required this.accounts, required this.transactionRecords});
 
   final List<TransactionRecord> transactionRecords;
+  final List<Account> accounts;
 
   @override
   Widget build(BuildContext context) {
@@ -32,6 +35,7 @@ class TransactionsListScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final record = transactionRecords[index];
                   return RecordItem(
+                    accounts: accounts,
                     transactionRecord: record,
                     onRecordDeleted: (value) {},
                   );

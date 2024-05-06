@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 
 class RecordItem extends StatelessWidget {
   const RecordItem(
       {super.key,
       required this.transactionRecord,
+      required this.accounts,
       required this.onRecordDeleted});
   final TransactionRecord transactionRecord;
   final ValueChanged<TransactionRecord> onRecordDeleted;
+  final List<Account> accounts;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -32,7 +35,7 @@ class RecordItem extends StatelessWidget {
                 ? ListTile(
                     leading: const Icon(Icons.swap_horiz_rounded),
                     title: Text(
-                        "${transactionRecord.accountId} -> ${transactionRecord.transferAccount2Id}"),
+                        "${accounts.firstWhere((account) => account.id == transactionRecord.accountId).name} -> ${accounts.firstWhere((account) => account.id == transactionRecord.transferAccount2Id).name}"),
                     subtitle: transactionRecord.note != null
                         ? Text(
                             "${transactionRecord.note!} | ${formatter.format(transactionRecord.date)}")
