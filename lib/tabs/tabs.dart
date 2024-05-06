@@ -4,7 +4,7 @@ import 'package:money_manager/add_new_account/add_account.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/home_screen.dart';
-import 'package:money_manager/accounts/accounts_screen.dart';
+import 'package:money_manager/accounts/accounts_list_screen.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 

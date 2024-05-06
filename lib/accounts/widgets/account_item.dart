@@ -9,17 +9,22 @@ class AccountItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Material(
-      color: Theme.of(context).colorScheme.surfaceVariant,
-      borderRadius: BorderRadius.circular(9),
-      child: ListTile(
-        title: Text(account.name.toUpperCase()),
-        trailing: Text(
-          account.formattedBalance,
-          style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              color: account.balance >= 0 ? Colors.green : Colors.red),
+    return Column(
+      children: [
+        Material(
+          color: Theme.of(context).colorScheme.surfaceVariant,
+          borderRadius: BorderRadius.circular(9),
+          child: ListTile(
+            title: Text(account.name.toUpperCase()),
+            trailing: Text(
+              account.formattedBalance,
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                  color: account.balance >= 0 ? Colors.green : Colors.red),
+            ),
+          ),
         ),
-      ),
+        const SizedBox(height: 10),
+      ],
     );
   }
 }
