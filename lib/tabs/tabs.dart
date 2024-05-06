@@ -8,9 +8,14 @@ import 'package:money_manager/accounts/accounts_list_screen.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
-class TabsScreen extends StatelessWidget {
+class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
 
+  @override
+  State<TabsScreen> createState() => _TabsScreenState();
+}
+
+class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -67,14 +72,21 @@ class TabsScreen extends StatelessWidget {
                 icon: const Icon(Icons.add))
         ],
       ),
-      body: IndexedStack(
-        index: pageIndex,
-        children: [
-          HomeScreen(accounts: accounts),
-          const StatisticsScreen(),
-          const GoalsScreen(),
-          AccountsScreen(acocunts: accounts)
-        ],
+      body: RefreshIndicator.adaptive(
+        onRefresh: () async {
+          BlocProvider.of<TabsCubit>(context).loadAccounts();
+        },
+        child: IndexedStack(
+          index: pageIndex,
+          children: [
+            HomeScreen(
+              accounts: accounts,
+            ),
+            const StatisticsScreen(),
+            const GoalsScreen(),
+            AccountsScreen(acocunts: accounts)
+          ],
+        ),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
