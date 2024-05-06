@@ -8,8 +8,8 @@ final class TabsInitial extends TabsState {
 }
 
 final class TabsLoaded extends TabsState {
-  final Account account;
-  TabsLoaded(this.account);
+  final List<Account> accounts;
+  TabsLoaded(this.accounts);
 }
 
 final class TabsNoAccounts extends TabsState {
@@ -23,14 +23,14 @@ class TabsError extends TabsState {
 }
 
 class TabsPageChanged extends TabsState {
-  final Account account;
+  final List<Account> accounts;
   final int pageIndex;
-  TabsPageChanged(this.pageIndex, this.account);
+  TabsPageChanged(this.pageIndex, this.accounts);
 }
 
 class TabsTransactionAdded extends TabsState {
-  final Account account;
+  final List<Account> accounts;
   final int pageIndex;
 
-  TabsTransactionAdded(this.account, this.pageIndex);
+  TabsTransactionAdded(this.accounts, this.pageIndex);
 }

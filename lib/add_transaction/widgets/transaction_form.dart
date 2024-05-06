@@ -25,6 +25,7 @@ class _TransactionFormState extends State<TransactionForm> {
   ExpenseCategory? _expenseCategory;
   IncomeCategory? _incomeCategory;
   Account? _account;
+  Account? _transferAccount2Id;
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
@@ -86,47 +87,73 @@ class _TransactionFormState extends State<TransactionForm> {
     if (amountIsInvalid) {
       _showDialog("enter a valid amount");
       return;
-    } else if (_expenseCategory == null && _incomeCategory == null) {
-      _showDialog("Select the category");
-      return;
-    } else if (_account == null) {
-      _showDialog("Select account");
-      return;
     }
 
-    if (_expenseCategory != null) {
+    if (widget.recordType == RecordType.transfer) {
+      if (_account == null || _transferAccount2Id == null) {
+        _showDialog("Select both account");
+        return;
+      }
       if (noteNotEntered) {
         newRecord = TransactionRecord(
-            accountId: _account!.id,
-            date: _selectedDate,
-            amount: enteredAmount,
-            recordType: widget.recordType,
-            expenseCategory: _expenseCategory);
+          transferAccount2Id: _transferAccount2Id!.id,
+          accountId: _account!.id,
+          date: _selectedDate,
+          amount: enteredAmount,
+          recordType: widget.recordType,
+        );
       } else {
         newRecord = TransactionRecord(
+            transferAccount2Id: _transferAccount2Id!.id,
             accountId: _account!.id,
             date: _selectedDate,
             amount: enteredAmount,
             recordType: widget.recordType,
-            expenseCategory: _expenseCategory,
             note: _noteController.text);
       }
     } else {
-      if (noteNotEntered) {
-        newRecord = TransactionRecord(
-            accountId: _account!.id,
-            date: _selectedDate,
-            amount: enteredAmount,
-            recordType: widget.recordType,
-            incomeCategory: _incomeCategory);
+      if (_expenseCategory == null && _incomeCategory == null) {
+        _showDialog("Select the category");
+        return;
+      } else if (_account == null) {
+        _showDialog("Select account");
+        return;
+      }
+
+      if (_expenseCategory != null) {
+        if (noteNotEntered) {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              expenseCategory: _expenseCategory);
+        } else {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              expenseCategory: _expenseCategory,
+              note: _noteController.text);
+        }
       } else {
-        newRecord = TransactionRecord(
-            accountId: _account!.id,
-            date: _selectedDate,
-            amount: enteredAmount,
-            recordType: widget.recordType,
-            incomeCategory: _incomeCategory,
-            note: _noteController.text);
+        if (noteNotEntered) {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              incomeCategory: _incomeCategory);
+        } else {
+          newRecord = TransactionRecord(
+              accountId: _account!.id,
+              date: _selectedDate,
+              amount: enteredAmount,
+              recordType: widget.recordType,
+              incomeCategory: _incomeCategory,
+              note: _noteController.text);
+        }
       }
     }
     Navigator.of(context).pop(newRecord);
@@ -169,22 +196,10 @@ class _TransactionFormState extends State<TransactionForm> {
             ),
           ),
           ListTile(
-              leadingAndTrailingTextStyle:
-                  Theme.of(context).textTheme.bodyLarge,
-              leading: const Text("Category"),
-              minLeadingWidth: width / 5,
-              title: CategorySelectorButton(
-                recordType: widget.recordType,
-                onExpenseChanged: (value) {
-                  _expenseCategory = value;
-                },
-                onIncomeChanged: (value) {
-                  _incomeCategory = value;
-                },
-              )),
-          ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Account"),
+            leading: Text(widget.recordType == RecordType.transfer
+                ? "Account Sender"
+                : "Account"),
             minLeadingWidth: width / 5,
             title: AccountSelectorButton(
               onAccountChanged: (value) {
@@ -192,6 +207,33 @@ class _TransactionFormState extends State<TransactionForm> {
               },
             ),
           ),
+          widget.recordType == RecordType.transfer
+              ? ListTile(
+                  leadingAndTrailingTextStyle:
+                      Theme.of(context).textTheme.bodyLarge,
+                  leading: const Text("Account Receiver"),
+                  minLeadingWidth: width / 5,
+                  title: AccountSelectorButton(
+                    onAccountChanged: (value) {
+                      _transferAccount2Id = value;
+                    },
+                  ),
+                )
+              : ListTile(
+                  leadingAndTrailingTextStyle:
+                      Theme.of(context).textTheme.bodyLarge,
+                  leading: const Text("Category"),
+                  minLeadingWidth: width / 5,
+                  title: CategorySelectorButton(
+                    recordType: widget.recordType,
+                    onExpenseChanged: (value) {
+                      _expenseCategory = value;
+                    },
+                    onIncomeChanged: (value) {
+                      _incomeCategory = value;
+                    },
+                  ),
+                ),
           ListTile(
             leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
             leading: const Text("Note"),

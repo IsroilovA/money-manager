@@ -5,13 +5,13 @@ import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
-import 'package:money_manager/home/widgets/record_item.dart';
+import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.account});
+  const HomeScreen({super.key, required this.accounts});
 
-  final Account account;
+  final List<Account> accounts;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -70,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final record = transactionRecords[index];
                 return RecordItem(
-                  record: record,
+                  transactionRecord: record,
                   onRecordDeleted: (value) {
                     BlocProvider.of<HomeCubit>(context)
                         .deleteTransaction(value);
@@ -88,7 +88,7 @@ class _HomeScreenState extends State<HomeScreen> {
         primary: true,
         child: Column(
           children: [
-            BalanceCard(account: widget.account),
+            BalanceCard(accounts: widget.accounts),
             const SizedBox(height: 20),
             Text(
               "Top Spendings",

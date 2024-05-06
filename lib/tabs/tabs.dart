@@ -25,15 +25,15 @@ class TabsScreen extends StatelessWidget {
           } else if (state is TabsNoAccounts) {
             return const AddNewAccount();
           } else if (state is TabsLoaded) {
-            return _buildTabsScreen(context, state.account, 0);
+            return _buildTabsScreen(context, state.accounts, 0);
           } else if (state is TabsError) {
             return Center(
               child: Text("Error: ${state.message}"),
             );
           } else if (state is TabsPageChanged) {
-            return _buildTabsScreen(context, state.account, state.pageIndex);
+            return _buildTabsScreen(context, state.accounts, state.pageIndex);
           } else if (state is TabsTransactionAdded) {
-            return _buildTabsScreen(context, state.account, state.pageIndex);
+            return _buildTabsScreen(context, state.accounts, state.pageIndex);
           } else {
             return const Center(child: Text("Something is wrond"));
           }
@@ -43,7 +43,7 @@ class TabsScreen extends StatelessWidget {
   }
 
   Widget _buildTabsScreen(
-      BuildContext context, Account account, int pageIndex) {
+      BuildContext context, List<Account> accounts, int pageIndex) {
     String pageTitle = switch (pageIndex) {
       0 => "Home",
       1 => "Statistics",
@@ -70,10 +70,10 @@ class TabsScreen extends StatelessWidget {
       body: IndexedStack(
         index: pageIndex,
         children: [
-          HomeScreen(account: account),
+          HomeScreen(accounts: accounts),
           const StatisticsScreen(),
           const GoalsScreen(),
-          const AccountsScreen()
+          AccountsScreen(acocunts: accounts)
         ],
       ),
       floatingActionButton: FloatingActionButton(

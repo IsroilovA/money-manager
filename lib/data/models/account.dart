@@ -1,6 +1,4 @@
 import 'package:intl/intl.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/services/database_helper.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -25,51 +23,55 @@ class Account {
 
   Map<String, dynamic> toJson() => _$AccountToJson(this);
 
-  Future<String> get formattedIncomeLast30Days async {
-    Future<List<TransactionRecord>?> records =
-        DatabaseHelper.getAccountTransactionRecords(id);
-    double income = 0.0;
-    return records.then(
-      (records) {
-        final DateTime today = DateTime.now();
-        final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-        if (records == null) {
-          return currencyFormatter.format(0);
-        } else {
-          for (var record in records) {
-            if (record.date.isAfter(thirtyDaysAgo)) {
-              if (record.recordType == RecordType.income) {
-                income += record.amount;
-              }
-            }
-          }
-          return currencyFormatter.format(income);
-        }
-      },
-    );
+  String get formattedBalance {
+    return currencyFormatter.format(balance);
   }
 
-  Future<String> get formattedExpenseLast30Days {
-    Future<List<TransactionRecord>?> records =
-        DatabaseHelper.getAccountTransactionRecords(id);
-    double expense = 0.0;
-    return records.then(
-      (records) {
-        final DateTime today = DateTime.now();
-        final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
-        if (records == null) {
-          return currencyFormatter.format(0);
-        } else {
-          for (var record in records) {
-            if (record.date.isAfter(thirtyDaysAgo)) {
-              if (record.recordType == RecordType.expense) {
-                expense += record.amount;
-              }
-            }
-          }
-          return currencyFormatter.format(expense);
-        }
-      },
-    );
-  }
+  // Future<String> get formattedIncomeLast30Days async {
+  //   Future<List<TransactionRecord>?> records =
+  //       DatabaseHelper.getAllTransactionRecords();
+  //   double income = 0.0;
+  //   return records.then(
+  //     (records) {
+  //       final DateTime today = DateTime.now();
+  //       final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
+  //       if (records == null) {
+  //         return currencyFormatter.format(0);
+  //       } else {
+  //         for (var record in records) {
+  //           if (record.date.isAfter(thirtyDaysAgo)) {
+  //             if (record.recordType == RecordType.income) {
+  //               income += record.amount;
+  //             }
+  //           }
+  //         }
+  //         return currencyFormatter.format(income);
+  //       }
+  //     },
+  //   );
+  // }
+
+  // Future<double> get formattedExpenseLast30Days {
+  //   Future<List<TransactionRecord>?> records =
+  //       DatabaseHelper.getAccountTransactionRecords(id);
+  //   double expense = 0.0;
+  //   return records.then(
+  //     (records) {
+  //       final DateTime today = DateTime.now();
+  //       final DateTime thirtyDaysAgo = today.subtract(const Duration(days: 30));
+  //       if (records == null) {
+  //         return 0.0;
+  //       } else {
+  //         for (var record in records) {
+  //           if (record.date.isAfter(thirtyDaysAgo)) {
+  //             if (record.recordType == RecordType.expense) {
+  //               expense += record.amount;
+  //             }
+  //           }
+  //         }
+  //         return expense;
+  //       }
+  //     },
+  //   );
+  // }
 }

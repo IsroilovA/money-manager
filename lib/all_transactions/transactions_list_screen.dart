@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/home/widgets/record_item.dart';
+import 'package:money_manager/all_transactions/widgets/record_item.dart';
 
 class TransactionsListScreen extends StatelessWidget {
   const TransactionsListScreen({super.key, required this.transactionRecords});
@@ -32,7 +32,7 @@ class TransactionsListScreen extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final record = transactionRecords[index];
                   return RecordItem(
-                    record: record,
+                    transactionRecord: record,
                     onRecordDeleted: (value) {},
                   );
                 },

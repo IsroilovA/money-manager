@@ -14,7 +14,7 @@ class TabsCubit extends Cubit<TabsState> {
     try {
       final accounts = await DatabaseHelper.getAllAccounts();
       if (accounts != null && accounts.isNotEmpty) {
-        emit(TabsLoaded(accounts.first));
+        emit(TabsLoaded(accounts));
       } else {
         emit(TabsNoAccounts());
       }
@@ -25,7 +25,7 @@ class TabsCubit extends Cubit<TabsState> {
 
   void selectPage(int index) async {
     final accounts = await DatabaseHelper.getAllAccounts();
-    emit(TabsPageChanged(index, accounts!.first));
+    emit(TabsPageChanged(index, accounts!));
   }
 
   void addTtansaction(BuildContext context, int pageIndex) async {
@@ -38,10 +38,14 @@ class TabsCubit extends Cubit<TabsState> {
       return;
     }
     try {
-      await DatabaseHelper.addTransationRecord(newTransaction);
+      if (newTransaction.recordType == RecordType.transfer) {
+        await DatabaseHelper.updateAccountBalanceTransfer(newTransaction);
+      } else {
+        await DatabaseHelper.addTransationRecord(newTransaction);
+      }
       final accounts = await DatabaseHelper.getAllAccounts();
       if (accounts != null && accounts.isNotEmpty) {
-        emit(TabsTransactionAdded(accounts.first, pageIndex));
+        emit(TabsTransactionAdded(accounts, pageIndex));
       } else {
         emit(TabsNoAccounts());
       }

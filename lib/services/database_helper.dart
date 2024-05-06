@@ -14,7 +14,7 @@ class DatabaseHelper {
         await db.execute(
             "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
         await db.execute(
-            "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
+            "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, transferAccount2Id TEXT, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
       },
       version: _version,
     );
@@ -39,6 +39,24 @@ class DatabaseHelper {
     final db = await _openDB();
 
     await db.insert("accounts", account.toJson());
+  }
+
+  static Future<void> updateAccountBalanceTransfer(
+      TransactionRecord newRecord) async {
+    final db = await _openDB();
+    final accountSender = await getAccountById(newRecord.accountId);
+    final accountReceiver = await getAccountById(newRecord.transferAccount2Id!);
+
+    final newBalanceSender = accountSender.balance - newRecord.amount;
+    final newBalanceReceiver = accountReceiver.balance + newRecord.amount;
+
+    var batch = db.batch();
+    batch.insert("transactions", newRecord.toJson());
+    batch.update("accounts", {'balance': newBalanceSender},
+        where: 'id = ?', whereArgs: [accountSender.id]);
+    batch.update("accounts", {'balance': newBalanceReceiver},
+        where: 'id = ?', whereArgs: [accountReceiver.id]);
+    await batch.commit();
   }
 
   static Future<void> updateAccountBalanceAdd(

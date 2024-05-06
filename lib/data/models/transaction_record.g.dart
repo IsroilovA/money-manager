@@ -14,6 +14,7 @@ TransactionRecord _$TransactionRecordFromJson(Map<String, dynamic> json) {
     amount: (json['amount'] as num).toDouble(),
     recordType: $enumDecode(_$RecordTypeEnumMap, json['recordType']),
     accountId: json['accountId'] as String,
+    transferAccount2Id: json['transferAccount2Id'] as String?,
     expenseCategory:
         $enumDecodeNullable(_$ExpenseCategoryEnumMap, json['expenseCategory']),
     incomeCategory:
@@ -24,6 +25,7 @@ TransactionRecord _$TransactionRecordFromJson(Map<String, dynamic> json) {
 
 Map<String, dynamic> _$TransactionRecordToJson(TransactionRecord instance) =>
     <String, dynamic>{
+      'transferAccount2Id': instance.transferAccount2Id,
       'accountId': instance.accountId,
       'id': instance.id,
       'date': instance.date.millisecondsSinceEpoch,
