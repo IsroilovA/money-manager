@@ -29,7 +29,7 @@ class TabsCubit extends Cubit<TabsState> {
   }
 
   void deleteTransaction(TransactionRecord transactionRecord) async {
-    emit(TabsInitial());
+    emit(TabsLoading());
     try {
       await DatabaseHelper.deleteTransationRecord(transactionRecord);
       final accounts = await DatabaseHelper.getAllAccounts();
