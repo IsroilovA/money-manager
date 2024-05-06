@@ -41,7 +41,7 @@ class DatabaseHelper {
     await db.insert("accounts", account.toJson());
   }
 
-  static Future<void> updateAccountBalanceTransfer(
+  static Future<void> addTransferTransaction(
       TransactionRecord newRecord) async {
     final db = await _openDB();
     final accountSender = await getAccountById(newRecord.accountId);
@@ -59,7 +59,7 @@ class DatabaseHelper {
     await batch.commit();
   }
 
-  static Future<void> updateAccountBalanceAdd(
+  static Future<void> _updateAccountBalanceAdd(
       TransactionRecord newRecord) async {
     final db = await _openDB();
     final account = await getAccountById(newRecord.accountId);
@@ -74,19 +74,34 @@ class DatabaseHelper {
         where: 'id = ?', whereArgs: [account.id]);
   }
 
-  static Future<void> updateAccountBalanceDelete(
+  static Future<void> _updateAccountBalanceDelete(
       TransactionRecord deletedRecord) async {
     final db = await _openDB();
-    final account = await getAccountById(deletedRecord.accountId);
-    final newBalance;
-    if (deletedRecord.recordType == RecordType.income) {
-      newBalance = account.balance - deletedRecord.amount;
-    } else {
-      newBalance = account.balance + deletedRecord.amount;
-    }
 
-    await db.update("accounts", {'balance': newBalance},
-        where: 'id = ?', whereArgs: [account.id]);
+    if (deletedRecord.recordType == RecordType.transfer) {
+      final accountSender = await getAccountById(deletedRecord.accountId);
+      final accountReceiver =
+          await getAccountById(deletedRecord.transferAccount2Id!);
+      final newBalanceSender = accountSender.balance + deletedRecord.amount;
+      final newBalanceReceiver = accountReceiver.balance - deletedRecord.amount;
+      var batch = db.batch();
+      batch.update("accounts", {'balance': newBalanceSender},
+          where: 'id = ?', whereArgs: [accountSender.id]);
+      batch.update("accounts", {'balance': newBalanceReceiver},
+          where: 'id = ?', whereArgs: [accountReceiver.id]);
+      await batch.commit();
+    } else {
+      final account = await getAccountById(deletedRecord.accountId);
+      final newBalance;
+      if (deletedRecord.recordType == RecordType.income) {
+        newBalance = account.balance - deletedRecord.amount;
+      } else {
+        newBalance = account.balance + deletedRecord.amount;
+      }
+
+      await db.update("accounts", {'balance': newBalance},
+          where: 'id = ?', whereArgs: [account.id]);
+    }
   }
 
   static Future<Account> getAccountById(String id) async {
@@ -103,7 +118,7 @@ class DatabaseHelper {
     final db = await _openDB();
 
     await db.insert("transactions", transactionRecord.toJson());
-    await updateAccountBalanceAdd(transactionRecord);
+    await _updateAccountBalanceAdd(transactionRecord);
   }
 
   static Future<void> deleteTransationRecord(
@@ -112,7 +127,7 @@ class DatabaseHelper {
 
     await db.delete("transactions",
         where: 'id = ?', whereArgs: [transactionRecord.id]);
-    await updateAccountBalanceDelete(transactionRecord);
+    await _updateAccountBalanceDelete(transactionRecord);
   }
 
   static Future<List<TransactionRecord>?> getAccountTransactionRecords(
