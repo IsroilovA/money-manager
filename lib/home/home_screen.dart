@@ -9,10 +9,12 @@ import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.accounts});
+  const HomeScreen(
+      {super.key, required this.accounts, required this.onTransactionDeleted});
 
   final List<Account> accounts;
 
+  final ValueChanged<TransactionRecord> onTransactionDeleted;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -75,8 +77,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   accounts: widget.accounts,
                   transactionRecord: record,
                   onRecordDeleted: (value) {
-                    BlocProvider.of<HomeCubit>(context)
-                        .deleteTransaction(value);
+                    widget.onTransactionDeleted(value);
                   },
                 );
               },
@@ -117,20 +118,7 @@ class _HomeScreenState extends State<HomeScreen> {
             const SizedBox(height: 20),
             BlocProvider(
               create: (context) => HomeCubit(),
-              child: BlocConsumer<HomeCubit, HomeState>(
-                listener: (context, state) {
-                  if (state is HomeTransactionsDeleted) {
-                    setState(
-                      () {},
-                    );
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Transaction deleted"),
-                        duration: Duration(seconds: 3),
-                      ),
-                    );
-                  }
-                },
+              child: BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
                   BlocProvider.of<HomeCubit>(context).loadTransactions();
                   if (state is HomeTransactionsLoading) {
@@ -147,9 +135,6 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: Theme.of(context).textTheme.titleLarge,
                       ),
                     );
-                  } else if (state is HomeTransactionsDeleted) {
-                    return buildTransactionsList(
-                        state.transactionRecords, false);
                   } else {
                     return const Center(child: Text("Something is wrond"));
                   }

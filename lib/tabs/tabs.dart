@@ -20,7 +20,26 @@ class _TabsScreenState extends State<TabsScreen> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => TabsCubit(),
-      child: BlocBuilder<TabsCubit, TabsState>(
+      child: BlocConsumer<TabsCubit, TabsState>(
+        listener: (context, state) {
+          if (state is TabsTransactionDeleted) {
+            // ScaffoldMessenger.of(context).clearSnackBars();
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(
+            //     content: Text("Transaction deleted"),
+            //     duration: Duration(seconds: 3),
+            //   ),
+            // );
+          } else if (state is TabsTransactionAdded) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Transaction added"),
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
+        },
         builder: (context, state) {
           if (state is TabsInitial) {
             BlocProvider.of<TabsCubit>(context).loadAccounts();
@@ -39,6 +58,8 @@ class _TabsScreenState extends State<TabsScreen> {
             return _buildTabsScreen(context, state.accounts, state.pageIndex);
           } else if (state is TabsTransactionAdded) {
             return _buildTabsScreen(context, state.accounts, state.pageIndex);
+          } else if (state is TabsTransactionDeleted) {
+            return _buildTabsScreen(context, state.accounts, 0);
           } else {
             return const Center(child: Text("Something is wrond"));
           }
@@ -81,6 +102,9 @@ class _TabsScreenState extends State<TabsScreen> {
           children: [
             HomeScreen(
               accounts: accounts,
+              onTransactionDeleted: (value) {
+                BlocProvider.of<TabsCubit>(context).deleteTransaction(value);
+              },
             ),
             const StatisticsScreen(),
             const GoalsScreen(),

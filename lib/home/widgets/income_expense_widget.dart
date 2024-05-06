@@ -95,24 +95,6 @@ class IncomeExpenseWidget extends StatelessWidget {
                     },
                   ),
                 )
-
-                // FutureBuilder(
-                //   future: value,
-                //   builder: (context, snapshot) {
-                //     if (snapshot.connectionState == ConnectionState.waiting) {
-                //       return const Center(
-                //         child: CircularProgressIndicator(),
-                //       );
-                //     } else {
-                //       return Text(
-                //         snapshot.data!,
-                //         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                //               fontWeight: FontWeight.bold,
-                //             ),
-                //       );
-                //     }
-                //   },
-                // )
               ],
             )
           ],

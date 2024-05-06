@@ -28,6 +28,21 @@ class TabsCubit extends Cubit<TabsState> {
     emit(TabsPageChanged(index, accounts!));
   }
 
+  void deleteTransaction(TransactionRecord transactionRecord) async {
+    emit(TabsInitial());
+    try {
+      await DatabaseHelper.deleteTransationRecord(transactionRecord);
+      final accounts = await DatabaseHelper.getAllAccounts();
+      if (accounts != null && accounts.isNotEmpty) {
+        emit(TabsTransactionDeleted(accounts));
+      } else {
+        emit(TabsNoAccounts());
+      }
+    } catch (e) {
+      emit(TabsError(e.toString()));
+    }
+  }
+
   void addTtansaction(BuildContext context, int pageIndex) async {
     final newTransaction = await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(

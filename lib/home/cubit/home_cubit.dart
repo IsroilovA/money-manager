@@ -20,19 +20,4 @@ class HomeCubit extends Cubit<HomeState> {
       emit(HomeError(e.toString()));
     }
   }
-
-  void deleteTransaction(TransactionRecord transactionRecord) async {
-    emit(HomeTransactionsLoading());
-    try {
-      final transactions = await DatabaseHelper.getAllTransactionRecords();
-      await DatabaseHelper.deleteTransationRecord(transactionRecord);
-      if (transactions != null && transactions.isNotEmpty) {
-        emit(HomeTransactionsDeleted(transactions));
-      } else {
-        emit(HomeNoTransactions());
-      }
-    } catch (e) {
-      emit(HomeError(e.toString()));
-    }
-  }
 }

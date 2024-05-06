@@ -34,3 +34,9 @@ class TabsTransactionAdded extends TabsState {
 
   TabsTransactionAdded(this.accounts, this.pageIndex);
 }
+
+class TabsTransactionDeleted extends TabsState{
+  final List<Account> accounts;
+
+  TabsTransactionDeleted(this.accounts);
+}

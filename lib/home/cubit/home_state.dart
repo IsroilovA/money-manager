@@ -18,8 +18,3 @@ final class HomeTransactionsLoaded extends HomeState {
 
   HomeTransactionsLoaded(this.transactionRecords);
 }
-
-final class HomeTransactionsDeleted extends HomeState{
-  final List<TransactionRecord> transactionRecords;
-  HomeTransactionsDeleted(this.transactionRecords);
-}
