@@ -35,6 +35,26 @@ class DatabaseHelper {
     );
   }
 
+  static Future<bool> hasAccounts() async {
+    final db = await _openDB();
+    // Execute a query to check if there are any rows in the table
+    List<Map<String, dynamic>> maps = await db.query("accounts", limit: 1);
+
+    // If the result contains any rows, return true; otherwise, return false
+    return maps.isNotEmpty;
+  }
+
+  static Future<double> getTotalBalance() async {
+    final db = await _openDB();
+    // Execute SQL query to calculate the total balance
+    List<Map<String, dynamic>> result =
+        await db.rawQuery('SELECT SUM(balance) AS totalBalance FROM accounts');
+
+    // Extract and return the total balance
+    double totalBalance = result[0]['totalBalance'] ?? 0.0;
+    return totalBalance;
+  }
+
   static Future<void> addAccount(Account account) async {
     final db = await _openDB();
 
@@ -161,5 +181,18 @@ class DatabaseHelper {
       maps.length,
       (index) => TransactionRecord.fromJson(maps[index]),
     );
+  }
+
+  static Future<double> getTotalAmountByRecordType(
+      RecordType recordType) async {
+    final db = await _openDB();
+    // Execute SQL query to calculate the total amount based on recordType
+    List<Map<String, dynamic>> result = await db.rawQuery(
+        'SELECT SUM(amount) AS totalAmount FROM transactions WHERE recordType = ?',
+        [recordType.name]);
+
+    // Extract and return the total amount
+    double totalAmount = result[0]['totalAmount'] ?? 0.0;
+    return totalAmount;
   }
 }

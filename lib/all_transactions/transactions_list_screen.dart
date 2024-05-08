@@ -37,7 +37,6 @@ class TransactionsListScreen extends StatelessWidget {
                   return RecordItem(
                     accounts: accounts,
                     transactionRecord: record,
-                    onRecordDeleted: (value) {},
                   );
                 },
               ),

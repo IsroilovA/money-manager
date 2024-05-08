@@ -1,15 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class RecordItem extends StatelessWidget {
   const RecordItem(
-      {super.key,
-      required this.transactionRecord,
-      required this.accounts,
-      required this.onRecordDeleted});
+      {super.key, required this.transactionRecord, required this.accounts});
   final TransactionRecord transactionRecord;
-  final ValueChanged<TransactionRecord> onRecordDeleted;
   final List<Account> accounts;
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,8 @@ class RecordItem extends StatelessWidget {
       children: [
         Dismissible(
           onDismissed: (direction) {
-            onRecordDeleted(transactionRecord);
+            BlocProvider.of<TabsCubit>(context)
+                .deleteTransaction(transactionRecord);
           },
           direction: DismissDirection.endToStart,
           background: Material(

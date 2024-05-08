@@ -27,9 +27,8 @@ class TabsError extends TabsState {
 }
 
 class TabsPageChanged extends TabsState {
-  final List<Account> accounts;
   final int pageIndex;
-  TabsPageChanged(this.pageIndex, this.accounts);
+  TabsPageChanged(this.pageIndex);
 }
 
 class TabsTransactionAdded extends TabsState {

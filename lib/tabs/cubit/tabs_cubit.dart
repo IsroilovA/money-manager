@@ -10,6 +10,21 @@ part 'tabs_state.dart';
 class TabsCubit extends Cubit<TabsState> {
   TabsCubit() : super(TabsInitial());
 
+  int pageIndex = 0;
+
+  // void checkForAccounts() async {
+  //   try {
+  //     final accountExists = await DatabaseHelper.hasAccounts();
+  //     if (accountExists) {
+  //       emit(TabsLoaded());
+  //     } else {
+  //       emit(TabsNoAccounts());
+  //     }
+  //   } catch (e) {
+  //     emit(TabsError(e.toString()));
+  //   }
+  // }
+
   void loadAccounts() async {
     try {
       final accounts = await DatabaseHelper.getAllAccounts();
@@ -24,9 +39,11 @@ class TabsCubit extends Cubit<TabsState> {
   }
 
   void selectPage(int index) async {
-    final accounts = await DatabaseHelper.getAllAccounts();
-    emit(TabsPageChanged(index, accounts!));
+    pageIndex = index;
+    emit(TabsPageChanged(index));
   }
+
+  int get index => pageIndex;
 
   void deleteTransaction(TransactionRecord transactionRecord) async {
     emit(TabsLoading());

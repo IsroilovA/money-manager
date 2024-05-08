@@ -17,6 +17,7 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
+    final selectedTab = context.select((TabsCubit cubit) => cubit.pageIndex);
     int pageIndex = 0;
     String pageTitle = switch (pageIndex) {
       0 => "Home",
@@ -59,7 +60,19 @@ class _TabsScreenState extends State<TabsScreen> {
                 duration: Duration(seconds: 3),
               ),
             );
+          } else if (state is TabsPageChanged) {
+            setState(() {
+              pageIndex = state.pageIndex;
+            });
           }
+        },
+        buildWhen: (previous, current) {
+          if (current is TabsPageChanged) {
+            return false;
+          } else if (current is TabsTransactionAdded) {
+            return false;
+          }
+          return true;
         },
         builder: (context, state) {
           if (state is TabsInitial) {
@@ -74,92 +87,32 @@ class _TabsScreenState extends State<TabsScreen> {
           } else if (state is TabsNoAccounts) {
             return const AddNewAccount();
           } else if (state is TabsLoaded) {
-            return RefreshIndicator.adaptive(
-              onRefresh: () async {
-                BlocProvider.of<TabsCubit>(context).loadAccounts();
-              },
-              child: IndexedStack(
-                index: pageIndex,
-                children: [
-                  HomeScreen(
-                    accounts: state.accounts,
-                    onTransactionDeleted: (value) {
-                      BlocProvider.of<TabsCubit>(context)
-                          .deleteTransaction(value);
-                    },
-                  ),
-                  const StatisticsScreen(),
-                  const GoalsScreen(),
-                  AccountsScreen(acocunts: state.accounts)
-                ],
-              ),
+            return IndexedStack(
+              index: selectedTab,
+              children: [
+                HomeScreen(
+                  accounts: state.accounts,
+                ),
+                const StatisticsScreen(),
+                const GoalsScreen(),
+                AccountsScreen(acocunts: state.accounts)
+              ],
             );
           } else if (state is TabsError) {
             return Center(
               child: Text("Error: ${state.message}"),
             );
-          } else if (state is TabsPageChanged) {
-            return RefreshIndicator.adaptive(
-              onRefresh: () async {
-                BlocProvider.of<TabsCubit>(context).loadAccounts();
-              },
-              child: IndexedStack(
-                index: state.pageIndex,
-                children: [
-                  HomeScreen(
-                    accounts: state.accounts,
-                    onTransactionDeleted: (value) {
-                      BlocProvider.of<TabsCubit>(context)
-                          .deleteTransaction(value);
-                    },
-                  ),
-                  const StatisticsScreen(),
-                  const GoalsScreen(),
-                  AccountsScreen(acocunts: state.accounts)
-                ],
-              ),
-            );
-          } else if (state is TabsTransactionAdded) {
-            return RefreshIndicator.adaptive(
-              onRefresh: () async {
-                BlocProvider.of<TabsCubit>(context).loadAccounts();
-              },
-              child: IndexedStack(
-                index: state.pageIndex,
-                children: [
-                  HomeScreen(
-                    accounts: state.accounts,
-                    onTransactionDeleted: (value) {
-                      BlocProvider.of<TabsCubit>(context)
-                          .deleteTransaction(value);
-                    },
-                  ),
-                  const StatisticsScreen(),
-                  const GoalsScreen(),
-                  AccountsScreen(acocunts: state.accounts)
-                ],
-              ),
-            );
           } else if (state is TabsTransactionDeleted) {
-            return RefreshIndicator.adaptive(
-              onRefresh: () async {
-                BlocProvider.of<TabsCubit>(context).loadAccounts();
-              },
-              child: IndexedStack(
-                index: pageIndex,
-                children: [
-                  HomeScreen(
-                    accounts: state.accounts,
-                    onTransactionDeleted: (value) {
-                      BlocProvider.of<TabsCubit>(context)
-                          .deleteTransaction(value);
-                    },
-                  ),
-                  const StatisticsScreen(),
-                  const GoalsScreen(),
-                  AccountsScreen(acocunts: state.accounts)
-                ],
-              ),
+            return IndexedStack(
+              index: selectedTab,
+              children: [
+                HomeScreen(
+                  accounts: state.accounts,
+                ),
+                const StatisticsScreen(),
+                const GoalsScreen(),
+                AccountsScreen(acocunts: state.accounts)
+              ],
             );
           } else {
             return const Center(child: Text("Something is wrond"));
@@ -181,7 +134,7 @@ class _TabsScreenState extends State<TabsScreen> {
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         onTap: BlocProvider.of<TabsCubit>(context).selectPage,
-        currentIndex: pageIndex,
+        currentIndex: selectedTab,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.black,
         showUnselectedLabels: true,

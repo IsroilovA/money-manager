@@ -9,12 +9,9 @@ import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen(
-      {super.key, required this.accounts, required this.onTransactionDeleted});
+  const HomeScreen({super.key, required this.accounts});
 
   final List<Account> accounts;
-
-  final ValueChanged<TransactionRecord> onTransactionDeleted;
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -76,9 +73,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 return RecordItem(
                   accounts: widget.accounts,
                   transactionRecord: record,
-                  onRecordDeleted: (value) {
-                    widget.onTransactionDeleted(value);
-                  },
                 );
               },
             ),
@@ -86,39 +80,39 @@ class _HomeScreenState extends State<HomeScreen> {
       );
     }
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      child: SingleChildScrollView(
-        primary: true,
-        child: Column(
-          children: [
-            BalanceCard(accounts: widget.accounts),
-            const SizedBox(height: 20),
-            Text(
-              "Top Spendings",
-              style: Theme.of(context)
-                  .textTheme
-                  .headlineSmall!
-                  .copyWith(fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 18),
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TopSpendingCard(
-                    icon: Icons.soup_kitchen_outlined, category: "Food"),
-                TopSpendingCard(
-                    icon: Icons.local_gas_station_outlined, category: "Fuel"),
-                TopSpendingCard(
-                    icon: Icons.luggage_outlined, category: "Travel"),
-                TopSpendingCard(
-                    icon: Icons.shopping_cart_outlined, category: "Shopping"),
-              ],
-            ),
-            const SizedBox(height: 20),
-            BlocProvider(
-              create: (context) => HomeCubit(),
-              child: BlocBuilder<HomeCubit, HomeState>(
+    return BlocProvider(
+      create: (context) => HomeCubit(),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        child: SingleChildScrollView(
+          primary: true,
+          child: Column(
+            children: [
+              BalanceCard(accounts: widget.accounts),
+              const SizedBox(height: 20),
+              Text(
+                "Top Spendings",
+                style: Theme.of(context)
+                    .textTheme
+                    .headlineSmall!
+                    .copyWith(fontWeight: FontWeight.bold),
+              ),
+              const SizedBox(height: 18),
+              const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  TopSpendingCard(
+                      icon: Icons.soup_kitchen_outlined, category: "Food"),
+                  TopSpendingCard(
+                      icon: Icons.local_gas_station_outlined, category: "Fuel"),
+                  TopSpendingCard(
+                      icon: Icons.luggage_outlined, category: "Travel"),
+                  TopSpendingCard(
+                      icon: Icons.shopping_cart_outlined, category: "Shopping"),
+                ],
+              ),
+              const SizedBox(height: 20),
+              BlocBuilder<HomeCubit, HomeState>(
                 builder: (context, state) {
                   BlocProvider.of<HomeCubit>(context).loadTransactions();
                   if (state is HomeTransactionsLoading) {
@@ -140,8 +134,8 @@ class _HomeScreenState extends State<HomeScreen> {
                   }
                 },
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
