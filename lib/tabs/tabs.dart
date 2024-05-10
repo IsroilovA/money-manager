@@ -62,9 +62,10 @@ class _TabsScreenState extends State<TabsScreen> {
           }
         },
         buildWhen: (previous, current) {
-          if (current is TabsPageChanged) {
-            return false;
-          } else if (current is TabsTransactionAdded) {
+          if (current is TabsPageChanged ||
+              current is TabsTransactionAdded ||
+              current is TabsTransactionDeleted ||
+              current is TabsLoading) {
             return false;
           }
           return true;
@@ -72,10 +73,6 @@ class _TabsScreenState extends State<TabsScreen> {
         builder: (context, state) {
           if (state is TabsInitial) {
             BlocProvider.of<TabsCubit>(context).loadAccounts();
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          } else if (state is TabsLoading) {
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );
@@ -96,18 +93,6 @@ class _TabsScreenState extends State<TabsScreen> {
           } else if (state is TabsError) {
             return Center(
               child: Text("Error: ${state.message}"),
-            );
-          } else if (state is TabsTransactionDeleted) {
-            return IndexedStack(
-              index: selectedTab,
-              children: [
-                HomeScreen(
-                  accounts: state.accounts,
-                ),
-                const StatisticsScreen(),
-                const GoalsScreen(),
-                AccountsScreen(acocunts: state.accounts)
-              ],
             );
           } else {
             return const Center(child: Text("Something is wrond"));

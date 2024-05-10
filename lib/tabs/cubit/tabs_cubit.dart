@@ -49,12 +49,7 @@ class TabsCubit extends Cubit<TabsState> {
     emit(TabsLoading());
     try {
       await DatabaseHelper.deleteTransationRecord(transactionRecord);
-      final accounts = await DatabaseHelper.getAllAccounts();
-      if (accounts != null && accounts.isNotEmpty) {
-        emit(TabsTransactionDeleted(accounts));
-      } else {
-        emit(TabsNoAccounts());
-      }
+      emit(TabsTransactionDeleted());
     } catch (e) {
       emit(TabsError(e.toString()));
     }
@@ -75,12 +70,7 @@ class TabsCubit extends Cubit<TabsState> {
       } else {
         await DatabaseHelper.addTransationRecord(newTransaction);
       }
-      final accounts = await DatabaseHelper.getAllAccounts();
-      if (accounts != null && accounts.isNotEmpty) {
-        emit(TabsTransactionAdded(accounts, pageIndex));
-      } else {
-        emit(TabsNoAccounts());
-      }
+      emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
       emit(TabsError(e.toString()));
     }

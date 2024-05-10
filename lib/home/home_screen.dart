@@ -7,6 +7,7 @@ import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key, required this.accounts});
@@ -112,25 +113,36 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
               const SizedBox(height: 20),
-              BlocBuilder<HomeCubit, HomeState>(
+              BlocBuilder<TabsCubit, TabsState>(
                 builder: (context, state) {
-                  BlocProvider.of<HomeCubit>(context).loadTransactions();
-                  if (state is HomeTransactionsLoading) {
-                    return buildTransactionsList([], true);
-                  } else if (state is HomeNoTransactions) {
-                    return buildTransactionsList([], false);
-                  } else if (state is HomeTransactionsLoaded) {
-                    return buildTransactionsList(
-                        state.transactionRecords, false);
-                  } else if (state is HomeError) {
-                    return Center(
-                      child: Text(
-                        "Error: ${state.message}",
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                  if (state is TabsTransactionDeleted || state is TabsLoaded) {
+                    return BlocBuilder<HomeCubit, HomeState>(
+                      builder: (context, state) {
+                        BlocProvider.of<HomeCubit>(context).loadTransactions();
+                        if (state is HomeTransactionsLoading) {
+                          return buildTransactionsList([], true);
+                        } else if (state is HomeNoTransactions) {
+                          return buildTransactionsList([], false);
+                        } else if (state is HomeTransactionsLoaded) {
+                          return buildTransactionsList(
+                              state.transactionRecords, false);
+                        } else if (state is HomeError) {
+                          return Center(
+                            child: Text(
+                              "Error: ${state.message}",
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
+                          );
+                        } else {
+                          return const Center(
+                              child: Text("Something is wrond"));
+                        }
+                      },
                     );
+                  } else if (state is TabsLoading) {
+                    return buildTransactionsList([], true);
                   } else {
-                    return const Center(child: Text("Something is wrond"));
+                    return Text("error");
                   }
                 },
               ),
