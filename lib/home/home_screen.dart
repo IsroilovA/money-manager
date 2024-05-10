@@ -114,6 +114,14 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               const SizedBox(height: 20),
               BlocBuilder<TabsCubit, TabsState>(
+                buildWhen: (previous, current) {
+                  if (current is TabsTransactionDeleted ||
+                      current is TabsLoaded ||
+                      current is TabsLoading) {
+                    return true;
+                  }
+                  return false;
+                },
                 builder: (context, state) {
                   if (state is TabsTransactionDeleted || state is TabsLoaded) {
                     return BlocBuilder<HomeCubit, HomeState>(
