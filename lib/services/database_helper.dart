@@ -220,12 +220,5 @@ class DatabaseHelper {
         maps[index]['totalAmount'].toDouble(),
       ),
     );
-    // Extract and return the total amount by category
-    // Map<String, double> totalAmountByCategory = {};
-    // for (Map<String, dynamic> row in maps) {
-    //   totalAmountByCategory[row[categoryColumn]] =
-    //       row['totalAmount'].toDouble();
-    // }
-    // return totalAmountByCategory;
   }
 }

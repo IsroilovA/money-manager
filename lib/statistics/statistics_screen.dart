@@ -13,6 +13,7 @@ class StatisticsScreen extends StatefulWidget {
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildPieChart(List<PieChartData> pieChartData) {
+    var toolTipBehavior = TooltipBehavior(enable: true);
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -21,10 +22,12 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                 child: Text("Add data to see statistics"),
               )
             : SfCircularChart(
+                tooltipBehavior: toolTipBehavior,
                 legend: const Legend(
                     isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
                 series: [
                   PieSeries<PieChartData, String>(
+                    enableTooltip: true,
                     dataSource: pieChartData,
                     xValueMapper: (PieChartData data, _) => data.category,
                     yValueMapper: (PieChartData data, _) => data.amount,
