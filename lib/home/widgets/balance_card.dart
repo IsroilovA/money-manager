@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
+import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class BalanceCard extends StatefulWidget {
   const BalanceCard({super.key, required this.accounts});
@@ -13,10 +16,7 @@ class BalanceCard extends StatefulWidget {
 class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
-    double totalBalance = 0;
-    for (var account in widget.accounts) {
-      totalBalance += account.balance;
-    }
+    BlocProvider.of<HomeCubit>(context).getTotalBalance();
     return Card(
       margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
@@ -37,49 +37,75 @@ class _BalanceCardState extends State<BalanceCard> {
                     fontSize: 19,
                   ),
             ),
-            Text(
-              currencyFormatter.format(totalBalance),
-              style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                    color: Theme.of(context).colorScheme.onPrimary,
-                  ),
+            BlocBuilder<TabsCubit, TabsState>(
+              buildWhen: (previous, current) {
+                if (current is TabsTransactionAdded ||
+                    current is TabsTransactionDeleted ||
+                    current is TabsLoaded) {
+                  return true;
+                }
+                return false;
+              },
+              builder: (context, state) {
+                if (state is TabsTransactionAdded ||
+                    state is TabsTransactionDeleted ||
+                    state is TabsLoaded) {
+                  BlocProvider.of<HomeCubit>(context).getTotalBalance();
+                  double totalBalance =
+                      context.select((HomeCubit cubit) => cubit.totalBalance);
+                  return Text(
+                    currencyFormatter.format(totalBalance),
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                  );
+                } else {
+                  return Text(
+                    "error",
+                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                  );
+                }
+              },
             ),
-            const SizedBox(height: 5),
-            Container(
-              alignment: Alignment.centerLeft,
-              child: Text(
-                "Monthly Expenses",
-                style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.onPrimary,
-                    ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 3),
-              child: LinearProgressIndicator(
-                valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-                value: 2 / 3,
-                minHeight: 10,
-                borderRadius: BorderRadius.circular(8),
-              ),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  "100",
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                ),
-                Text(
-                  currencyFormatter.format(totalBalance),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                      ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 15),
+            const SizedBox(height: 20),
+            // Container(
+            //   alignment: Alignment.centerLeft,
+            //   child: Text(
+            //     "Monthly Expenses",
+            //     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+            //           color: Theme.of(context).colorScheme.onPrimary,
+            //         ),
+            //   ),
+            // ),
+            // // Padding(
+            //   padding: const EdgeInsets.symmetric(vertical: 3),
+            //   child: LinearProgressIndicator(
+            //     valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
+            //     value: 2 / 3,
+            //     minHeight: 10,
+            //     borderRadius: BorderRadius.circular(8),
+            //   ),
+            // ),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       "100",
+            //       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            //             color: Theme.of(context).colorScheme.onPrimary,
+            //           ),
+            //     ),
+            //     Text(
+            //       "totalBalance",
+            //       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+            //             color: Theme.of(context).colorScheme.onPrimary,
+            //           ),
+            //     ),
+            //   ],
+            // ),
+            // const SizedBox(height: 15),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

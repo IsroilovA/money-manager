@@ -8,10 +8,20 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeTransactionsLoading());
 
+  double totalBalance = 0.0;
+  double totalExpense = 0.0;
+  double totalIncome = 0.0;
+  List<TransactionRecord> transactionRecords = [];
+
+  void getTotalBalance() async {
+    totalBalance = await DatabaseHelper.getTotalBalance();
+  }
+
   void loadTransactions() async {
     try {
       final transactions = await DatabaseHelper.getAllTransactionRecords();
       if (transactions != null && transactions.isNotEmpty) {
+        transactionRecords = transactions;
         emit(HomeTransactionsLoaded(transactions));
       } else {
         emit(HomeNoTransactions());
@@ -19,5 +29,12 @@ class HomeCubit extends Cubit<HomeState> {
     } catch (e) {
       emit(HomeError(e.toString()));
     }
+  }
+
+  void getTotalRecordTypeAmount() async {
+    totalExpense =
+        await DatabaseHelper.getTotalAmountByRecordType(RecordType.expense);
+    totalIncome =
+        await DatabaseHelper.getTotalAmountByRecordType(RecordType.income);
   }
 }

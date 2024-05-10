@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_new_account/add_account.dart';
-import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/home_screen.dart';
 import 'package:money_manager/accounts/accounts_list_screen.dart';
@@ -18,59 +17,8 @@ class TabsScreen extends StatefulWidget {
 class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => TabsCubit(),
-      child: BlocConsumer<TabsCubit, TabsState>(
-        listener: (context, state) {
-          if (state is TabsTransactionDeleted) {
-            // ScaffoldMessenger.of(context).clearSnackBars();
-            // ScaffoldMessenger.of(context).showSnackBar(
-            //   const SnackBar(
-            //     content: Text("Transaction deleted"),
-            //     duration: Duration(seconds: 3),
-            //   ),
-            // );
-          } else if (state is TabsTransactionAdded) {
-            ScaffoldMessenger.of(context).clearSnackBars();
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Transaction added"),
-                duration: Duration(seconds: 3),
-              ),
-            );
-          }
-        },
-        builder: (context, state) {
-          if (state is TabsInitial) {
-            BlocProvider.of<TabsCubit>(context).loadAccounts();
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          } else if (state is TabsNoAccounts) {
-            return const AddNewAccount();
-          } else if (state is TabsLoaded) {
-            return _buildTabsScreen(context, state.accounts, 0);
-          } else if (state is TabsError) {
-            return Center(
-              child: Text("Error: ${state.message}"),
-            );
-          } else if (state is TabsPageChanged) {
-            return _buildTabsScreen(context, state.accounts, state.pageIndex);
-          } else if (state is TabsTransactionAdded) {
-            return _buildTabsScreen(context, state.accounts, state.pageIndex);
-          } else if (state is TabsTransactionDeleted) {
-            return _buildTabsScreen(context, state.accounts, 0);
-          } else {
-            return const Center(child: Text("Something is wrond"));
-          }
-        },
-      ),
-    );
-  }
-
-  Widget _buildTabsScreen(
-      BuildContext context, List<Account> accounts, int pageIndex) {
-    String pageTitle = switch (pageIndex) {
+    final selectedTab = context.select((TabsCubit cubit) => cubit.pageIndex);
+    String pageTitle = switch (selectedTab) {
       0 => "Home",
       1 => "Statistics",
       2 => "Goals",
@@ -93,28 +41,67 @@ class _TabsScreenState extends State<TabsScreen> {
                 icon: const Icon(Icons.add))
         ],
       ),
-      body: RefreshIndicator.adaptive(
-        onRefresh: () async {
-          BlocProvider.of<TabsCubit>(context).loadAccounts();
+      body: BlocConsumer<TabsCubit, TabsState>(
+        listener: (context, state) {
+          if (state is TabsTransactionDeleted) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Transaction deleted"),
+                duration: Duration(seconds: 3),
+              ),
+            );
+          } else if (state is TabsTransactionAdded) {
+            ScaffoldMessenger.of(context).clearSnackBars();
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text("Transaction added"),
+                duration: Duration(seconds: 3),
+              ),
+            );
+          }
         },
-        child: IndexedStack(
-          index: pageIndex,
-          children: [
-            HomeScreen(
-              accounts: accounts,
-              onTransactionDeleted: (value) {
-                BlocProvider.of<TabsCubit>(context).deleteTransaction(value);
-              },
-            ),
-            const StatisticsScreen(),
-            const GoalsScreen(),
-            AccountsScreen(acocunts: accounts)
-          ],
-        ),
+        buildWhen: (previous, current) {
+          if (current is TabsPageChanged ||
+              current is TabsTransactionAdded ||
+              current is TabsTransactionDeleted ||
+              current is TabsLoading) {
+            return false;
+          }
+          return true;
+        },
+        builder: (context, state) {
+          if (state is TabsInitial) {
+            BlocProvider.of<TabsCubit>(context).loadAccounts();
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (state is TabsNoAccounts) {
+            return const AddNewAccount();
+          } else if (state is TabsLoaded) {
+            return IndexedStack(
+              index: selectedTab,
+              children: [
+                HomeScreen(
+                  accounts: state.accounts,
+                ),
+                const StatisticsScreen(),
+                const GoalsScreen(),
+                AccountsScreen(acocunts: state.accounts)
+              ],
+            );
+          } else if (state is TabsError) {
+            return Center(
+              child: Text("Error: ${state.message}"),
+            );
+          } else {
+            return const Center(child: Text("Something is wrond"));
+          }
+        },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<TabsCubit>().addTtansaction(context, pageIndex);
+          context.read<TabsCubit>().addTtansaction(context, selectedTab);
         },
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -126,8 +113,8 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
-        onTap: context.read<TabsCubit>().selectPage,
-        currentIndex: pageIndex,
+        onTap: BlocProvider.of<TabsCubit>(context).selectPage,
+        currentIndex: selectedTab,
         selectedItemColor: Theme.of(context).colorScheme.primary,
         unselectedItemColor: Colors.black,
         showUnselectedLabels: true,

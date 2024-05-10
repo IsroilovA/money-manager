@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class TransactionsListScreen extends StatelessWidget {
   const TransactionsListScreen(
@@ -17,30 +19,32 @@ class TransactionsListScreen extends StatelessWidget {
         title: const Text("All transactions"),
         centerTitle: true,
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: transactionRecords.isEmpty
-            ? Center(
-                child: Text(
-                  "No records yet",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                        fontSize: 20,
-                      ),
+      body: BlocProvider(
+        create: (context) => TabsCubit(),
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: transactionRecords.isEmpty
+              ? Center(
+                  child: Text(
+                    "No records yet",
+                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          fontSize: 20,
+                        ),
+                  ),
+                )
+              : ListView.builder(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: transactionRecords.length,
+                  itemBuilder: (context, index) {
+                    final record = transactionRecords[index];
+                    return RecordItem(
+                      accounts: accounts,
+                      transactionRecord: record,
+                    );
+                  },
                 ),
-              )
-            : ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: transactionRecords.length,
-                itemBuilder: (context, index) {
-                  final record = transactionRecords[index];
-                  return RecordItem(
-                    accounts: accounts,
-                    transactionRecord: record,
-                    onRecordDeleted: (value) {},
-                  );
-                },
-              ),
+        ),
       ),
     );
   }

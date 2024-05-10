@@ -7,6 +7,10 @@ final class TabsInitial extends TabsState {
   TabsInitial();
 }
 
+final class TabsLoading extends TabsState {
+  TabsLoading();
+}
+
 final class TabsLoaded extends TabsState {
   final List<Account> accounts;
   TabsLoaded(this.accounts);
@@ -23,20 +27,16 @@ class TabsError extends TabsState {
 }
 
 class TabsPageChanged extends TabsState {
-  final List<Account> accounts;
   final int pageIndex;
-  TabsPageChanged(this.pageIndex, this.accounts);
+  TabsPageChanged(this.pageIndex);
 }
 
 class TabsTransactionAdded extends TabsState {
-  final List<Account> accounts;
   final int pageIndex;
 
-  TabsTransactionAdded(this.accounts, this.pageIndex);
+  TabsTransactionAdded(this.pageIndex);
 }
 
-class TabsTransactionDeleted extends TabsState{
-  final List<Account> accounts;
-
-  TabsTransactionDeleted(this.accounts);
+class TabsTransactionDeleted extends TabsState {
+  TabsTransactionDeleted();
 }
