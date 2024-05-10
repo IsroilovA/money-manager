@@ -11,6 +11,7 @@ class HomeCubit extends Cubit<HomeState> {
   double totalBalance = 0.0;
   double totalExpense = 0.0;
   double totalIncome = 0.0;
+  List<TransactionRecord> transactionRecords = [];
 
   void getTotalBalance() async {
     totalBalance = await DatabaseHelper.getTotalBalance();
@@ -20,6 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       final transactions = await DatabaseHelper.getAllTransactionRecords();
       if (transactions != null && transactions.isNotEmpty) {
+        transactionRecords = transactions;
         emit(HomeTransactionsLoaded(transactions));
       } else {
         emit(HomeNoTransactions());

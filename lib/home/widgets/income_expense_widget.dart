@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class IncomeExpenseWidget extends StatefulWidget {
   const IncomeExpenseWidget({
@@ -18,9 +19,6 @@ class IncomeExpenseWidget extends StatefulWidget {
 class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<HomeCubit>(context).getTotalRecordTypeAmount();
-    double expense = context.select((HomeCubit cubit) => cubit.totalExpense);
-    double income = context.select((HomeCubit cubit) => cubit.totalIncome);
     return Card(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(10),
@@ -45,13 +43,42 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                         fontWeight: FontWeight.bold,
                       ),
                 ),
-                Text(
-                  widget.isIncome
-                      ? currencyFormatter.format(income)
-                      : currencyFormatter.format(expense),
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                BlocBuilder<TabsCubit, TabsState>(
+                  buildWhen: (previous, current) {
+                    if (current is TabsTransactionAdded ||
+                        current is TabsTransactionDeleted ||
+                        current is TabsLoaded) {
+                      return true;
+                    }
+                    return false;
+                  },
+                  builder: (context, state) {
+                    if (state is TabsTransactionAdded ||
+                        state is TabsTransactionDeleted ||
+                        state is TabsLoaded) {
+                      BlocProvider.of<HomeCubit>(context)
+                          .getTotalRecordTypeAmount();
+                      double expense = context
+                          .select((HomeCubit cubit) => cubit.totalExpense);
+                      double income = context
+                          .select((HomeCubit cubit) => cubit.totalIncome);
+                      return Text(
+                        widget.isIncome
+                            ? currencyFormatter.format(income)
+                            : currencyFormatter.format(expense),
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      );
+                    } else {
+                      return Text(
+                        "error",
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                              fontWeight: FontWeight.bold,
+                            ),
+                      );
+                    }
+                  },
                 )
               ],
             )

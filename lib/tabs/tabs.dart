@@ -18,8 +18,7 @@ class _TabsScreenState extends State<TabsScreen> {
   @override
   Widget build(BuildContext context) {
     final selectedTab = context.select((TabsCubit cubit) => cubit.pageIndex);
-    int pageIndex = 0;
-    String pageTitle = switch (pageIndex) {
+    String pageTitle = switch (selectedTab) {
       0 => "Home",
       1 => "Statistics",
       2 => "Goals",
@@ -60,10 +59,6 @@ class _TabsScreenState extends State<TabsScreen> {
                 duration: Duration(seconds: 3),
               ),
             );
-          } else if (state is TabsPageChanged) {
-            setState(() {
-              pageIndex = state.pageIndex;
-            });
           }
         },
         buildWhen: (previous, current) {
@@ -121,7 +116,7 @@ class _TabsScreenState extends State<TabsScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<TabsCubit>().addTtansaction(context, pageIndex);
+          context.read<TabsCubit>().addTtansaction(context, selectedTab);
         },
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
