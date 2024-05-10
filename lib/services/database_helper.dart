@@ -1,5 +1,6 @@
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -194,5 +195,37 @@ class DatabaseHelper {
     // Extract and return the total amount
     double totalAmount = result[0]['totalAmount'] ?? 0.0;
     return totalAmount;
+  }
+
+  static Future<List<PieChartData>> getTotalAmountByCategories(
+      RecordType recordType) async {
+    final db = await _openDB();
+    // Define the column name based on the recordType
+    String categoryColumn =
+        recordType == RecordType.expense ? 'expenseCategory' : 'incomeCategory';
+
+    // Execute SQL query to calculate the total amount grouped by category
+    List<Map<String, dynamic>> maps = await db.rawQuery(
+        'SELECT $categoryColumn, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? GROUP BY $categoryColumn',
+        [recordType.name]);
+
+    if (maps.isEmpty) {
+      return [];
+    }
+
+    return List.generate(
+      maps.length,
+      (index) => PieChartData(
+        maps[index][categoryColumn],
+        maps[index]['totalAmount'].toDouble(),
+      ),
+    );
+    // Extract and return the total amount by category
+    // Map<String, double> totalAmountByCategory = {};
+    // for (Map<String, dynamic> row in maps) {
+    //   totalAmountByCategory[row[categoryColumn]] =
+    //       row['totalAmount'].toDouble();
+    // }
+    // return totalAmountByCategory;
   }
 }

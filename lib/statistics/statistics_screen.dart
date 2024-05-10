@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_manager/home/cubit/home_cubit.dart';
+import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class StatisticsScreen extends StatefulWidget {
   const StatisticsScreen({super.key});
@@ -10,6 +12,34 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
+  Widget _buildPieChart(List<PieChartData> pieChartData) {
+    return Column(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        pieChartData.isEmpty
+            ? const Center(
+                child: Text("Add data to see statistics"),
+              )
+            : SfCircularChart(
+                legend: const Legend(
+                    isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
+                series: [
+                  PieSeries<PieChartData, String>(
+                    dataSource: pieChartData,
+                    xValueMapper: (PieChartData data, _) => data.category,
+                    yValueMapper: (PieChartData data, _) => data.amount,
+                    dataLabelMapper: (PieChartData data, _) => data.category,
+                    dataLabelSettings: const DataLabelSettings(
+                        isVisible: true,
+                        labelPosition: ChartDataLabelPosition.outside),
+                    explode: true,
+                  )
+                ],
+              ),
+      ],
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -37,34 +67,53 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ],
           ),
           BlocProvider(
-            create: (context) => HomeCubit(),
-            child: BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-              BlocProvider.of<HomeCubit>(context).loadTransactions();
-              if (state is HomeTransactionsLoading) {
-                return const Center(
-                  child: CircularProgressIndicator.adaptive(),
-                );
-              } else if (state is HomeNoTransactions) {
-                return const Center(
-                  child: Text("No data"),
-                );
-              } else if (state is HomeTransactionsLoaded) {
-                return const Expanded(
-                  child: TabBarView(
-                    children: [Text("data"), Text("data")],
-                  ),
-                );
-              } else if (state is HomeError) {
-                return Center(
-                  child: Text(
-                    "Error: ${state.message}",
-                    style: Theme.of(context).textTheme.titleLarge,
-                  ),
-                );
-              } else {
-                return const Center(child: Text("Something is wrond"));
-              }
-            }),
+            create: (context) => StatisticsCubit(),
+            child: BlocBuilder<TabsCubit, TabsState>(
+              buildWhen: (previous, current) {
+                if (current is TabsTransactionDeleted ||
+                    current is TabsLoaded ||
+                    current is TabsTransactionAdded) {
+                  return true;
+                }
+                return false;
+              },
+              builder: (context, state) {
+                if (state is TabsTransactionDeleted ||
+                    state is TabsLoaded ||
+                    state is TabsTransactionAdded) {
+                  BlocProvider.of<StatisticsCubit>(context).loadRecords();
+                  return BlocBuilder<StatisticsCubit, StatisticsState>(
+                      builder: (context, state) {
+                    if (state is StatisticsInitial) {
+                      BlocProvider.of<StatisticsCubit>(context).loadRecords();
+                      return const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      );
+                    } else if (state is StatisticsPieChartDataLoaded) {
+                      return Expanded(
+                        child: TabBarView(
+                          children: [
+                            _buildPieChart(state.incomeTransactionsRecords),
+                            _buildPieChart(state.expenseTransactionsRecords)
+                          ],
+                        ),
+                      );
+                    } else if (state is StatisticsError) {
+                      return Center(
+                        child: Text(
+                          "Error: ${state.message}",
+                          style: Theme.of(context).textTheme.titleLarge,
+                        ),
+                      );
+                    } else {
+                      return const Center(child: Text("Something is wrond"));
+                    }
+                  });
+                } else {
+                  return const Text("error");
+                }
+              },
+            ),
           ),
         ],
       ),
