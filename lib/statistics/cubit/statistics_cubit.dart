@@ -1,4 +1,5 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/database_helper.dart';
@@ -6,9 +7,21 @@ import 'package:money_manager/services/database_helper.dart';
 part 'statistics_state.dart';
 
 class PieChartData {
-  PieChartData(this.category, this.amount);
   final String category;
   final double amount;
+  PieChartData(this.category, this.amount);
+
+  MaterialColor get color {
+    return categoryColors.entries
+        .firstWhere((element) => element.key.name == category)
+        .value;
+  }
+
+  IconData get icon {
+    return categoryIcons.entries
+        .firstWhere((element) => element.key.name == category)
+        .value;
+  }
 }
 
 class LineChartData {
