@@ -11,18 +11,30 @@ class PieChartData {
   final double amount;
 }
 
+class LineChartData {
+  LineChartData(this.date, this.amount);
+  final DateTime date;
+  final double amount;
+}
+
 class StatisticsCubit extends Cubit<StatisticsState> {
   StatisticsCubit() : super(StatisticsInitial());
 
   void loadRecords() async {
     try {
+      final lineChartIncome =
+          await DatabaseHelper.getTotalAmountByDate(RecordType.income);
+      final lineChartExpense =
+          await DatabaseHelper.getTotalAmountByDate(RecordType.expense);
       final expenses =
           await DatabaseHelper.getTotalAmountByCategories(RecordType.expense);
       final incomes =
           await DatabaseHelper.getTotalAmountByCategories(RecordType.income);
-      emit(StatisticsPieChartDataLoaded(
-          expenseTransactionsRecords: expenses,
-          incomeTransactionsRecords: incomes));
+      emit(StatisticsDataLoaded(
+          pieChartExpense: expenses,
+          pieChartIncome: incomes,
+          lineChartExpense: lineChartExpense,
+          lineChartIncome: lineChartIncome));
     } catch (e) {
       emit(StatisticsError(e.toString()));
     }

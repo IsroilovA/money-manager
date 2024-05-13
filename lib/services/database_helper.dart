@@ -221,4 +221,23 @@ class DatabaseHelper {
       ),
     );
   }
+
+  static Future<List<LineChartData>> getTotalAmountByDate(
+      RecordType recordType) async {
+    final db = await _openDB();
+
+    int thirtyDaysAgoTimeStamp = DateTime.now()
+        .subtract(const Duration(days: 30))
+        .millisecondsSinceEpoch;
+
+    List<Map<String, dynamic>> maps = await db.rawQuery(
+        'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ? GROUP BY STRFTIME("%Y-%m-%d", floor(date/1000), "unixepoch")',
+        [recordType.name, thirtyDaysAgoTimeStamp]);
+
+    return List.generate(
+        maps.length,
+        (index) => LineChartData(
+            DateTime.fromMillisecondsSinceEpoch(maps[index]['date'] as int),
+            maps[index]['totalAmount'].toDouble()));
+  }
 }

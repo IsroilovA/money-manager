@@ -5,12 +5,16 @@ sealed class StatisticsState {}
 
 final class StatisticsInitial extends StatisticsState {}
 
-final class StatisticsPieChartDataLoaded extends StatisticsState {
-  final List<PieChartData> expenseTransactionsRecords;
-  final List<PieChartData> incomeTransactionsRecords;
-  StatisticsPieChartDataLoaded(
-      {required this.expenseTransactionsRecords,
-      required this.incomeTransactionsRecords});
+final class StatisticsDataLoaded extends StatisticsState {
+  final List<PieChartData> pieChartExpense;
+  final List<PieChartData> pieChartIncome;
+  final List<LineChartData> lineChartExpense;
+  final List<LineChartData> lineChartIncome;
+  StatisticsDataLoaded(
+      {required this.pieChartExpense,
+      required this.pieChartIncome,
+      required this.lineChartExpense,
+      required this.lineChartIncome});
 }
 
 final class StatisticsError extends StatisticsState {

@@ -12,35 +12,69 @@ class StatisticsScreen extends StatefulWidget {
 }
 
 class _StatisticsScreenState extends State<StatisticsScreen> {
+  Widget _builLineChart(List<LineChartData> lineChartData) {
+    var toolTipBehavior = TooltipBehavior(enable: true);
+    return lineChartData.isEmpty
+        ? const Center(
+            child: Text("Add data to see statistics"),
+          )
+        : SfCartesianChart(
+            tooltipBehavior: toolTipBehavior,
+            primaryYAxis: const NumericAxis(
+              labelFormat: '{value} \$',
+            ),
+            series: <LineSeries<LineChartData, int>>[
+              LineSeries<LineChartData, int>(
+                dataSource: lineChartData,
+                xValueMapper: (LineChartData data, _) => data.date.day,
+                yValueMapper: (LineChartData data, _) => data.amount,
+                markerSettings: const MarkerSettings(isVisible: true),
+                dataLabelSettings: const DataLabelSettings(
+                  isVisible: true,
+                ),
+                enableTooltip: true,
+              )
+            ],
+          );
+  }
+
   Widget _buildPieChart(List<PieChartData> pieChartData) {
     var toolTipBehavior = TooltipBehavior(enable: true);
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        pieChartData.isEmpty
-            ? const Center(
-                child: Text("Add data to see statistics"),
+    return pieChartData.isEmpty
+        ? const Center(
+            child: Text("Add data to see statistics"),
+          )
+        : SfCircularChart(
+            tooltipBehavior: toolTipBehavior,
+            legend: const Legend(
+              isVisible: true,
+              overflowMode: LegendItemOverflowMode.wrap,
+              // legendItemBuilder: (legendText, series, point, seriesIndex) {
+              //   return ListView.builder(
+              //     physics: const NeverScrollableScrollPhysics(),
+              //     itemCount: pieChartData.length,
+              //     itemBuilder: (context, index) {
+              //       return ListTile(
+              //         leading: Icon(categoryIcons[legendText]),
+              //       );
+              //     },
+              //   );
+              // },
+            ),
+            series: [
+              PieSeries<PieChartData, String>(
+                enableTooltip: true,
+                dataSource: pieChartData,
+                xValueMapper: (PieChartData data, _) => data.category,
+                yValueMapper: (PieChartData data, _) => data.amount,
+                dataLabelMapper: (PieChartData data, _) => data.category,
+                dataLabelSettings: const DataLabelSettings(
+                    isVisible: true,
+                    labelPosition: ChartDataLabelPosition.outside),
+                explode: true,
               )
-            : SfCircularChart(
-                tooltipBehavior: toolTipBehavior,
-                legend: const Legend(
-                    isVisible: true, overflowMode: LegendItemOverflowMode.wrap),
-                series: [
-                  PieSeries<PieChartData, String>(
-                    enableTooltip: true,
-                    dataSource: pieChartData,
-                    xValueMapper: (PieChartData data, _) => data.category,
-                    yValueMapper: (PieChartData data, _) => data.amount,
-                    dataLabelMapper: (PieChartData data, _) => data.category,
-                    dataLabelSettings: const DataLabelSettings(
-                        isVisible: true,
-                        labelPosition: ChartDataLabelPosition.outside),
-                    explode: true,
-                  )
-                ],
-              ),
-      ],
-    );
+            ],
+          );
   }
 
   @override
@@ -92,12 +126,24 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                       return const Center(
                         child: CircularProgressIndicator.adaptive(),
                       );
-                    } else if (state is StatisticsPieChartDataLoaded) {
+                    } else if (state is StatisticsDataLoaded) {
                       return Expanded(
                         child: TabBarView(
                           children: [
-                            _buildPieChart(state.incomeTransactionsRecords),
-                            _buildPieChart(state.expenseTransactionsRecords)
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _buildPieChart(state.pieChartIncome),
+                                _builLineChart(state.lineChartIncome),
+                              ],
+                            ),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                _buildPieChart(state.pieChartExpense),
+                                _builLineChart(state.lineChartExpense),
+                              ],
+                            )
                           ],
                         ),
                       );
