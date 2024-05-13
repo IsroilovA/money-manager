@@ -125,7 +125,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                           color: pieChartData[index].color,
                           child: Center(
                             child: Text(
-                              "${(pieChartData[index].amount / totalAmount).toStringAsFixed(1)} %",
+                              "${(pieChartData[index].amount / totalAmount * 100).toStringAsFixed(1)}%",
                               style: Theme.of(context)
                                   .textTheme
                                   .bodyMedium!
@@ -144,7 +144,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
                             Text(pieChartData[index].category)
                           ],
                         ),
-                        trailing: Text("${pieChartData[index].amount}"),
+                        trailing: Text(currencyFormatter
+                            .format(pieChartData[index].amount)),
                       );
                     },
                   ),
