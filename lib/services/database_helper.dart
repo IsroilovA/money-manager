@@ -231,7 +231,7 @@ class DatabaseHelper {
         .millisecondsSinceEpoch;
 
     List<Map<String, dynamic>> maps = await db.rawQuery(
-        'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ? GROUP BY STRFTIME("%Y-%m-%d", floor(date/1000), "unixepoch")',
+        'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ? GROUP BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch")',
         [recordType.name, thirtyDaysAgoTimeStamp]);
 
     return List.generate(
