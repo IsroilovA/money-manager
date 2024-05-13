@@ -6,8 +6,7 @@ import 'package:money_manager/home/widgets/income_expense_widget.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class BalanceCard extends StatefulWidget {
-  const BalanceCard({super.key, required this.accounts});
-  final List<Account> accounts;
+  const BalanceCard({super.key});
 
   @override
   State<BalanceCard> createState() => _BalanceCardState();

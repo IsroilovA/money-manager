@@ -35,6 +35,7 @@ class _TransactionFormState extends State<TransactionForm> {
       initialDate: _selectedDate,
       firstDate: firstDate,
       lastDate: now,
+      
     );
     setState(() {
       if (pickedDate != null) {

@@ -89,7 +89,7 @@ class _HomeScreenState extends State<HomeScreen> {
           primary: true,
           child: Column(
             children: [
-              BalanceCard(accounts: widget.accounts),
+              const BalanceCard(),
               const SizedBox(height: 20),
               Text(
                 "Top Spendings",
@@ -150,7 +150,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   } else if (state is TabsLoading) {
                     return buildTransactionsList([], true);
                   } else {
-                    return Text("error");
+                    return const Text("error");
                   }
                 },
               ),
