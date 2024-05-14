@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_manager/add_transaction/widgets/account_selector_button.dart';
+import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/category_selector_button.dart';
@@ -281,29 +282,5 @@ class _TransactionFormState extends State<TransactionForm> {
         ],
       ),
     );
-  }
-}
-
-class FormListTile extends StatelessWidget {
-  const FormListTile({
-    super.key,
-    required this.leadingText,
-    required this.titleWidget,
-  });
-
-  final String leadingText;
-  final Widget titleWidget;
-
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    return ListTile(
-        leadingAndTrailingTextStyle:
-            Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onBackground,
-                ),
-        leading: Text(leadingText),
-        minLeadingWidth: width / 5,
-        title: titleWidget);
   }
 }

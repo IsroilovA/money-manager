@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/database_helper.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
@@ -93,21 +94,25 @@ class _AddNewAccountState extends State<AddNewAccount> {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Name"),
-            minLeadingWidth: width / 5,
-            title: TextField(
+          FormListTile(
+            leadingText: "Name",
+            titleWidget: TextField(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               controller: _nameController,
               maxLines: 1,
               maxLength: 60,
             ),
           ),
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text('Amount'),
-            minLeadingWidth: width / 5,
-            title: TextField(
+          FormListTile(
+            leadingText: "Amount",
+            titleWidget: TextField(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               controller: _balanceController,
