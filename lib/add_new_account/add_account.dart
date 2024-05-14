@@ -3,8 +3,10 @@ import 'dart:io';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
 class AddNewAccount extends StatefulWidget {
@@ -72,7 +74,11 @@ class _AddNewAccountState extends State<AddNewAccount> {
     await DatabaseHelper.addAccount(newAccount);
 
     Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const TabsScreen()),
+      MaterialPageRoute(
+          builder: (context) => BlocProvider(
+                create: (context) => TabsCubit(),
+                child: const TabsScreen(),
+              )),
     );
   }
 

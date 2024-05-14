@@ -59,13 +59,20 @@ class _TabsScreenState extends State<TabsScreen> {
                 duration: Duration(seconds: 3),
               ),
             );
+          } else if (state is TabsNoAccounts) {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(
+                builder: (context) => const AddNewAccount(),
+              ),
+            );
           }
         },
         buildWhen: (previous, current) {
           if (current is TabsPageChanged ||
               current is TabsTransactionAdded ||
               current is TabsTransactionDeleted ||
-              current is TabsLoading) {
+              current is TabsLoading ||
+              current is TabsNoAccounts) {
             return false;
           }
           return true;
@@ -87,7 +94,7 @@ class _TabsScreenState extends State<TabsScreen> {
                 ),
                 const StatisticsScreen(),
                 const GoalsScreen(),
-                AccountsScreen(acocunts: state.accounts)
+                AccountsScreen(accounts: state.accounts)
               ],
             );
           } else if (state is TabsError) {
