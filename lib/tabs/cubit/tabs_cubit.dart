@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:money_manager/add_transaction/add_transaction_screen.dart';
@@ -24,6 +26,10 @@ class TabsCubit extends Cubit<TabsState> {
   //     emit(TabsError(e.toString()));
   //   }
   // }
+
+  Future<double> getAccountBalance(String id) async {
+    return (await DatabaseHelper.getAccountById(id)).balance;
+  }
 
   void loadAccounts() async {
     try {

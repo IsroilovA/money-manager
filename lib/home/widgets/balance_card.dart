@@ -15,7 +15,6 @@ class BalanceCard extends StatefulWidget {
 class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<HomeCubit>(context).getTotalBalance();
     return Card(
       margin: const EdgeInsets.all(3),
       shape: RoundedRectangleBorder(
