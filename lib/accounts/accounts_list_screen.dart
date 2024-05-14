@@ -14,6 +14,8 @@ class AccountsScreen extends StatelessWidget {
       child: GridView.builder(
         itemCount: accounts.length,
         gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          mainAxisSpacing: 4,
+          crossAxisSpacing: 4,
           crossAxisCount: 2,
           childAspectRatio: 2,
         ),

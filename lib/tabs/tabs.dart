@@ -123,7 +123,7 @@ class _TabsScreenState extends State<TabsScreen> {
         onTap: BlocProvider.of<TabsCubit>(context).selectPage,
         currentIndex: selectedTab,
         selectedItemColor: Theme.of(context).colorScheme.primary,
-        unselectedItemColor: Colors.black,
+        unselectedItemColor: Theme.of(context).colorScheme.onBackground,
         showUnselectedLabels: true,
         type: BottomNavigationBarType.fixed,
         items: const [

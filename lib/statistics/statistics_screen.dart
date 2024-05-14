@@ -47,7 +47,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
         : Card(
             elevation: 1,
             child: SfCartesianChart(
-              margin: const EdgeInsets.all(10),
+              margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 18),
               tooltipBehavior: toolTipBehavior,
               primaryYAxis: const NumericAxis(
                 labelFormat: '{value} \$',

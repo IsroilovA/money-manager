@@ -19,9 +19,11 @@ class _DateSelectorButtonState extends State<DateSelectorButton> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(width: 1.0),
+          bottom: BorderSide(
+              width: 1.0,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
         ),
       ),
       child: TextButton(

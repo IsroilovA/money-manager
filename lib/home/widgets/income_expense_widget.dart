@@ -40,8 +40,8 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                 Text(
                   widget.isIncome ? "Income" : "Expense",
                   style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.onBackground),
                 ),
                 BlocBuilder<TabsCubit, TabsState>(
                   buildWhen: (previous, current) {
@@ -67,15 +67,15 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                             ? currencyFormatter.format(income)
                             : currencyFormatter.format(expense),
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onBackground),
                       );
                     } else {
                       return Text(
                         "error",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              fontWeight: FontWeight.bold,
-                            ),
+                            fontWeight: FontWeight.bold,
+                            color: Theme.of(context).colorScheme.onBackground),
                       );
                     }
                   },

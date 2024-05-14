@@ -16,7 +16,7 @@ class CategoryItem extends StatelessWidget {
       onTap: onCLick,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.black26,
+          color: Theme.of(context).colorScheme.surfaceVariant,
           border: Border.all(
             width: 0.3,
           ),
@@ -27,13 +27,16 @@ class CategoryItem extends StatelessWidget {
             Icon(
               icon,
               size: 25,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
             ),
             const SizedBox(
               width: 5,
             ),
             Text(
               category,
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                    color: Theme.of(context).colorScheme.onSurfaceVariant,
+                  ),
             )
           ],
         ),

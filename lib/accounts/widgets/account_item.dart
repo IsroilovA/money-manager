@@ -13,7 +13,7 @@ class AccountItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.primaryContainer,
       elevation: 2,
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -21,7 +21,8 @@ class AccountItem extends StatelessWidget {
         children: [
           Text(
             account.name.toUpperCase(),
-            style: Theme.of(context).textTheme.titleMedium,
+            style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                color: Theme.of(context).colorScheme.onPrimaryContainer),
           ),
           BlocBuilder<TabsCubit, TabsState>(
             buildWhen: (previous, current) {

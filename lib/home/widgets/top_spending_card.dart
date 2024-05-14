@@ -25,8 +25,8 @@ class TopSpendingCard extends StatelessWidget {
               Text(
                 category,
                 style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                      fontSize: 15,
-                    ),
+                    fontSize: 15,
+                    color: Theme.of(context).colorScheme.onSurfaceVariant),
               )
             ],
           ),

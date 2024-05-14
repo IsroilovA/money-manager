@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:money_manager/add_transaction/widgets/category_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 
-
 class CategorySelectorButton extends StatefulWidget {
   const CategorySelectorButton({
     super.key,
@@ -41,7 +40,8 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
                   children: [
                     Text(
                       "Category",
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground),
                     ),
                     IconButton(
                         onPressed: () {
@@ -102,9 +102,11 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
       content = Text(_incomeCategory!.name);
     }
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(width: 1.0),
+          bottom: BorderSide(
+              width: 1.0,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
         ),
       ),
       child: TextButton(

@@ -4,11 +4,20 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
-final theme = ThemeData(
+final lightTheme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
     seedColor: const Color.fromARGB(255, 86, 38, 190),
     brightness: Brightness.light,
+  ),
+  textTheme: GoogleFonts.poppinsTextTheme(),
+);
+
+final darkTheme = ThemeData(
+  useMaterial3: true,
+  colorScheme: ColorScheme.fromSeed(
+    seedColor: const Color.fromARGB(230, 98, 14, 14),
+    brightness: Brightness.dark,
   ),
   textTheme: GoogleFonts.poppinsTextTheme(),
 );
@@ -23,7 +32,8 @@ class App extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      theme: theme,
+      theme: lightTheme,
+      darkTheme: darkTheme,
       home: BlocProvider(
         create: (context) => TabsCubit(),
         child: const TabsScreen(),

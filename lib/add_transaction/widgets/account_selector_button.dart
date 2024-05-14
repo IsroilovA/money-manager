@@ -37,7 +37,8 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                   children: [
                     Text(
                       "Account",
-                      style: Theme.of(context).textTheme.titleMedium,
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground),
                     ),
                     IconButton(
                         onPressed: () {
@@ -74,7 +75,9 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                               },
                               child: Container(
                                 decoration: BoxDecoration(
-                                  color: Colors.black26,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .surfaceVariant,
                                   border: Border.all(
                                     width: 0.3,
                                   ),
@@ -82,7 +85,13 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                                 child: Center(
                                     child: Text(
                                   account.name,
-                                  style: Theme.of(context).textTheme.bodySmall,
+                                  style: Theme.of(context)
+                                      .textTheme
+                                      .bodySmall!
+                                      .copyWith(
+                                          color: Theme.of(context)
+                                              .colorScheme
+                                              .onSurfaceVariant),
                                 )),
                               ),
                             )
@@ -106,9 +115,11 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
       content = Text(_account!.name);
     }
     return Container(
-      decoration: const BoxDecoration(
+      decoration: BoxDecoration(
         border: Border(
-          bottom: BorderSide(width: 1.0),
+          bottom: BorderSide(
+              width: 1.0,
+              color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
         ),
       ),
       child: TextButton(

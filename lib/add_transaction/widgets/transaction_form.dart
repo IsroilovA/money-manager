@@ -35,7 +35,6 @@ class _TransactionFormState extends State<TransactionForm> {
       initialDate: _selectedDate,
       firstDate: firstDate,
       lastDate: now,
-      
     );
     setState(() {
       if (pickedDate != null) {
@@ -92,7 +91,10 @@ class _TransactionFormState extends State<TransactionForm> {
 
     if (widget.recordType == RecordType.transfer) {
       if (_account == null || _transferAccount2Id == null) {
-        _showDialog("Select both account");
+        _showDialog("Select both accounts");
+        return;
+      } else if (_account!.id == _transferAccount2Id!.id) {
+        _showDialog("Select two different accounts");
         return;
       }
       if (noteNotEntered) {
@@ -167,20 +169,20 @@ class _TransactionFormState extends State<TransactionForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Date"),
-            title: DateSelectorButton(
+          FormListTile(
+            leadingText: "Date",
+            titleWidget: DateSelectorButton(
               onClick: _presentDatePicker,
               selectedDate: _selectedDate,
             ),
-            minLeadingWidth: width / 5,
           ),
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text('Amount'),
-            minLeadingWidth: width / 5,
-            title: TextField(
+          FormListTile(
+            leadingText: "Amount",
+            titleWidget: TextField(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               controller: _amountController,
@@ -196,36 +198,28 @@ class _TransactionFormState extends State<TransactionForm> {
               ),
             ),
           ),
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: Text(widget.recordType == RecordType.transfer
+          FormListTile(
+            leadingText: widget.recordType == RecordType.transfer
                 ? "Account Sender"
-                : "Account"),
-            minLeadingWidth: width / 5,
-            title: AccountSelectorButton(
+                : "Account",
+            titleWidget: AccountSelectorButton(
               onAccountChanged: (value) {
                 _account = value;
               },
             ),
           ),
           widget.recordType == RecordType.transfer
-              ? ListTile(
-                  leadingAndTrailingTextStyle:
-                      Theme.of(context).textTheme.bodyLarge,
-                  leading: const Text("Account Receiver"),
-                  minLeadingWidth: width / 5,
-                  title: AccountSelectorButton(
+              ? FormListTile(
+                  leadingText: "Account Receiver",
+                  titleWidget: AccountSelectorButton(
                     onAccountChanged: (value) {
                       _transferAccount2Id = value;
                     },
                   ),
                 )
-              : ListTile(
-                  leadingAndTrailingTextStyle:
-                      Theme.of(context).textTheme.bodyLarge,
-                  leading: const Text("Category"),
-                  minLeadingWidth: width / 5,
-                  title: CategorySelectorButton(
+              : FormListTile(
+                  leadingText: "Category",
+                  titleWidget: CategorySelectorButton(
                     recordType: widget.recordType,
                     onExpenseChanged: (value) {
                       _expenseCategory = value;
@@ -235,11 +229,13 @@ class _TransactionFormState extends State<TransactionForm> {
                     },
                   ),
                 ),
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Note"),
-            minLeadingWidth: width / 5,
-            title: TextField(
+          FormListTile(
+            leadingText: "Note",
+            titleWidget: TextField(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               controller: _noteController,
               maxLines: 1,
               maxLength: 60,
@@ -270,9 +266,10 @@ class _TransactionFormState extends State<TransactionForm> {
                 },
                 style: TextButton.styleFrom(
                   textStyle: Theme.of(context).textTheme.titleMedium,
-                  shape: const RoundedRectangleBorder(
-                    side: BorderSide(width: 1, color: Colors.deepPurple),
-                    borderRadius: BorderRadius.all(
+                  shape: RoundedRectangleBorder(
+                    side: BorderSide(
+                        width: 1, color: Theme.of(context).colorScheme.primary),
+                    borderRadius: const BorderRadius.all(
                       Radius.circular(10),
                     ),
                   ),
@@ -284,5 +281,29 @@ class _TransactionFormState extends State<TransactionForm> {
         ],
       ),
     );
+  }
+}
+
+class FormListTile extends StatelessWidget {
+  const FormListTile({
+    super.key,
+    required this.leadingText,
+    required this.titleWidget,
+  });
+
+  final String leadingText;
+  final Widget titleWidget;
+
+  @override
+  Widget build(BuildContext context) {
+    var width = MediaQuery.of(context).size.width;
+    return ListTile(
+        leadingAndTrailingTextStyle:
+            Theme.of(context).textTheme.bodyLarge!.copyWith(
+                  color: Theme.of(context).colorScheme.onBackground,
+                ),
+        leading: Text(leadingText),
+        minLeadingWidth: width / 5,
+        title: titleWidget);
   }
 }
