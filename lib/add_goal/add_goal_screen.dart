@@ -1,10 +1,8 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/goal.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 
 class AddGoalScreen extends StatefulWidget {
   const AddGoalScreen({super.key});
@@ -19,42 +17,6 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
   final _nameController = TextEditingController();
   final _currentBalanceController = TextEditingController();
   final _goalBalanceController = TextEditingController();
-  void _showDialog(String text) {
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-        context: context,
-        builder: (ctx) => CupertinoAlertDialog(
-          title: const Text("Invalid Input!"),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Invalid Input!"),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   void _saveGoal() async {
     final enteredCurrentBalance =
         double.tryParse(_currentBalanceController.text);
@@ -66,10 +28,10 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     final nameEntered = _nameController.text.trim().isEmpty;
     Goal newGoal;
     if (currentBalanceIsInvalid || enteredBalanceIsInvalid) {
-      _showDialog("enter a valid amount");
+      showAlertDialog(context, "enter a valid amount");
       return;
     } else if (nameEntered) {
-      _showDialog("Enter the name of the goal");
+      showAlertDialog(context, "Enter the name of the goal");
       return;
     }
     newGoal = Goal(

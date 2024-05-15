@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
@@ -74,9 +75,53 @@ class GoalDetails extends StatelessWidget {
           ),
           TextButton(
             onPressed: () {
-              // showDialog(context: context, builder:(context) {
-              //   retr
-              // },);
+              final currentBalanceController = TextEditingController();
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return SimpleDialog(
+                    contentPadding: const EdgeInsets.all(15),
+                    title: Text(
+                      "Add saved amount",
+                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color:
+                              Theme.of(context).colorScheme.onSurfaceVariant),
+                    ),
+                    children: [
+                      TextField(
+                        style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                            color: Theme.of(context).colorScheme.primary),
+                        keyboardType: const TextInputType.numberWithOptions(
+                            decimal: true),
+                        controller: currentBalanceController,
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                            RegExp(r'^\d+\.?\d{0,2}'),
+                          ),
+                        ],
+                        maxLines: 1,
+                        maxLength: 20,
+                        decoration: const InputDecoration(
+                          prefixText: '\$ ',
+                        ),
+                      ),
+                      Row(mainAxisAlignment: MainAxisAlignment.end, children: [
+                        TextButton(
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: const Text("Cancel"),
+                        ),
+                        const SizedBox(width: 15),
+                        TextButton(
+                          onPressed: () {},
+                          child: const Text("Insert"),
+                        ),
+                      ])
+                    ],
+                  );
+                },
+              );
             },
             style: TextButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,
