@@ -1,4 +1,5 @@
 import 'package:money_manager/data/models/account.dart';
+import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,13 +13,38 @@ class DatabaseHelper {
     return openDatabase(
       join(await getDatabasesPath(), _dbName),
       onCreate: (db, version) async {
-        await db.execute(
+        var batch = db.batch();
+        batch.execute(
             "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
-        await db.execute(
+        batch.execute(
             "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, transferAccount2Id TEXT, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
+        batch.execute(
+            "CREATE TABLE goals(id TEXT PRIMARY KEY, name TEXT, currentBalance REAL, goalBalance REAL)");
+        await batch.commit();
       },
       version: _version,
     );
+  }
+
+  static Future<List<Goal>?> getAllGoals() async {
+    final db = await _openDB();
+
+    final List<Map<String, dynamic>> maps = await db.query("goals");
+
+    if (maps.isEmpty) {
+      return null;
+    }
+
+    return List.generate(
+      maps.length,
+      (index) => Goal.fromJson(maps[index]),
+    );
+  }
+
+  static Future<void> addGoal(Account account) async {
+    final db = await _openDB();
+
+    await db.insert("goals", account.toJson());
   }
 
   static Future<List<Account>?> getAllAccounts() async {
