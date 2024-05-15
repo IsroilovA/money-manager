@@ -50,7 +50,7 @@ class DatabaseHelper {
     return Goal.fromJson(maps.first);
   }
 
-  static Future<void> addSavedAmount(Goal goal, double addedBalance) async {
+  static Future<void> addGoalSavedAmount(Goal goal, double addedBalance) async {
     final db = await _openDB();
 
     var newCurrentBalance = goal.currentBalance + addedBalance;
@@ -63,6 +63,12 @@ class DatabaseHelper {
     final db = await _openDB();
 
     await db.insert("goals", goal.toJson());
+  }
+
+  static Future<void> deleteGoal(Goal goal) async {
+    final db = await _openDB();
+
+    await db.delete("goals", where: 'id = ?', whereArgs: [goal.id]);
   }
 
   static Future<List<Account>?> getAllAccounts() async {

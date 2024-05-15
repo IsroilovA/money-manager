@@ -24,7 +24,7 @@ class GoalCubit extends Cubit<GoalState> {
 
   void addAmount(Goal goal, double addedBalance) async {
     try {
-      await DatabaseHelper.addSavedAmount(goal, addedBalance);
+      await DatabaseHelper.addGoalSavedAmount(goal, addedBalance);
       final updatedGoal = await DatabaseHelper.getGoalById(goal.id);
       emit(GoalBalanceEdited(updatedGoal));
     } catch (e) {
@@ -32,6 +32,13 @@ class GoalCubit extends Cubit<GoalState> {
     }
   }
 
+  void deleteGoal(Goal goal) async {
+    try {
+      await DatabaseHelper.deleteGoal(goal);
+    } catch (e) {
+      emit(GoalError(e.toString()));
+    }
+  }
   void addGoal(BuildContext context) async {
     final newGoal = await Navigator.of(context).push<Goal>(
       MaterialPageRoute(

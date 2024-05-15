@@ -146,6 +146,15 @@ class GoalDetails extends StatelessWidget {
       appBar: AppBar(
         title: const Text("Goal details"),
         centerTitle: true,
+        actions: [
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<GoalCubit>(context).deleteGoal(goal);
+              Navigator.pop(context);
+            },
+            icon: const Icon(Icons.delete),
+          ),
+        ],
       ),
       body: BlocBuilder<GoalCubit, GoalState>(
         buildWhen: (previous, current) {
