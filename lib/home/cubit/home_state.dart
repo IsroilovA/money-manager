@@ -7,7 +7,7 @@ final class HomeTransactionsLoading extends HomeState {}
 
 final class HomeNoTransactions extends HomeState {}
 
-class HomeError extends HomeState {
+final class HomeError extends HomeState {
   final String message;
 
   HomeError(this.message);

@@ -6,7 +6,7 @@ part 'transaction_record.g.dart';
 
 const uuid = Uuid();
 
-enum ExpenseCategory { food, travel, shopping, leisure }
+enum ExpenseCategory { food, travel, shopping, leisure, savings }
 
 enum IncomeCategory {
   salary,
@@ -23,6 +23,7 @@ enum RecordType {
 
 const categoryColors = {
   ExpenseCategory.food: Colors.red,
+  ExpenseCategory.savings: Colors.brown,
   ExpenseCategory.leisure: Colors.blue,
   ExpenseCategory.shopping: Colors.green,
   ExpenseCategory.travel: Colors.orange,
@@ -37,6 +38,7 @@ const categoryIcons = {
   ExpenseCategory.travel: Icons.flight_takeoff,
   ExpenseCategory.leisure: Icons.movie,
   ExpenseCategory.shopping: Icons.shopping_cart,
+  ExpenseCategory.savings: Icons.savings,
   IncomeCategory.salary: Icons.work,
   IncomeCategory.gift: Icons.card_giftcard,
   IncomeCategory.investment: Icons.auto_graph,

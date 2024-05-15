@@ -40,26 +40,29 @@ class GoalsScreen extends StatelessWidget {
                 },
               );
             } else if (state is NoGoals) {
-              return Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    "No goals yet",
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontSize: 20,
-                          color: Theme.of(context).colorScheme.onBackground,
-                        ),
-                  ),
-                  IconButton(
-                    onPressed: () {
-                      context.read<GoalCubit>().addGoal(context);
-                    },
-                    icon: Icon(
-                      Icons.add,
-                      color: Theme.of(context).colorScheme.onBackground,
+              return Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      "No goals yet",
+                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                            fontSize: 20,
+                            color: Theme.of(context).colorScheme.onBackground,
+                          ),
                     ),
-                  ),
-                ],
+                    IconButton(
+                      onPressed: () {
+                        context.read<GoalCubit>().addGoal(context);
+                      },
+                      icon: Icon(
+                        Icons.add,
+                        color: Theme.of(context).colorScheme.onBackground,
+                      ),
+                    ),
+                  ],
+                ),
               );
             } else if (state is GoalInitial) {
               BlocProvider.of<GoalCubit>(context).loadGoals();

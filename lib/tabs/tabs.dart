@@ -29,17 +29,6 @@ class _TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(pageTitle),
         centerTitle: true,
-        actions: [
-          if (pageTitle == "Accounts")
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const AddNewAccountScreen()),
-                  );
-                },
-                icon: const Icon(Icons.add))
-        ],
       ),
       body: BlocConsumer<TabsCubit, TabsState>(
         listener: (context, state) {

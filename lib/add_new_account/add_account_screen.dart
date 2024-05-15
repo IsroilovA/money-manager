@@ -33,16 +33,20 @@ class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
       return;
     }
     newAccount = Account(balance: enteredBalance, name: _nameController.text);
+    final hasPagePushed = Navigator.of(context).canPop();
 
-    await DatabaseHelper.addAccount(newAccount);
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-          builder: (context) => BlocProvider(
-                create: (context) => TabsCubit(),
-                child: const TabsScreen(),
-              )),
-    );
+    if (hasPagePushed) {
+      Navigator.of(context).pop(newAccount);
+    } else {
+      await DatabaseHelper.addAccount(newAccount);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                  create: (context) => TabsCubit(),
+                  child: const TabsScreen(),
+                )),
+      );
+    }
   }
 
   @override

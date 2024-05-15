@@ -16,6 +16,7 @@ final class TabsAccountsLoaded extends TabsState {
   TabsAccountsLoaded(this.accounts);
 }
 
+
 final class TabsNoAccounts extends TabsState {
   TabsNoAccounts();
 }

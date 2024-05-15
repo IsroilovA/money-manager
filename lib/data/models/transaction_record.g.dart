@@ -47,6 +47,7 @@ const _$ExpenseCategoryEnumMap = {
   ExpenseCategory.travel: 'travel',
   ExpenseCategory.shopping: 'shopping',
   ExpenseCategory.leisure: 'leisure',
+  ExpenseCategory.savings: 'savings'
 };
 
 const _$IncomeCategoryEnumMap = {
