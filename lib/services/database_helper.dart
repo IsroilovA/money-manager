@@ -41,10 +41,10 @@ class DatabaseHelper {
     );
   }
 
-  static Future<void> addGoal(Account account) async {
+  static Future<void> addGoal(Goal goal) async {
     final db = await _openDB();
 
-    await db.insert("goals", account.toJson());
+    await db.insert("goals", goal.toJson());
   }
 
   static Future<List<Account>?> getAllAccounts() async {

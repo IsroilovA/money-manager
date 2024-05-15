@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
+import 'package:money_manager/add_goal/add_goal_screen.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/services/database_helper.dart';
 
@@ -16,6 +18,23 @@ class GoalCubit extends Cubit<GoalState> {
       } else {
         emit(NoGoals());
       }
+    } catch (e) {
+      emit(GoalError(e.toString()));
+    }
+  }
+
+  void addGoal(BuildContext context) async {
+    final newGoal = await Navigator.of(context).push<Goal>(
+      MaterialPageRoute(
+        builder: (ctx) => const AddGoalScreen(),
+      ),
+    );
+    if (newGoal == null) {
+      return;
+    }
+    try {
+      await DatabaseHelper.addGoal(newGoal);
+      emit(GoalInitial());
     } catch (e) {
       emit(GoalError(e.toString()));
     }
