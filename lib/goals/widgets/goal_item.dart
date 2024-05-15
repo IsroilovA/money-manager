@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/goal.dart';
+import 'package:money_manager/goals/cubit/goal_cubit.dart';
 import 'package:money_manager/goals/widgets/goal_details.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
 
@@ -14,7 +16,11 @@ class GoalItem extends StatelessWidget {
       child: ListTile(
         onTap: () {
           Navigator.of(context).push(
-            MaterialPageRoute(builder: (context) => GoalDetails(goal: goal)),
+            MaterialPageRoute(
+                builder: (context) => BlocProvider(
+                      create: (context) => GoalCubit(),
+                      child: GoalDetails(goal: goal),
+                    )),
           );
         },
         titleTextStyle: Theme.of(context)
@@ -33,7 +39,8 @@ class GoalItem extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(currencyFormatter.format(goal.currentBalance)),
-                  Text("${(goal.currentBalance / goal.goalBalance) * 100}%"),
+                  Text(
+                      "${(goal.currentBalance / goal.goalBalance * 100).toStringAsFixed(1)}%"),
                 ],
               ),
             ),

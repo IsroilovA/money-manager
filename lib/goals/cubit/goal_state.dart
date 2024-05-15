@@ -14,6 +14,8 @@ final class GoalsLoaded extends GoalState {
   GoalsLoaded(this.goals);
 }
 
+final class GoalAmountEdited extends GoalState {}
+
 final class GoalError extends GoalState {
   final String message;
   GoalError(this.message);

@@ -13,6 +13,12 @@ class GoalsScreen extends StatelessWidget {
       child: BlocProvider(
         create: (context) => GoalCubit(),
         child: BlocBuilder<GoalCubit, GoalState>(
+          buildWhen: (previous, current) {
+            if (current is GoalAmountEdited) {
+              return false;
+            }
+            return true;
+          },
           builder: (context, state) {
             if (state is GoalsLoaded) {
               return ListView.builder(

@@ -41,6 +41,15 @@ class DatabaseHelper {
     );
   }
 
+  static Future<void> addSavedAmount(Goal goal, double addedBalance) async {
+    final db = await _openDB();
+
+    var newCurrentBalance = goal.currentBalance + addedBalance;
+
+    await db.update("goals", {'currentBalance': newCurrentBalance},
+        where: 'id = ?', whereArgs: [goal.id]);
+  }
+
   static Future<void> addGoal(Goal goal) async {
     final db = await _openDB();
 
@@ -110,7 +119,7 @@ class DatabaseHelper {
       TransactionRecord newRecord) async {
     final db = await _openDB();
     final account = await getAccountById(newRecord.accountId);
-    final newBalance;
+    double newBalance;
     if (newRecord.recordType == RecordType.income) {
       newBalance = account.balance + newRecord.amount;
     } else {
@@ -139,7 +148,7 @@ class DatabaseHelper {
       await batch.commit();
     } else {
       final account = await getAccountById(deletedRecord.accountId);
-      final newBalance;
+      double newBalance;
       if (deletedRecord.recordType == RecordType.income) {
         newBalance = account.balance - deletedRecord.amount;
       } else {

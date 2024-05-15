@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/goal.dart';
+import 'package:money_manager/goals/cubit/goal_cubit.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class GoalDetails extends StatelessWidget {
   const GoalDetails({super.key, required this.goal});
-
   final Goal goal;
-
   @override
   Widget build(BuildContext context) {
     var width = MediaQuery.of(context).size.width;
@@ -36,7 +37,7 @@ class GoalDetails extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "${goal.currentBalance / goal.goalBalance * 100} %",
+                          "${(goal.currentBalance / goal.goalBalance * 100).toStringAsFixed(1)} %",
                           style: Theme.of(context)
                               .textTheme
                               .titleLarge!
@@ -74,11 +75,12 @@ class GoalDetails extends StatelessWidget {
             height: 50,
           ),
           TextButton(
-            onPressed: () {
-              final currentBalanceController = TextEditingController();
-              showDialog(
+            onPressed: () async {
+              double addedAmount = 0.0;
+              await showDialog(
                 context: context,
                 builder: (context) {
+                  final addedAmountController = TextEditingController();
                   return SimpleDialog(
                     contentPadding: const EdgeInsets.all(15),
                     title: Text(
@@ -93,7 +95,7 @@ class GoalDetails extends StatelessWidget {
                             color: Theme.of(context).colorScheme.primary),
                         keyboardType: const TextInputType.numberWithOptions(
                             decimal: true),
-                        controller: currentBalanceController,
+                        controller: addedAmountController,
                         inputFormatters: [
                           FilteringTextInputFormatter.allow(
                             RegExp(r'^\d+\.?\d{0,2}'),
@@ -114,7 +116,19 @@ class GoalDetails extends StatelessWidget {
                         ),
                         const SizedBox(width: 15),
                         TextButton(
-                          onPressed: () {},
+                          onPressed: () {
+                            final enteredAddedAmount =
+                                double.tryParse(addedAmountController.text);
+                            final addedAmountIsInvalid =
+                                enteredAddedAmount == null ||
+                                    enteredAddedAmount <= 0;
+                            if (addedAmountIsInvalid) {
+                              showAlertDialog(context, "enter a valid amount");
+                              return;
+                            }
+                            addedAmount = enteredAddedAmount;
+                            Navigator.pop(context);
+                          },
                           child: const Text("Insert"),
                         ),
                       ])
@@ -122,6 +136,10 @@ class GoalDetails extends StatelessWidget {
                   );
                 },
               );
+              if (addedAmount == 0) {
+                return;
+              }
+              BlocProvider.of<GoalCubit>(context).addAmount(goal, addedAmount);
             },
             style: TextButton.styleFrom(
               backgroundColor: Theme.of(context).colorScheme.primary,

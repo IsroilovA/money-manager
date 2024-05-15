@@ -1,6 +1,5 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:money_manager/add_goal/add_goal_screen.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/services/database_helper.dart';
@@ -18,6 +17,15 @@ class GoalCubit extends Cubit<GoalState> {
       } else {
         emit(NoGoals());
       }
+    } catch (e) {
+      emit(GoalError(e.toString()));
+    }
+  }
+
+  void addAmount(Goal goal, double addedBalance) async {
+    try {
+      await DatabaseHelper.addSavedAmount(goal, addedBalance);
+      emit(GoalInitial());
     } catch (e) {
       emit(GoalError(e.toString()));
     }
