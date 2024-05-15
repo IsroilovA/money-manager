@@ -27,8 +27,8 @@ class TransactionsListScreen extends StatelessWidget {
               ? Center(
                   child: Text(
                     "No records yet",
-                    style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          fontSize: 20,
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                          color: Theme.of(context).colorScheme.onBackground,
                         ),
                   ),
                 )

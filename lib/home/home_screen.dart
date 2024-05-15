@@ -59,6 +59,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 "No records yet",
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                       fontSize: 20,
+                      color: Theme.of(context).colorScheme.onBackground,
                     ),
               ),
             ),

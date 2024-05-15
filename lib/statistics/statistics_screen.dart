@@ -41,8 +41,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       },
     );
     return lineChartData.isEmpty
-        ? const Center(
-            child: Text("Add data to see statistics"),
+        ? Center(
+            child: Text(
+              "Add data to see line chart",
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+            ),
           )
         : Card(
             elevation: 1,
@@ -71,8 +76,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildPieChart(List<PieChartData> pieChartData) {
     var toolTipBehavior = TooltipBehavior(enable: true);
     return pieChartData.isEmpty
-        ? const Center(
-            child: Text("Add data to see statistics"),
+        ? Center(
+            child: Text(
+              "Add data to see pie chart",
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+            ),
           )
         : Card(
             elevation: 1,
