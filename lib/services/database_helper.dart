@@ -65,6 +65,14 @@ class DatabaseHelper {
     await db.insert("goals", goal.toJson());
   }
 
+  static Future<void> editGoal(Goal goal) async {
+    final db = await _openDB();
+    print(goal.goalBalance);
+
+    await db
+        .update("goals", goal.toJson(), where: 'id = ?', whereArgs: [goal.id]);
+  }
+
   static Future<void> deleteGoal(Goal goal) async {
     final db = await _openDB();
 

@@ -5,8 +5,9 @@ import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
 
 class AddGoalScreen extends StatefulWidget {
-  const AddGoalScreen({super.key});
+  const AddGoalScreen({super.key, this.goal});
 
+  final Goal? goal;
   @override
   State<AddGoalScreen> createState() {
     return _AddGoalScreenState();
@@ -34,12 +35,31 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
       showAlertDialog(context, "Enter the name of the goal");
       return;
     }
-    newGoal = Goal(
+    if (widget.goal != null) {
+      newGoal = Goal(
+        id: widget.goal!.id,
+        name: _nameController.text,
         currentBalance: enteredCurrentBalance,
         goalBalance: enteredGoalBalance,
-        name: _nameController.text);
+      );
+    } else {
+      newGoal = Goal(
+          currentBalance: enteredCurrentBalance,
+          goalBalance: enteredGoalBalance,
+          name: _nameController.text);
+    }
 
     Navigator.of(context).pop(newGoal);
+  }
+
+  @override
+  void initState() {
+    if (widget.goal != null) {
+      _nameController.text = widget.goal!.name;
+      _currentBalanceController.text = widget.goal!.currentBalance.toString();
+      _goalBalanceController.text = widget.goal!.goalBalance.toString();
+    }
+    super.initState();
   }
 
   @override

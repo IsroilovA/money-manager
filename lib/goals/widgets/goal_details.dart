@@ -33,6 +33,7 @@ class GoalDetails extends StatelessWidget {
                         "${(goal.currentBalance / goal.goalBalance * 100).toStringAsFixed(1)} %",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
                               color: Theme.of(context).colorScheme.primary,
+                              fontSize: 60,
                             ),
                       ),
                       const SizedBox(
@@ -89,6 +90,7 @@ class GoalDetails extends StatelessWidget {
                       maxLines: 1,
                       maxLength: 20,
                       decoration: const InputDecoration(
+                        label: Text("Add amount"),
                         prefixText: '\$ ',
                       ),
                     ),
@@ -154,17 +156,23 @@ class GoalDetails extends StatelessWidget {
             },
             icon: const Icon(Icons.delete),
           ),
+          IconButton(
+            onPressed: () {
+              BlocProvider.of<GoalCubit>(context).editGoal(context, goal);
+            },
+            icon: const Icon(Icons.edit),
+          ),
         ],
       ),
       body: BlocBuilder<GoalCubit, GoalState>(
         buildWhen: (previous, current) {
-          if (current is GoalBalanceEdited) {
+          if (current is GoalEdited) {
             return true;
           }
           return false;
         },
         builder: (context, state) {
-          if (state is GoalBalanceEdited) {
+          if (state is GoalEdited) {
             return buildDetailsScreen(state.updatedGoal);
           } else {
             return buildDetailsScreen(goal);
