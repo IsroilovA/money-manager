@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/services/helper_fucntion.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class RecordItem extends StatelessWidget {
@@ -37,8 +38,8 @@ class RecordItem extends StatelessWidget {
                         "${accounts.firstWhere((account) => account.id == transactionRecord.accountId).name} -> ${accounts.firstWhere((account) => account.id == transactionRecord.transferAccount2Id).name}"),
                     subtitle: transactionRecord.note != null
                         ? Text(
-                            "${transactionRecord.note!} | ${formatter.format(transactionRecord.date)}")
-                        : Text(formatter.format(transactionRecord.date)),
+                            "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
+                        : Text(transactionRecord.formattedDate),
                     trailing: Text(
                       transactionRecord.formattedAmount,
                       style: Theme.of(context).textTheme.bodySmall!.copyWith(
@@ -53,13 +54,12 @@ class RecordItem extends StatelessWidget {
                             : categoryIcons[transactionRecord.expenseCategory]),
                     title: Text(transactionRecord.recordType ==
                             RecordType.income
-                        ? transactionRecord.incomeCategory!.name.toUpperCase()
-                        : transactionRecord.expenseCategory!.name
-                            .toUpperCase()),
+                        ? transactionRecord.incomeCategory!.name.capitalize()
+                        : transactionRecord.expenseCategory!.name.capitalize()),
                     subtitle: transactionRecord.note != null
                         ? Text(
-                            "${transactionRecord.note!} | ${formatter.format(transactionRecord.date)}")
-                        : Text(formatter.format(transactionRecord.date)),
+                            "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
+                        : Text(transactionRecord.formattedDate),
                     trailing: Text(
                       transactionRecord.recordType == RecordType.income
                           ? '+ ${transactionRecord.formattedAmount}'

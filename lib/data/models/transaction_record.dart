@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:money_manager/services/helper_fucntion.dart';
 import 'package:uuid/uuid.dart';
 part 'transaction_record.g.dart';
 
 const uuid = Uuid();
-
-final formatter = DateFormat.yMd();
-final currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
 
 enum ExpenseCategory { food, travel, shopping, leisure }
 
@@ -71,7 +68,7 @@ class TransactionRecord {
   final IncomeCategory? incomeCategory;
 
   String get formattedDate {
-    return formatter.format(date);
+    return dateFormatter.format(date);
   }
 
   String get formattedAmount {

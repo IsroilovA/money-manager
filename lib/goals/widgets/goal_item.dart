@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/goal.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/services/helper_fucntion.dart';
 
 class GoalItem extends StatelessWidget {
   const GoalItem({super.key, required this.goal});
@@ -11,7 +11,7 @@ class GoalItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        title: Text(goal.name),
+        title: Text(goal.name.capitalize()),
         subtitle: Column(
           children: [
             Row(
