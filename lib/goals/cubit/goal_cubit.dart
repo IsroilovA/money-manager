@@ -25,7 +25,8 @@ class GoalCubit extends Cubit<GoalState> {
   void addAmount(Goal goal, double addedBalance) async {
     try {
       await DatabaseHelper.addSavedAmount(goal, addedBalance);
-      emit(GoalInitial());
+      final updatedGoal = await DatabaseHelper.getGoalById(goal.id);
+      emit(GoalBalanceEdited(updatedGoal));
     } catch (e) {
       emit(GoalError(e.toString()));
     }

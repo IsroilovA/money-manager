@@ -12,11 +12,13 @@ class GoalsScreen extends StatelessWidget {
       padding: const EdgeInsets.all(12),
       child: BlocProvider(
         create: (context) => GoalCubit(),
-        child: BlocBuilder<GoalCubit, GoalState>(
-          buildWhen: (previous, current) {
-            if (current is GoalAmountEdited) {
-              return false;
+        child: BlocConsumer<GoalCubit, GoalState>(
+          listener: (context, state) {
+            if (state is GoalBalanceEdited) {
+              BlocProvider.of<GoalCubit>(context).loadGoals();
             }
+          },
+          buildWhen: (previous, current) {
             return true;
           },
           builder: (context, state) {

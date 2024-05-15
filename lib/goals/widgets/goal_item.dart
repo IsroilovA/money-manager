@@ -14,14 +14,16 @@ class GoalItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
-        onTap: () {
-          Navigator.of(context).push(
+        onTap: () async {
+          await Navigator.of(context).push(
             MaterialPageRoute(
-                builder: (context) => BlocProvider(
-                      create: (context) => GoalCubit(),
-                      child: GoalDetails(goal: goal),
-                    )),
+              builder: (context) => BlocProvider(
+                create: (context) => GoalCubit(),
+                child: GoalDetails(goal: goal),
+              ),
+            ),
           );
+          BlocProvider.of<GoalCubit>(context).loadGoals();
         },
         titleTextStyle: Theme.of(context)
             .textTheme

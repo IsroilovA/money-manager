@@ -41,6 +41,15 @@ class DatabaseHelper {
     );
   }
 
+  static Future<Goal> getGoalById(String id) async {
+    final db = await _openDB();
+
+    final List<Map<String, dynamic>> maps =
+        await db.query("goals", where: 'id = ?', whereArgs: [id], limit: 1);
+
+    return Goal.fromJson(maps.first);
+  }
+
   static Future<void> addSavedAmount(Goal goal, double addedBalance) async {
     final db = await _openDB();
 
