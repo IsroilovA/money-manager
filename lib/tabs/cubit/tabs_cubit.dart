@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:money_manager/add_new_account/add_account_screen.dart';
 import 'package:money_manager/add_transaction/add_transaction_screen.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
@@ -35,7 +36,7 @@ class TabsCubit extends Cubit<TabsState> {
     try {
       final accounts = await DatabaseHelper.getAllAccounts();
       if (accounts != null && accounts.isNotEmpty) {
-        emit(TabsLoaded(accounts));
+        emit(TabsAccountsLoaded(accounts));
       } else {
         emit(TabsNoAccounts());
       }
@@ -77,6 +78,24 @@ class TabsCubit extends Cubit<TabsState> {
         await DatabaseHelper.addTransationRecord(newTransaction);
       }
       emit(TabsTransactionAdded(pageIndex));
+    } catch (e) {
+      emit(TabsError(e.toString()));
+    }
+  }
+
+  void addAccount(BuildContext context) async {
+    final newAccount = await Navigator.of(context).push<Account>(
+      MaterialPageRoute(
+        builder: (ctx) => const AddNewAccountScreen(),
+      ),
+    );
+    if (newAccount == null) {
+      return;
+    }
+    try {
+      await DatabaseHelper.addAccount(newAccount);
+      pageIndex = 3;
+      emit(TabsInitial());
     } catch (e) {
       emit(TabsError(e.toString()));
     }

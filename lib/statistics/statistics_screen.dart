@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
@@ -41,8 +41,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
       },
     );
     return lineChartData.isEmpty
-        ? const Center(
-            child: Text("Add data to see statistics"),
+        ? Center(
+            child: Text(
+              "Add data to see line chart",
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+            ),
           )
         : Card(
             elevation: 1,
@@ -71,8 +76,13 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
   Widget _buildPieChart(List<PieChartData> pieChartData) {
     var toolTipBehavior = TooltipBehavior(enable: true);
     return pieChartData.isEmpty
-        ? const Center(
-            child: Text("Add data to see statistics"),
+        ? Center(
+            child: Text(
+              "Add data to see pie chart",
+              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onBackground,
+                  ),
+            ),
           )
         : Card(
             elevation: 1,
@@ -181,7 +191,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             child: BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
                 if (current is TabsTransactionDeleted ||
-                    current is TabsLoaded ||
+                    current is TabsAccountsLoaded ||
                     current is TabsTransactionAdded) {
                   return true;
                 }
@@ -189,7 +199,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               },
               builder: (context, state) {
                 if (state is TabsTransactionDeleted ||
-                    state is TabsLoaded ||
+                    state is TabsAccountsLoaded ||
                     state is TabsTransactionAdded) {
                   BlocProvider.of<StatisticsCubit>(context).loadRecords();
                   return BlocBuilder<StatisticsCubit, StatisticsState>(

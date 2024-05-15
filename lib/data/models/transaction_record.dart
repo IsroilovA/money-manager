@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:uuid/uuid.dart';
 part 'transaction_record.g.dart';
 
 const uuid = Uuid();
 
-final formatter = DateFormat.yMd();
-final currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
-
-enum ExpenseCategory { food, travel, shopping, leisure }
+enum ExpenseCategory { food, travel, shopping, leisure, savings }
 
 enum IncomeCategory {
   salary,
@@ -26,6 +23,7 @@ enum RecordType {
 
 const categoryColors = {
   ExpenseCategory.food: Colors.red,
+  ExpenseCategory.savings: Colors.brown,
   ExpenseCategory.leisure: Colors.blue,
   ExpenseCategory.shopping: Colors.green,
   ExpenseCategory.travel: Colors.orange,
@@ -40,6 +38,7 @@ const categoryIcons = {
   ExpenseCategory.travel: Icons.flight_takeoff,
   ExpenseCategory.leisure: Icons.movie,
   ExpenseCategory.shopping: Icons.shopping_cart,
+  ExpenseCategory.savings: Icons.savings,
   IncomeCategory.salary: Icons.work,
   IncomeCategory.gift: Icons.card_giftcard,
   IncomeCategory.investment: Icons.auto_graph,
@@ -71,7 +70,7 @@ class TransactionRecord {
   final IncomeCategory? incomeCategory;
 
   String get formattedDate {
-    return formatter.format(date);
+    return dateFormatter.format(date);
   }
 
   String get formattedAmount {

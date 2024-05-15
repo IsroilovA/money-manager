@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class BalanceCard extends StatefulWidget {
@@ -39,7 +39,7 @@ class _BalanceCardState extends State<BalanceCard> {
               buildWhen: (previous, current) {
                 if (current is TabsTransactionAdded ||
                     current is TabsTransactionDeleted ||
-                    current is TabsLoaded) {
+                    current is TabsAccountsLoaded) {
                   return true;
                 }
                 return false;
@@ -47,7 +47,7 @@ class _BalanceCardState extends State<BalanceCard> {
               builder: (context, state) {
                 if (state is TabsTransactionAdded ||
                     state is TabsTransactionDeleted ||
-                    state is TabsLoaded) {
+                    state is TabsAccountsLoaded) {
                   BlocProvider.of<HomeCubit>(context).getTotalBalance();
                   double totalBalance =
                       context.select((HomeCubit cubit) => cubit.totalBalance);

@@ -1,10 +1,9 @@
-import 'package:intl/intl.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:uuid/uuid.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'account.g.dart';
 
-final currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
 const uuid = Uuid();
 
 @JsonSerializable()

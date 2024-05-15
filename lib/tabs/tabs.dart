@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_manager/add_new_account/add_account.dart';
+import 'package:money_manager/add_new_account/add_account_screen.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/home_screen.dart';
 import 'package:money_manager/accounts/accounts_list_screen.dart';
@@ -29,17 +29,6 @@ class _TabsScreenState extends State<TabsScreen> {
       appBar: AppBar(
         title: Text(pageTitle),
         centerTitle: true,
-        actions: [
-          if (pageTitle == "Accounts")
-            IconButton(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                        builder: (context) => const AddNewAccount()),
-                  );
-                },
-                icon: const Icon(Icons.add))
-        ],
       ),
       body: BlocConsumer<TabsCubit, TabsState>(
         listener: (context, state) {
@@ -62,7 +51,7 @@ class _TabsScreenState extends State<TabsScreen> {
           } else if (state is TabsNoAccounts) {
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
-                builder: (context) => const AddNewAccount(),
+                builder: (context) => const AddNewAccountScreen(),
               ),
             );
           }
@@ -84,8 +73,8 @@ class _TabsScreenState extends State<TabsScreen> {
               child: CircularProgressIndicator.adaptive(),
             );
           } else if (state is TabsNoAccounts) {
-            return const AddNewAccount();
-          } else if (state is TabsLoaded) {
+            return const AddNewAccountScreen();
+          } else if (state is TabsAccountsLoaded) {
             return IndexedStack(
               index: selectedTab,
               children: [

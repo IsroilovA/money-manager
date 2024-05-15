@@ -1,13 +1,12 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:money_manager/add_transaction/widgets/account_selector_button.dart';
+import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/category_selector_button.dart';
 import 'package:money_manager/add_transaction/widgets/date_selector_button.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 
 class TransactionForm extends StatefulWidget {
   const TransactionForm({super.key, required this.recordType});
@@ -43,58 +42,22 @@ class _TransactionFormState extends State<TransactionForm> {
     });
   }
 
-  void _showDialog(String text) {
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-        context: context,
-        builder: (ctx) => CupertinoAlertDialog(
-          title: const Text("Invalid Input!"),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Invalid Input!"),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   void _saveTransaction() {
     final enteredAmount = double.tryParse(_amountController.text);
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
     final noteNotEntered = _noteController.text.trim().isEmpty;
     TransactionRecord newRecord;
     if (amountIsInvalid) {
-      _showDialog("enter a valid amount");
+      showAlertDialog(context, "enter a valid amount");
       return;
     }
 
     if (widget.recordType == RecordType.transfer) {
       if (_account == null || _transferAccount2Id == null) {
-        _showDialog("Select both accounts");
+        showAlertDialog(context, "Select both accounts");
         return;
       } else if (_account!.id == _transferAccount2Id!.id) {
-        _showDialog("Select two different accounts");
+        showAlertDialog(context, "Select two different accounts");
         return;
       }
       if (noteNotEntered) {
@@ -116,10 +79,10 @@ class _TransactionFormState extends State<TransactionForm> {
       }
     } else {
       if (_expenseCategory == null && _incomeCategory == null) {
-        _showDialog("Select the category");
+        showAlertDialog(context, "Select the category");
         return;
       } else if (_account == null) {
-        _showDialog("Select account");
+        showAlertDialog(context, "Select account");
         return;
       }
 
@@ -281,29 +244,5 @@ class _TransactionFormState extends State<TransactionForm> {
         ],
       ),
     );
-  }
-}
-
-class FormListTile extends StatelessWidget {
-  const FormListTile({
-    super.key,
-    required this.leadingText,
-    required this.titleWidget,
-  });
-
-  final String leadingText;
-  final Widget titleWidget;
-
-  @override
-  Widget build(BuildContext context) {
-    var width = MediaQuery.of(context).size.width;
-    return ListTile(
-        leadingAndTrailingTextStyle:
-            Theme.of(context).textTheme.bodyLarge!.copyWith(
-                  color: Theme.of(context).colorScheme.onBackground,
-                ),
-        leading: Text(leadingText),
-        minLeadingWidth: width / 5,
-        title: titleWidget);
   }
 }

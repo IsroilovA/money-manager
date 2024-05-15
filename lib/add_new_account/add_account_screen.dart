@@ -1,85 +1,52 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
-class AddNewAccount extends StatefulWidget {
-  const AddNewAccount({super.key});
+class AddNewAccountScreen extends StatefulWidget {
+  const AddNewAccountScreen({super.key});
 
   @override
-  State<AddNewAccount> createState() {
-    return _AddNewAccountState();
+  State<AddNewAccountScreen> createState() {
+    return _AddNewAccountScreenState();
   }
 }
 
-class _AddNewAccountState extends State<AddNewAccount> {
+class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
   final _nameController = TextEditingController();
   final _balanceController = TextEditingController();
-  void _showDialog(String text) {
-    if (Platform.isIOS) {
-      showCupertinoDialog(
-        context: context,
-        builder: (ctx) => CupertinoAlertDialog(
-          title: const Text("Invalid Input!"),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        ),
-      );
-    } else {
-      showDialog(
-        context: context,
-        builder: (ctx) => AlertDialog(
-          title: const Text("Invalid Input!"),
-          content: Text(text),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(ctx);
-              },
-              child: const Text("Okay"),
-            ),
-          ],
-        ),
-      );
-    }
-  }
-
   void _saveAccount() async {
     final enteredBalance = double.tryParse(_balanceController.text);
     final amountIsInvalid = enteredBalance == null || enteredBalance <= 0;
     final nameEntered = _nameController.text.trim().isEmpty;
     Account newAccount;
     if (amountIsInvalid) {
-      _showDialog("enter a valid amount");
+      showAlertDialog(context, "enter a valid amount");
       return;
     } else if (nameEntered) {
-      _showDialog("Enter the name of the account");
+      showAlertDialog(context, "Enter the name of the account");
       return;
     }
     newAccount = Account(balance: enteredBalance, name: _nameController.text);
+    final hasPagePushed = Navigator.of(context).canPop();
 
-    await DatabaseHelper.addAccount(newAccount);
-
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(
-          builder: (context) => BlocProvider(
-                create: (context) => TabsCubit(),
-                child: const TabsScreen(),
-              )),
-    );
+    if (hasPagePushed) {
+      Navigator.of(context).pop(newAccount);
+    } else {
+      await DatabaseHelper.addAccount(newAccount);
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(
+            builder: (context) => BlocProvider(
+                  create: (context) => TabsCubit(),
+                  child: const TabsScreen(),
+                )),
+      );
+    }
   }
 
   @override
@@ -93,21 +60,25 @@ class _AddNewAccountState extends State<AddNewAccount> {
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text("Name"),
-            minLeadingWidth: width / 5,
-            title: TextField(
+          FormListTile(
+            leadingText: "Name",
+            titleWidget: TextField(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               controller: _nameController,
               maxLines: 1,
               maxLength: 60,
             ),
           ),
-          ListTile(
-            leadingAndTrailingTextStyle: Theme.of(context).textTheme.bodyLarge,
-            leading: const Text('Amount'),
-            minLeadingWidth: width / 5,
-            title: TextField(
+          FormListTile(
+            leadingText: "Amount",
+            titleWidget: TextField(
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyLarge!
+                  .copyWith(color: Theme.of(context).colorScheme.primary),
               keyboardType:
                   const TextInputType.numberWithOptions(decimal: true),
               controller: _balanceController,

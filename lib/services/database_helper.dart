@@ -1,4 +1,5 @@
 import 'package:money_manager/data/models/account.dart';
+import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:sqflite/sqflite.dart';
@@ -12,13 +13,70 @@ class DatabaseHelper {
     return openDatabase(
       join(await getDatabasesPath(), _dbName),
       onCreate: (db, version) async {
-        await db.execute(
+        var batch = db.batch();
+        batch.execute(
             "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
-        await db.execute(
+        batch.execute(
             "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, transferAccount2Id TEXT, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
+        batch.execute(
+            "CREATE TABLE goals(id TEXT PRIMARY KEY, name TEXT, currentBalance REAL, goalBalance REAL)");
+        await batch.commit();
       },
       version: _version,
     );
+  }
+
+  static Future<List<Goal>?> getAllGoals() async {
+    final db = await _openDB();
+
+    final List<Map<String, dynamic>> maps = await db.query("goals");
+
+    if (maps.isEmpty) {
+      return null;
+    }
+
+    return List.generate(
+      maps.length,
+      (index) => Goal.fromJson(maps[index]),
+    );
+  }
+
+  static Future<Goal> getGoalById(String id) async {
+    final db = await _openDB();
+
+    final List<Map<String, dynamic>> maps =
+        await db.query("goals", where: 'id = ?', whereArgs: [id], limit: 1);
+
+    return Goal.fromJson(maps.first);
+  }
+
+  static Future<void> addGoalSavedAmount(Goal goal, double addedBalance) async {
+    final db = await _openDB();
+
+    var newCurrentBalance = goal.currentBalance + addedBalance;
+
+    await db.update("goals", {'currentBalance': newCurrentBalance},
+        where: 'id = ?', whereArgs: [goal.id]);
+  }
+
+  static Future<void> addGoal(Goal goal) async {
+    final db = await _openDB();
+
+    await db.insert("goals", goal.toJson());
+  }
+
+  static Future<void> editGoal(Goal goal) async {
+    final db = await _openDB();
+    print(goal.goalBalance);
+
+    await db
+        .update("goals", goal.toJson(), where: 'id = ?', whereArgs: [goal.id]);
+  }
+
+  static Future<void> deleteGoal(Goal goal) async {
+    final db = await _openDB();
+
+    await db.delete("goals", where: 'id = ?', whereArgs: [goal.id]);
   }
 
   static Future<List<Account>?> getAllAccounts() async {
@@ -84,7 +142,7 @@ class DatabaseHelper {
       TransactionRecord newRecord) async {
     final db = await _openDB();
     final account = await getAccountById(newRecord.accountId);
-    final newBalance;
+    double newBalance;
     if (newRecord.recordType == RecordType.income) {
       newBalance = account.balance + newRecord.amount;
     } else {
@@ -113,7 +171,7 @@ class DatabaseHelper {
       await batch.commit();
     } else {
       final account = await getAccountById(deletedRecord.accountId);
-      final newBalance;
+      double newBalance;
       if (deletedRecord.recordType == RecordType.income) {
         newBalance = account.balance - deletedRecord.amount;
       } else {

@@ -14,7 +14,11 @@ class HomeCubit extends Cubit<HomeState> {
   List<TransactionRecord> transactionRecords = [];
 
   void getTotalBalance() async {
-    totalBalance = await DatabaseHelper.getTotalBalance();
+    try {
+      totalBalance = await DatabaseHelper.getTotalBalance();
+    } catch (e) {
+      emit(HomeError(e.toString()));
+    }
   }
 
   void loadTransactions() async {
@@ -32,9 +36,13 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void getTotalRecordTypeAmount() async {
-    totalExpense =
-        await DatabaseHelper.getTotalAmountByRecordType(RecordType.expense);
-    totalIncome =
-        await DatabaseHelper.getTotalAmountByRecordType(RecordType.income);
+    try {
+      totalExpense =
+          await DatabaseHelper.getTotalAmountByRecordType(RecordType.expense);
+      totalIncome =
+          await DatabaseHelper.getTotalAmountByRecordType(RecordType.income);
+    } catch (e) {
+      emit(HomeError(e.toString()));
+    }
   }
 }
