@@ -11,9 +11,9 @@ final class TabsLoading extends TabsState {
   TabsLoading();
 }
 
-final class TabsLoaded extends TabsState {
+final class TabsAccountsLoaded extends TabsState {
   final List<Account> accounts;
-  TabsLoaded(this.accounts);
+  TabsAccountsLoaded(this.accounts);
 }
 
 final class TabsNoAccounts extends TabsState {

@@ -39,7 +39,7 @@ class _BalanceCardState extends State<BalanceCard> {
               buildWhen: (previous, current) {
                 if (current is TabsTransactionAdded ||
                     current is TabsTransactionDeleted ||
-                    current is TabsLoaded) {
+                    current is TabsAccountsLoaded) {
                   return true;
                 }
                 return false;
@@ -47,7 +47,7 @@ class _BalanceCardState extends State<BalanceCard> {
               builder: (context, state) {
                 if (state is TabsTransactionAdded ||
                     state is TabsTransactionDeleted ||
-                    state is TabsLoaded) {
+                    state is TabsAccountsLoaded) {
                   BlocProvider.of<HomeCubit>(context).getTotalBalance();
                   double totalBalance =
                       context.select((HomeCubit cubit) => cubit.totalBalance);

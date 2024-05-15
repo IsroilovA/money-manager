@@ -35,7 +35,7 @@ class TabsCubit extends Cubit<TabsState> {
     try {
       final accounts = await DatabaseHelper.getAllAccounts();
       if (accounts != null && accounts.isNotEmpty) {
-        emit(TabsLoaded(accounts));
+        emit(TabsAccountsLoaded(accounts));
       } else {
         emit(TabsNoAccounts());
       }

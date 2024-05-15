@@ -191,7 +191,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             child: BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
                 if (current is TabsTransactionDeleted ||
-                    current is TabsLoaded ||
+                    current is TabsAccountsLoaded ||
                     current is TabsTransactionAdded) {
                   return true;
                 }
@@ -199,7 +199,7 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
               },
               builder: (context, state) {
                 if (state is TabsTransactionDeleted ||
-                    state is TabsLoaded ||
+                    state is TabsAccountsLoaded ||
                     state is TabsTransactionAdded) {
                   BlocProvider.of<StatisticsCubit>(context).loadRecords();
                   return BlocBuilder<StatisticsCubit, StatisticsState>(

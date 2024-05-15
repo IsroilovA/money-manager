@@ -47,7 +47,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                   buildWhen: (previous, current) {
                     if (current is TabsTransactionAdded ||
                         current is TabsTransactionDeleted ||
-                        current is TabsLoaded) {
+                        current is TabsAccountsLoaded) {
                       return true;
                     }
                     return false;
@@ -55,7 +55,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                   builder: (context, state) {
                     if (state is TabsTransactionAdded ||
                         state is TabsTransactionDeleted ||
-                        state is TabsLoaded) {
+                        state is TabsAccountsLoaded) {
                       BlocProvider.of<HomeCubit>(context)
                           .getTotalRecordTypeAmount();
                       double expense = context

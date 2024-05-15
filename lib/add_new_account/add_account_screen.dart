@@ -10,16 +10,16 @@ import 'package:money_manager/services/database_helper.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
-class AddNewAccount extends StatefulWidget {
-  const AddNewAccount({super.key});
+class AddNewAccountScreen extends StatefulWidget {
+  const AddNewAccountScreen({super.key});
 
   @override
-  State<AddNewAccount> createState() {
-    return _AddNewAccountState();
+  State<AddNewAccountScreen> createState() {
+    return _AddNewAccountScreenState();
   }
 }
 
-class _AddNewAccountState extends State<AddNewAccount> {
+class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
   final _nameController = TextEditingController();
   final _balanceController = TextEditingController();
   void _showDialog(String text) {
