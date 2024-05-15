@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/goal.dart';
-import 'package:money_manager/services/helper_fucntion.dart';
+import 'package:money_manager/goals/widgets/goal_details.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 
 class GoalItem extends StatelessWidget {
   const GoalItem({super.key, required this.goal});
@@ -11,19 +12,30 @@ class GoalItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return Card(
       child: ListTile(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(builder: (context) => GoalDetails(goal: goal)),
+          );
+        },
+        titleTextStyle: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: Theme.of(context).colorScheme.onSurface),
+        horizontalTitleGap: 0,
+        minVerticalPadding: 15,
+        contentPadding: const EdgeInsets.only(right: 10, left: 16),
         title: Text(goal.name.capitalize()),
         subtitle: Column(
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  currencyFormatter.format(goal.currentBalance),
-                ),
-                Text(
-                  "${(goal.currentBalance / goal.goalBalance) * 100}%",
-                ),
-              ],
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(currencyFormatter.format(goal.currentBalance)),
+                  Text("${(goal.currentBalance / goal.goalBalance) * 100}%"),
+                ],
+              ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 3),
@@ -36,6 +48,7 @@ class GoalItem extends StatelessWidget {
             ),
           ],
         ),
+        trailing: const Icon(Icons.arrow_forward_ios_rounded),
       ),
     );
   }

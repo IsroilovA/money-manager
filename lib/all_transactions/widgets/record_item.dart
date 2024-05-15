@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/services/helper_fucntion.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class RecordItem extends StatelessWidget {

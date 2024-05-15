@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
-import 'package:money_manager/services/helper_fucntion.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class BalanceCard extends StatefulWidget {
