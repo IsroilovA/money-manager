@@ -54,34 +54,47 @@ class AccountDetails extends StatelessWidget {
       appBar: AppBar(
         title: Text(account.name),
         centerTitle: true,
-        actions: [IconButton(onPressed: () {}, icon: const Icon(Icons.edit))],
+        actions: [
+          IconButton(
+              onPressed: () {
+                BlocProvider.of<AccountDetailsCubit>(context)
+                    .deleteAccount(account);
+                Navigator.pop(context);
+              },
+              icon: const Icon(Icons.delete)),
+          IconButton(
+              onPressed: () {
+                BlocProvider.of<AccountDetailsCubit>(context)
+                    .editAccount(context, account.id);
+              },
+              icon: const Icon(Icons.edit)),
+        ],
       ),
-      body: BlocProvider(
-        create: (context) => AccountDetailsCubit(),
-        child: BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
-          builder: (context, state) {
-            if (state is AccountTransactionsLoaded) {
-              return buildAccountDetailsScreen(
-                  account, state.transactionRecords);
-            } else if (state is AccountDetailsInitial) {
-              BlocProvider.of<AccountDetailsCubit>(context)
-                  .loadAccountTransaction(account);
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
-              );
-            } else if (state is NoAccountTransactions) {
-              return buildAccountDetailsScreen(account, null);
-            } else if (state is AccountDetailsError) {
-              return Center(
-                child: Text("Error: ${state.message}"),
-              );
-            } else {
-              return const Center(
-                child: Text("something went wrong"),
-              );
-            }
-          },
-        ),
+      body: BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
+        builder: (context, state) {
+          if (state is AccountTransactionsLoaded) {
+            return buildAccountDetailsScreen(account, state.transactionRecords);
+          } else if (state is AccountDetailsInitial) {
+            BlocProvider.of<AccountDetailsCubit>(context)
+                .loadAccountTransaction(account);
+            return const Center(
+              child: CircularProgressIndicator.adaptive(),
+            );
+          } else if (state is AccountEdited) {
+            return buildAccountDetailsScreen(
+                state.account, state.transactionRecords);
+          } else if (state is NoAccountTransactions) {
+            return buildAccountDetailsScreen(account, null);
+          } else if (state is AccountDetailsError) {
+            return Center(
+              child: Text("Error: ${state.message}"),
+            );
+          } else {
+            return const Center(
+              child: Text("something went wrong"),
+            );
+          }
+        },
       ),
     );
   }

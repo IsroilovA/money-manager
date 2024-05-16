@@ -44,7 +44,7 @@ class GoalCubit extends Cubit<GoalState> {
     }
     try {
       await DatabaseHelper.editGoal(editedGoal);
-      final updatedGoal = await DatabaseHelper.getGoalById(goal.id);
+      final updatedGoal = await DatabaseHelper.getGoalById(goalId);
       emit(GoalEdited(updatedGoal));
     } catch (e) {
       emit(GoalError(e.toString()));

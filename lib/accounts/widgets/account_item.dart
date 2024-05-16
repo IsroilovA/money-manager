@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/accounts/cubit/account_details_cubit.dart';
 import 'package:money_manager/accounts/widgets/account_details.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
@@ -19,9 +20,19 @@ class AccountItem extends StatelessWidget {
       onTap: () async {
         await Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => AccountDetails(
-              account: account,
-              accounts: accounts,
+            builder: (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                  create: (context) => TabsCubit(),
+                ),
+                BlocProvider(
+                  create: (context) => AccountDetailsCubit(),
+                ),
+              ],
+              child: AccountDetails(
+                account: account,
+                accounts: accounts,
+              ),
             ),
           ),
         );

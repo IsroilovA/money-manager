@@ -119,6 +119,19 @@ class DatabaseHelper {
     await db.insert("accounts", account.toJson());
   }
 
+  static Future<void> editAccount(Account account) async {
+    final db = await _openDB();
+
+    await db.update("accounts", account.toJson(),
+        where: 'id = ?', whereArgs: [account.id]);
+  }
+
+  static Future<void> deleteAccount(Account account) async {
+    final db = await _openDB();
+
+    await db.delete("accounts", where: 'id = ?', whereArgs: [account.id]);
+  }
+
   static Future<void> addTransferTransaction(
       TransactionRecord newRecord) async {
     final db = await _openDB();

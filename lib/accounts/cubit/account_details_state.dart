@@ -12,8 +12,8 @@ final class AccountTransactionsLoaded extends AccountDetailsState {
 
 final class AccountEdited extends AccountDetailsState {
   final Account account;
-
-  AccountEdited(this.account);
+  final List<TransactionRecord>? transactionRecords;
+  AccountEdited(this.account, this.transactionRecords);
 }
 
 final class AccountDetailsLoading extends AccountDetailsState {}

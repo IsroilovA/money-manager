@@ -9,7 +9,9 @@ import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
 class AddNewAccountScreen extends StatefulWidget {
-  const AddNewAccountScreen({super.key});
+  const AddNewAccountScreen({super.key, this.account});
+
+  final Account? account;
 
   @override
   State<AddNewAccountScreen> createState() {
@@ -32,8 +34,17 @@ class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
       showAlertDialog(context, "Enter the name of the account");
       return;
     }
-    newAccount = Account(balance: enteredBalance, name: _nameController.text);
+
     final hasPagePushed = Navigator.of(context).canPop();
+
+    if (widget.account != null) {
+      newAccount = Account(
+          id: widget.account!.id,
+          balance: enteredBalance,
+          name: _nameController.text);
+    } else {
+      newAccount = Account(balance: enteredBalance, name: _nameController.text);
+    }
 
     if (hasPagePushed) {
       Navigator.of(context).pop(newAccount);
@@ -47,6 +58,15 @@ class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
                 )),
       );
     }
+  }
+
+  @override
+  void initState() {
+    if (widget.account != null) {
+      _nameController.text = widget.account!.name;
+      _balanceController.text = widget.account!.balance.toString();
+    }
+    super.initState();
   }
 
   @override
