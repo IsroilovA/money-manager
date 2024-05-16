@@ -36,14 +36,7 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
       return;
     }
     try {
-      await DatabaseHelper.editAccount(editedAccount);
-      await DatabaseHelper.addTransationRecord(
-        TransactionRecord(
-            date: DateTime.now(),
-            amount: editedAccount.balance - account.balance,
-            recordType: RecordType.balanceAdjustment,
-            accountId: accountId),
-      );
+      await DatabaseHelper.editAccount(editedAccount, account.balance);
       emit(AccountEdited(editedAccount, transactionRecords));
     } catch (e) {
       emit(AccountDetailsError(e.toString()));

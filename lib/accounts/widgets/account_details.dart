@@ -65,14 +65,17 @@ class AccountDetails extends StatelessWidget {
                   style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       color: Theme.of(context).colorScheme.onBackground),
                 )
-              : ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: transactionRecords.length,
-                  itemBuilder: (context, index) {
-                    return RecordItem(
+              : Expanded(
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    itemCount: transactionRecords.length,
+                    itemBuilder: (context, index) {
+                      return RecordItem(
                         transactionRecord: transactionRecords[index],
-                        accounts: accounts);
-                  },
+                        accounts: accounts,
+                      );
+                    },
+                  ),
                 )
         ],
       );

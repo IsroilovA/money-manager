@@ -34,7 +34,6 @@ class TransactionsListScreen extends StatelessWidget {
                 )
               : ListView.builder(
                   shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: transactionRecords.length,
                   itemBuilder: (context, index) {
                     final record = transactionRecords[index];

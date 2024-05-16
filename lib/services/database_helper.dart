@@ -119,11 +119,21 @@ class DatabaseHelper {
     await db.insert("accounts", account.toJson());
   }
 
-  static Future<void> editAccount(Account account) async {
+  static Future<void> editAccount(
+      Account account, double previousBalance) async {
     final db = await _openDB();
 
-    await db.update("accounts", account.toJson(),
+    final record = TransactionRecord(
+        date: DateTime.now(),
+        amount: account.balance - previousBalance,
+        recordType: RecordType.balanceAdjustment,
+        accountId: account.id);
+
+    var batch = db.batch();
+    batch.insert("transactions", record.toJson());
+    batch.update("accounts", account.toJson(),
         where: 'id = ?', whereArgs: [account.id]);
+    await batch.commit();
   }
 
   static Future<void> deleteAccount(Account account) async {
@@ -186,6 +196,11 @@ class DatabaseHelper {
       batch.update("accounts", {'balance': newBalanceReceiver},
           where: 'id = ?', whereArgs: [accountReceiver.id]);
       await batch.commit();
+    } else if (deletedRecord.recordType == RecordType.balanceAdjustment) {
+      final account = await getAccountById(deletedRecord.accountId);
+      double newBalance = account.balance - deletedRecord.amount;
+      await db.update("accounts", {'balance': newBalance},
+          where: 'id = ?', whereArgs: [account.id]);
     } else {
       final account = await getAccountById(deletedRecord.accountId);
       double newBalance;
@@ -194,7 +209,6 @@ class DatabaseHelper {
       } else {
         newBalance = account.balance + deletedRecord.amount;
       }
-
       await db.update("accounts", {'balance': newBalance},
           where: 'id = ?', whereArgs: [account.id]);
     }
