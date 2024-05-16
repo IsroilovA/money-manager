@@ -1,6 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:money_manager/add_goal/add_goal_screen.dart';
+import 'package:money_manager/add_goal/add_edit_goal_screen.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/services/database_helper.dart';
 
@@ -36,7 +36,7 @@ class GoalCubit extends Cubit<GoalState> {
     final goal = await DatabaseHelper.getGoalById(goalId);
     final editedGoal = await Navigator.of(context).push<Goal>(
       MaterialPageRoute(
-        builder: (ctx) => AddGoalScreen(goal: goal),
+        builder: (ctx) => AddEditGoalScreen(goal: goal),
       ),
     );
     if (editedGoal == null) {
@@ -62,7 +62,7 @@ class GoalCubit extends Cubit<GoalState> {
   void addGoal(BuildContext context) async {
     final newGoal = await Navigator.of(context).push<Goal>(
       MaterialPageRoute(
-        builder: (ctx) => const AddGoalScreen(),
+        builder: (ctx) => const AddEditGoalScreen(),
       ),
     );
     if (newGoal == null) {

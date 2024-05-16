@@ -4,17 +4,17 @@ import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
 
-class AddGoalScreen extends StatefulWidget {
-  const AddGoalScreen({super.key, this.goal});
+class AddEditGoalScreen extends StatefulWidget {
+  const AddEditGoalScreen({super.key, this.goal});
 
   final Goal? goal;
   @override
-  State<AddGoalScreen> createState() {
-    return _AddGoalScreenState();
+  State<AddEditGoalScreen> createState() {
+    return _AddEditGoalScreenState();
   }
 }
 
-class _AddGoalScreenState extends State<AddGoalScreen> {
+class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
   final _nameController = TextEditingController();
   final _currentBalanceController = TextEditingController();
   final _goalBalanceController = TextEditingController();
@@ -67,7 +67,9 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Goal'),
+        title: widget.goal == null
+            ? const Text('New goal')
+            : const Text("Edit goal"),
         centerTitle: true,
       ),
       body: Column(

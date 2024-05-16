@@ -40,6 +40,7 @@ const _$RecordTypeEnumMap = {
   RecordType.income: 'income',
   RecordType.expense: 'expense',
   RecordType.transfer: 'transfer',
+  RecordType.balanceAdjustment: 'balanceAdjustment'
 };
 
 const _$ExpenseCategoryEnumMap = {

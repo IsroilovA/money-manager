@@ -69,13 +69,12 @@ class AccountItem extends StatelessWidget {
                       if (snapshot.connectionState == ConnectionState.done) {
                         return Text(
                           snapshot.data.toString(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium!
-                              .copyWith(
-                                  color: account.balance >= 0
-                                      ? Colors.green
-                                      : Colors.red),
+                          style:
+                              Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                    color: snapshot.data! >= 0
+                                        ? Colors.green
+                                        : Colors.red,
+                                  ),
                         );
                       } else {
                         return const CircularProgressIndicator.adaptive();

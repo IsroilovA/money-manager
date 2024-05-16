@@ -19,6 +19,7 @@ enum RecordType {
   income,
   expense,
   transfer,
+  balanceAdjustment,
 }
 
 const categoryColors = {

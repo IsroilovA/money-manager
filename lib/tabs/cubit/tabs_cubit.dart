@@ -2,8 +2,8 @@ import 'dart:async';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
-import 'package:money_manager/add_new_account/add_account_screen.dart';
-import 'package:money_manager/add_transaction/add_transaction_screen.dart';
+import 'package:money_manager/add_account/add_edit_account_screen.dart';
+import 'package:money_manager/add_transaction/add_edit_transaction_screen.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/database_helper.dart';
@@ -65,7 +65,7 @@ class TabsCubit extends Cubit<TabsState> {
   void addTtansaction(BuildContext context, int pageIndex) async {
     final newTransaction = await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(
-        builder: (ctx) => const AddNewTransaction(),
+        builder: (ctx) => const AddEditTransaction(),
       ),
     );
     if (newTransaction == null) {
@@ -86,7 +86,7 @@ class TabsCubit extends Cubit<TabsState> {
   void addAccount(BuildContext context) async {
     final newAccount = await Navigator.of(context).push<Account>(
       MaterialPageRoute(
-        builder: (ctx) => const AddNewAccountScreen(),
+        builder: (ctx) => const AddEditAccountScreen(),
       ),
     );
     if (newAccount == null) {

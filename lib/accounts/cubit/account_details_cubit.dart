@@ -2,7 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:meta/meta.dart';
-import 'package:money_manager/add_new_account/add_account_screen.dart';
+import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/database_helper.dart';
@@ -29,7 +29,7 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
     final account = await DatabaseHelper.getAccountById(accountId);
     final editedAccount = await Navigator.of(context).push<Account>(
       MaterialPageRoute(
-        builder: (ctx) => AddNewAccountScreen(account: account),
+        builder: (ctx) => AddEditAccountScreen(account: account),
       ),
     );
     if (editedAccount == null) {
@@ -37,8 +37,14 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
     }
     try {
       await DatabaseHelper.editAccount(editedAccount);
-      final updatedGoal = await DatabaseHelper.getAccountById(accountId);
-      emit(AccountEdited(updatedGoal, transactionRecords));
+      await DatabaseHelper.addTransationRecord(
+        TransactionRecord(
+            date: DateTime.now(),
+            amount: editedAccount.balance - account.balance,
+            recordType: RecordType.balanceAdjustment,
+            accountId: accountId),
+      );
+      emit(AccountEdited(editedAccount, transactionRecords));
     } catch (e) {
       emit(AccountDetailsError(e.toString()));
     }

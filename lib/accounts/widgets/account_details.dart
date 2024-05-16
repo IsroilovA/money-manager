@@ -34,11 +34,23 @@ class AccountDetails extends StatelessWidget {
       return Column(
         children: [
           ListTile(
-            leading: const Icon(Icons.account_balance_wallet),
+            titleTextStyle: Theme.of(context)
+                .textTheme
+                .headlineLarge!
+                .copyWith(color: Theme.of(context).colorScheme.onBackground),
+            leading: const Icon(
+              Icons.account_balance_wallet,
+              size: 50,
+            ),
             title: const Text("Balance: "),
-            trailing: Text(account.formattedBalance),
+            trailing: Text(
+              account.formattedBalance,
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: account.balance >= 0 ? Colors.green : Colors.red,
+                  ),
+            ),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 40),
           Text(
             "Account transactions",
             style: Theme.of(context)
@@ -46,7 +58,7 @@ class AccountDetails extends StatelessWidget {
                 .titleLarge!
                 .copyWith(color: Theme.of(context).colorScheme.onBackground),
           ),
-          const SizedBox(height: 10),
+          const SizedBox(height: 20),
           transactionRecords == null
               ? Text(
                   "No Account transactions",
@@ -81,32 +93,35 @@ class AccountDetails extends StatelessWidget {
               icon: const Icon(Icons.edit)),
         ],
       ),
-      body: BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
-        builder: (context, state) {
-          if (state is AccountTransactionsLoaded) {
-            return buildAccountDetailsScreen(
-                state.account, state.transactionRecords);
-          } else if (state is AccountDetailsInitial) {
-            BlocProvider.of<AccountDetailsCubit>(context)
-                .loadAccountTransaction(account.id);
-            return const Center(
-              child: CircularProgressIndicator.adaptive(),
-            );
-          } else if (state is AccountEdited) {
-            return buildAccountDetailsScreen(
-                state.account, state.transactionRecords);
-          } else if (state is NoAccountTransactions) {
-            return buildAccountDetailsScreen(account, null);
-          } else if (state is AccountDetailsError) {
-            return Center(
-              child: Text("Error: ${state.message}"),
-            );
-          } else {
-            return const Center(
-              child: Text("something went wrong"),
-            );
-          }
-        },
+      body: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
+          builder: (context, state) {
+            if (state is AccountTransactionsLoaded) {
+              return buildAccountDetailsScreen(
+                  state.account, state.transactionRecords);
+            } else if (state is AccountDetailsInitial) {
+              BlocProvider.of<AccountDetailsCubit>(context)
+                  .loadAccountTransaction(account.id);
+              return const Center(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            } else if (state is AccountEdited) {
+              return buildAccountDetailsScreen(
+                  state.account, state.transactionRecords);
+            } else if (state is NoAccountTransactions) {
+              return buildAccountDetailsScreen(account, null);
+            } else if (state is AccountDetailsError) {
+              return Center(
+                child: Text("Error: ${state.message}"),
+              );
+            } else {
+              return const Center(
+                child: Text("something went wrong"),
+              );
+            }
+          },
+        ),
       ),
     );
   }

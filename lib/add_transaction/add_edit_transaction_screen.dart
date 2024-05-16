@@ -2,16 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/transaction_form.dart';
 
-class AddNewTransaction extends StatefulWidget {
-  const AddNewTransaction({super.key});
+class AddEditTransaction extends StatefulWidget {
+  const AddEditTransaction({super.key});
 
   @override
-  State<AddNewTransaction> createState() {
-    return _AddNewTransactionState();
+  State<AddEditTransaction> createState() {
+    return _AddEditTransactionState();
   }
 }
 
-class _AddNewTransactionState extends State<AddNewTransaction> {
+class _AddEditTransactionState extends State<AddEditTransaction> {
   RecordType _recordType = RecordType.income;
   @override
   Widget build(BuildContext context) {

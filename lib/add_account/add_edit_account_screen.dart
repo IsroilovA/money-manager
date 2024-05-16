@@ -8,23 +8,23 @@ import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
-class AddNewAccountScreen extends StatefulWidget {
-  const AddNewAccountScreen({super.key, this.account});
+class AddEditAccountScreen extends StatefulWidget {
+  const AddEditAccountScreen({super.key, this.account});
 
   final Account? account;
 
   @override
-  State<AddNewAccountScreen> createState() {
-    return _AddNewAccountScreenState();
+  State<AddEditAccountScreen> createState() {
+    return _AddEditAccountScreenState();
   }
 }
 
-class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
+class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
   final _nameController = TextEditingController();
   final _balanceController = TextEditingController();
   void _saveAccount() async {
     final enteredBalance = double.tryParse(_balanceController.text);
-    final amountIsInvalid = enteredBalance == null || enteredBalance <= 0;
+    final amountIsInvalid = enteredBalance == null;
     final nameEntered = _nameController.text.trim().isEmpty;
     Account newAccount;
     if (amountIsInvalid) {
@@ -74,7 +74,9 @@ class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
     var width = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Account'),
+        title: widget.account == null
+            ? const Text('New account')
+            : const Text("Edit account"),
         centerTitle: true,
       ),
       body: Column(
@@ -104,7 +106,7 @@ class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
               controller: _balanceController,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d+\.?\d{0,2}'),
+                  RegExp(r'^-?\d*\.?\d*'),
                 ),
               ],
               maxLines: 1,
