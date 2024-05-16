@@ -21,23 +21,24 @@ final class TabsNoAccounts extends TabsState {
   TabsNoAccounts();
 }
 
-class TabsError extends TabsState {
+final class TabsError extends TabsState {
   final String message;
 
   TabsError(this.message);
 }
 
-class TabsPageChanged extends TabsState {
+final class TabsPageChanged extends TabsState {
   final int pageIndex;
   TabsPageChanged(this.pageIndex);
 }
 
-class TabsTransactionAdded extends TabsState {
+final class TabsTransactionAdded extends TabsState {
   final int pageIndex;
 
   TabsTransactionAdded(this.pageIndex);
 }
 
-class TabsTransactionDeleted extends TabsState {
+
+final class TabsTransactionDeleted extends TabsState {
   TabsTransactionDeleted();
 }

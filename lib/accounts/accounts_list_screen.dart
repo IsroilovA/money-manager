@@ -23,7 +23,10 @@ class AccountsScreen extends StatelessWidget {
         ),
         itemBuilder: (context, index) {
           return (index != accounts.length)
-              ? AccountItem(account: accounts[index])
+              ? AccountItem(
+                  account: accounts[index],
+                  accounts: accounts,
+                )
               : InkWell(
                   onTap: () {
                     BlocProvider.of<TabsCubit>(context).addAccount(context);

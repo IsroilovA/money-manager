@@ -11,7 +11,7 @@ class GoalDetails extends StatelessWidget {
   final Goal goal;
   @override
   Widget build(BuildContext context) {
-    Widget buildDetailsScreen(Goal goal) {
+    Widget buildGoalDetailsScreen(Goal goal) {
       var width = MediaQuery.of(context).size.width;
       return Column(children: [
         SfRadialGauge(
@@ -158,7 +158,7 @@ class GoalDetails extends StatelessWidget {
           ),
           IconButton(
             onPressed: () {
-              BlocProvider.of<GoalCubit>(context).editGoal(context, goal);
+              BlocProvider.of<GoalCubit>(context).editGoal(context, goal.id);
             },
             icon: const Icon(Icons.edit),
           ),
@@ -173,9 +173,9 @@ class GoalDetails extends StatelessWidget {
         },
         builder: (context, state) {
           if (state is GoalEdited) {
-            return buildDetailsScreen(state.updatedGoal);
+            return buildGoalDetailsScreen(state.updatedGoal);
           } else {
-            return buildDetailsScreen(goal);
+            return buildGoalDetailsScreen(goal);
           }
         },
       ),
