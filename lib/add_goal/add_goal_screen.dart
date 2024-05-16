@@ -29,10 +29,10 @@ class _AddGoalScreenState extends State<AddGoalScreen> {
     final nameEntered = _nameController.text.trim().isEmpty;
     Goal newGoal;
     if (currentBalanceIsInvalid || enteredBalanceIsInvalid) {
-      showAlertDialog(context, "enter a valid amount");
+      showFormAlertDialog(context, "enter a valid amount");
       return;
     } else if (nameEntered) {
-      showAlertDialog(context, "Enter the name of the goal");
+      showFormAlertDialog(context, "Enter the name of the goal");
       return;
     }
     if (widget.goal != null) {

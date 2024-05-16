@@ -110,7 +110,8 @@ class GoalDetails extends StatelessWidget {
                               enteredAddedAmount == null ||
                                   enteredAddedAmount <= 0;
                           if (addedAmountIsInvalid) {
-                            showAlertDialog(context, "enter a valid amount");
+                            showFormAlertDialog(
+                                context, "enter a valid amount");
                             return;
                           }
                           addedAmount = enteredAddedAmount;

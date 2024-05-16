@@ -48,16 +48,16 @@ class _TransactionFormState extends State<TransactionForm> {
     final noteNotEntered = _noteController.text.trim().isEmpty;
     TransactionRecord newRecord;
     if (amountIsInvalid) {
-      showAlertDialog(context, "enter a valid amount");
+      showFormAlertDialog(context, "enter a valid amount");
       return;
     }
 
     if (widget.recordType == RecordType.transfer) {
       if (_account == null || _transferAccount2Id == null) {
-        showAlertDialog(context, "Select both accounts");
+        showFormAlertDialog(context, "Select both accounts");
         return;
       } else if (_account!.id == _transferAccount2Id!.id) {
-        showAlertDialog(context, "Select two different accounts");
+        showFormAlertDialog(context, "Select two different accounts");
         return;
       }
       if (noteNotEntered) {
@@ -79,10 +79,10 @@ class _TransactionFormState extends State<TransactionForm> {
       }
     } else {
       if (_expenseCategory == null && _incomeCategory == null) {
-        showAlertDialog(context, "Select the category");
+        showFormAlertDialog(context, "Select the category");
         return;
       } else if (_account == null) {
-        showAlertDialog(context, "Select account");
+        showFormAlertDialog(context, "Select account");
         return;
       }
 

@@ -28,10 +28,10 @@ class _AddNewAccountScreenState extends State<AddNewAccountScreen> {
     final nameEntered = _nameController.text.trim().isEmpty;
     Account newAccount;
     if (amountIsInvalid) {
-      showAlertDialog(context, "enter a valid amount");
+      showFormAlertDialog(context, "enter a valid amount");
       return;
     } else if (nameEntered) {
-      showAlertDialog(context, "Enter the name of the account");
+      showFormAlertDialog(context, "Enter the name of the account");
       return;
     }
 

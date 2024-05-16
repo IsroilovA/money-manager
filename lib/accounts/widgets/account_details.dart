@@ -4,6 +4,7 @@ import 'package:money_manager/accounts/cubit/account_details_cubit.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 
 class AccountDetails extends StatelessWidget {
   const AccountDetails(
@@ -13,6 +14,21 @@ class AccountDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    void confirmDelition() {
+      showWarningAlertDialog(
+        context: context,
+        text:
+            "Are you sure you want to delete the Account and all the records related to it?",
+        onYesClicked: () {
+          BlocProvider.of<AccountDetailsCubit>(context).deleteAccount(account);
+          //pop dialog itself
+          Navigator.pop(context);
+          //pop details screen
+          Navigator.pop(context);
+        },
+      );
+    }
+
     Widget buildAccountDetailsScreen(
         Account account, List<TransactionRecord>? transactionRecords) {
       return Column(
@@ -56,12 +72,7 @@ class AccountDetails extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-              onPressed: () {
-                BlocProvider.of<AccountDetailsCubit>(context)
-                    .deleteAccount(account);
-                Navigator.pop(context);
-              },
-              icon: const Icon(Icons.delete)),
+              onPressed: confirmDelition, icon: const Icon(Icons.delete)),
           IconButton(
               onPressed: () {
                 BlocProvider.of<AccountDetailsCubit>(context)

@@ -128,8 +128,13 @@ class DatabaseHelper {
 
   static Future<void> deleteAccount(Account account) async {
     final db = await _openDB();
+    var batch = db.batch();
 
-    await db.delete("accounts", where: 'id = ?', whereArgs: [account.id]);
+    batch.delete("accounts", where: 'id = ?', whereArgs: [account.id]);
+    batch.delete("transactions",
+        where: 'accountId = ? OR transferAccount2Id = ?',
+        whereArgs: [account.id, account.id]);
+    await batch.commit();
   }
 
   static Future<void> addTransferTransaction(
