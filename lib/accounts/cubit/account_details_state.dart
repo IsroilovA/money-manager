@@ -6,8 +6,9 @@ sealed class AccountDetailsState {}
 final class AccountDetailsInitial extends AccountDetailsState {}
 
 final class AccountTransactionsLoaded extends AccountDetailsState {
-  final List<TransactionRecord> transactionRecords;
-  AccountTransactionsLoaded(this.transactionRecords);
+  final List<TransactionRecord>? transactionRecords;
+  final Account account;
+  AccountTransactionsLoaded(this.account, this.transactionRecords);
 }
 
 final class AccountEdited extends AccountDetailsState {

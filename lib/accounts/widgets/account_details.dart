@@ -73,10 +73,11 @@ class AccountDetails extends StatelessWidget {
       body: BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
         builder: (context, state) {
           if (state is AccountTransactionsLoaded) {
-            return buildAccountDetailsScreen(account, state.transactionRecords);
+            return buildAccountDetailsScreen(
+                state.account, state.transactionRecords);
           } else if (state is AccountDetailsInitial) {
             BlocProvider.of<AccountDetailsCubit>(context)
-                .loadAccountTransaction(account);
+                .loadAccountTransaction(account.id);
             return const Center(
               child: CircularProgressIndicator.adaptive(),
             );

@@ -12,15 +12,14 @@ part 'account_details_state.dart';
 class AccountDetailsCubit extends Cubit<AccountDetailsState> {
   AccountDetailsCubit() : super(AccountDetailsInitial());
 
-  void loadAccountTransaction(Account account) async {
+  List<TransactionRecord>? transactionRecords;
+
+  void loadAccountTransaction(String accountId) async {
     try {
-      final transactionRecords =
-          await DatabaseHelper.getAccountTransactionRecords(account.id);
-      if (transactionRecords != null) {
-        emit(AccountTransactionsLoaded(transactionRecords));
-      } else {
-        emit(NoAccountTransactions());
-      }
+      transactionRecords =
+          await DatabaseHelper.getAccountTransactionRecords(accountId);
+      final account = await DatabaseHelper.getAccountById(accountId);
+      emit(AccountTransactionsLoaded(account, transactionRecords));
     } catch (e) {
       AccountDetailsError(e.toString());
     }
@@ -39,8 +38,6 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
     try {
       await DatabaseHelper.editAccount(editedAccount);
       final updatedGoal = await DatabaseHelper.getAccountById(accountId);
-      final transactionRecords =
-          await DatabaseHelper.getAccountTransactionRecords(account.id);
       emit(AccountEdited(updatedGoal, transactionRecords));
     } catch (e) {
       emit(AccountDetailsError(e.toString()));
