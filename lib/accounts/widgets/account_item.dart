@@ -68,7 +68,7 @@ class AccountItem extends StatelessWidget {
                     builder: (context, snapshot) {
                       if (snapshot.connectionState == ConnectionState.done) {
                         return Text(
-                          snapshot.data.toString(),
+                          currencyFormatter.format(snapshot.data),
                           style:
                               Theme.of(context).textTheme.bodyMedium!.copyWith(
                                     color: snapshot.data! >= 0

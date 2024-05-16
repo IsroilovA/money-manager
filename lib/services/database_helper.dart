@@ -123,6 +123,7 @@ class DatabaseHelper {
       Account account, double previousBalance) async {
     final db = await _openDB();
 
+    //create balance adjustment record
     final record = TransactionRecord(
         date: DateTime.now(),
         amount: account.balance - previousBalance,
