@@ -77,13 +77,11 @@ class _TabsScreenState extends State<TabsScreen> {
           } else if (state is TabsAccountsLoaded) {
             return IndexedStack(
               index: selectedTab,
-              children: [
-                HomeScreen(
-                  accounts: state.accounts,
-                ),
-                const StatisticsScreen(),
-                const GoalsScreen(),
-                AccountsScreen(accounts: state.accounts)
+              children: const [
+                HomeScreen(),
+                StatisticsScreen(),
+                GoalsScreen(),
+                AccountsScreen()
               ],
             );
           } else if (state is TabsError) {

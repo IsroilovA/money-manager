@@ -1,7 +1,7 @@
 import 'dart:async';
 
-import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/add_transaction/add_edit_transaction_screen.dart';
 import 'package:money_manager/data/models/account.dart';
@@ -14,19 +14,7 @@ class TabsCubit extends Cubit<TabsState> {
   TabsCubit() : super(TabsInitial());
 
   int pageIndex = 0;
-
-  // void checkForAccounts() async {
-  //   try {
-  //     final accountExists = await DatabaseHelper.hasAccounts();
-  //     if (accountExists) {
-  //       emit(TabsLoaded());
-  //     } else {
-  //       emit(TabsNoAccounts());
-  //     }
-  //   } catch (e) {
-  //     emit(TabsError(e.toString()));
-  //   }
-  // }
+  List<Account> accounts = [];
 
   Future<double> getAccountBalance(String id) async {
     return (await DatabaseHelper.getAccountById(id)).balance;
@@ -34,8 +22,9 @@ class TabsCubit extends Cubit<TabsState> {
 
   void loadAccounts() async {
     try {
-      final accounts = await DatabaseHelper.getAllAccounts();
-      if (accounts != null && accounts.isNotEmpty) {
+      final receivedAccounts = await DatabaseHelper.getAllAccounts();
+      if (receivedAccounts != null) {
+        accounts = receivedAccounts;
         emit(TabsAccountsLoaded(accounts));
       } else {
         emit(TabsNoAccounts());
@@ -65,7 +54,10 @@ class TabsCubit extends Cubit<TabsState> {
   void addTtansaction(BuildContext context, int pageIndex) async {
     final newTransaction = await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(
-        builder: (ctx) => const AddEditTransaction(),
+        builder: (ctx) => BlocProvider.value(
+          value: BlocProvider.of<TabsCubit>(context),
+          child: const AddEditTransaction(),
+        ),
       ),
     );
     if (newTransaction == null) {

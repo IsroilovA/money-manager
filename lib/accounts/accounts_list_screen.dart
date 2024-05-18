@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/accounts/widgets/account_item.dart';
-import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class AccountsScreen extends StatelessWidget {
-  const AccountsScreen({super.key, required this.accounts});
-
-  final List<Account> accounts;
+  const AccountsScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final accounts = context.select((TabsCubit cubit) => cubit.accounts);
     return Padding(
       padding: const EdgeInsets.all(12),
       child: GridView.builder(

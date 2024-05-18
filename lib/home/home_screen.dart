@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/all_transactions/transactions_list_screen.dart';
-import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
@@ -10,9 +9,7 @@ import 'package:money_manager/home/widgets/top_spending_card.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key, required this.accounts});
-
-  final List<Account> accounts;
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -21,6 +18,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
+    final accounts = context.select((TabsCubit cubit) => cubit.accounts);
     Widget buildTransactionsList(
         List<TransactionRecord> transactionRecords, bool isLoading) {
       return Column(
@@ -39,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.of(context).push(
                     MaterialPageRoute(
                       builder: (ctx) => TransactionsListScreen(
-                        accounts: widget.accounts,
+                        accounts: accounts,
                         transactionRecords: transactionRecords,
                       ),
                     ),
@@ -72,7 +70,7 @@ class _HomeScreenState extends State<HomeScreen> {
               itemBuilder: (context, index) {
                 final record = transactionRecords[index];
                 return RecordItem(
-                  accounts: widget.accounts,
+                  accounts: accounts,
                   transactionRecord: record,
                 );
               },

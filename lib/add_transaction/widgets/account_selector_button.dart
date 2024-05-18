@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class AccountSelectorButton extends StatefulWidget {
   const AccountSelectorButton({
@@ -17,9 +18,7 @@ class AccountSelectorButton extends StatefulWidget {
 class _AccountSelectorButtonState extends State<AccountSelectorButton> {
   Account? _account;
 
-  Future<List<Account>?> accounts = DatabaseHelper.getAllAccounts();
-
-  void _openBottomSheet() {
+  void _openBottomSheet(List<Account> accounts) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -48,58 +47,44 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                   ],
                 ),
               ),
-              FutureBuilder(
-                future: accounts,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return const Center(
-                      child: CircularProgressIndicator(),
-                    );
-                  } else {
-                    return Expanded(
-                      child: GridView(
-                        gridDelegate:
-                            const SliverGridDelegateWithFixedCrossAxisCount(
-                          crossAxisCount: 3,
-                          childAspectRatio: 2.2,
+              Expanded(
+                child: GridView(
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    childAspectRatio: 2.2,
+                  ),
+                  children: [
+                    for (final account in accounts)
+                      InkWell(
+                        onTap: () {
+                          setState(() {
+                            _account = account;
+                          });
+                          widget.onAccountChanged(account);
+                          Navigator.of(context).pop();
+                        },
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            border: Border.all(
+                              width: 0.3,
+                            ),
+                          ),
+                          child: Center(
+                              child: Text(
+                            account.name,
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodySmall!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onSurfaceVariant),
+                          )),
                         ),
-                        children: [
-                          for (final account in snapshot.data!)
-                            InkWell(
-                              onTap: () {
-                                setState(() {
-                                  _account = account;
-                                });
-                                widget.onAccountChanged(account);
-                                Navigator.of(context).pop();
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .surfaceVariant,
-                                  border: Border.all(
-                                    width: 0.3,
-                                  ),
-                                ),
-                                child: Center(
-                                    child: Text(
-                                  account.name,
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodySmall!
-                                      .copyWith(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .onSurfaceVariant),
-                                )),
-                              ),
-                            )
-                        ],
-                      ),
-                    );
-                  }
-                },
+                      )
+                  ],
+                ),
               ),
             ],
           ),
@@ -110,6 +95,7 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
 
   @override
   Widget build(BuildContext context) {
+    final accounts = context.select((TabsCubit cubit) => cubit.accounts);
     Widget content = const Text("");
     if (_account != null) {
       content = Text(_account!.name);
@@ -123,7 +109,9 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
         ),
       ),
       child: TextButton(
-          onPressed: _openBottomSheet,
+          onPressed: () {
+            _openBottomSheet(accounts);
+          },
           style: TextButton.styleFrom(
             textStyle: Theme.of(context).textTheme.bodyLarge,
             shape:
