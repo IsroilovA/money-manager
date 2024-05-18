@@ -34,8 +34,8 @@ class TransactionsListScreen extends StatelessWidget {
           if (state is TabsTransactionDeleted ||
               state is TabsAccountsLoaded ||
               state is TabsTransactionAdded) {
+            BlocProvider.of<HomeCubit>(context).loadTransactions();
             return BlocBuilder<HomeCubit, HomeState>(builder: (context, state) {
-              BlocProvider.of<HomeCubit>(context).loadTransactions();
               if (state is HomeTransactionsLoading) {
                 return const Center(
                   child: CircularProgressIndicator.adaptive(),

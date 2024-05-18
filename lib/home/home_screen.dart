@@ -124,18 +124,24 @@ class _HomeScreenState extends State<HomeScreen> {
                 buildWhen: (previous, current) {
                   if (current is TabsTransactionDeleted ||
                       current is TabsAccountsLoaded ||
-                      current is TabsLoading) {
+                      current is TabsLoading ||
+                      current is TabsTransactionAdded) {
                     return true;
                   }
                   return false;
                 },
                 builder: (context, state) {
                   if (state is TabsTransactionDeleted ||
-                      state is TabsAccountsLoaded) {
+                      state is TabsAccountsLoaded ||
+                      state is TabsTransactionAdded) {
+                    BlocProvider.of<HomeCubit>(context).loadTransactions();
                     return BlocBuilder<HomeCubit, HomeState>(
                       builder: (context, state) {
-                        BlocProvider.of<HomeCubit>(context).loadTransactions();
-                        if (state is HomeTransactionsLoading) {
+                        if (state is HomeInitial) {
+                          BlocProvider.of<HomeCubit>(context)
+                              .loadTransactions();
+                          return buildTransactionsList([], true);
+                        } else if (state is HomeTransactionsLoading) {
                           return buildTransactionsList([], true);
                         } else if (state is HomeNoTransactions) {
                           return buildTransactionsList([], false);

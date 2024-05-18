@@ -6,7 +6,7 @@ import 'package:money_manager/services/database_helper.dart';
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeTransactionsLoading());
+  HomeCubit() : super(HomeInitial());
 
   double totalBalance = 0.0;
   double totalExpense = 0.0;
@@ -21,6 +21,7 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   void loadTransactions() async {
+    emit(HomeTransactionsLoading());
     try {
       final transactions = await DatabaseHelper.getAllTransactionRecords();
       if (transactions != null && transactions.isNotEmpty) {
