@@ -29,105 +29,62 @@ class RecordItem extends StatelessWidget {
           ),
           key: ValueKey(transactionRecord.id),
           child: Material(
-              color: Theme.of(context).colorScheme.surfaceVariant,
-              borderRadius: BorderRadius.circular(9),
-              child: switch (transactionRecord.recordType) {
-                RecordType.transfer => ListTile(
-                    leading: const Icon(Icons.swap_horiz_rounded),
-                    title: Text(
-                        "${accounts.firstWhere((account) => account.id == transactionRecord.accountId).name} -> ${accounts.firstWhere((account) => account.id == transactionRecord.transferAccount2Id).name}"),
-                    subtitle: transactionRecord.note != null
-                        ? Text(
-                            "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
-                        : Text(transactionRecord.formattedDate),
-                    trailing: Text(
-                      transactionRecord.formattedAmount,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Colors.blue,
-                          ),
-                    ),
+            color: Theme.of(context).colorScheme.surfaceVariant,
+            borderRadius: BorderRadius.circular(9),
+            child: switch (transactionRecord.recordType) {
+              RecordType.transfer => ListTile(
+                  leading: const Icon(Icons.swap_horiz_rounded),
+                  title: Text(
+                      "${accounts.firstWhere((account) => account.id == transactionRecord.accountId).name} -> ${accounts.firstWhere((account) => account.id == transactionRecord.transferAccount2Id).name}"),
+                  subtitle: transactionRecord.note != null
+                      ? Text(
+                          "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
+                      : Text(transactionRecord.formattedDate),
+                  trailing: Text(
+                    transactionRecord.formattedAmount,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Colors.blue,
+                        ),
                   ),
-                RecordType.balanceAdjustment => ListTile(
-                    leading: const Icon(Icons.edit),
-                    title: const Text("Balance Adjustment"),
-                    subtitle: transactionRecord.note != null
-                        ? Text(
-                            "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
-                        : Text(transactionRecord.formattedDate),
-                    trailing: Text(
-                      transactionRecord.formattedAmount,
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                            color: Colors.blue,
-                          ),
-                    ),
+                ),
+              RecordType.balanceAdjustment => ListTile(
+                  leading: const Icon(Icons.edit),
+                  title: const Text("Balance Adjustment"),
+                  subtitle: transactionRecord.note != null
+                      ? Text(
+                          "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
+                      : Text(transactionRecord.formattedDate),
+                  trailing: Text(
+                    transactionRecord.formattedAmount,
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                          color: Colors.blue,
+                        ),
                   ),
-                _ => ListTile(
-                    leading: Icon(
-                        transactionRecord.recordType == RecordType.income
-                            ? categoryIcons[transactionRecord.incomeCategory]
-                            : categoryIcons[transactionRecord.expenseCategory]),
-                    title: Text(transactionRecord.recordType ==
-                            RecordType.income
-                        ? transactionRecord.incomeCategory!.name.capitalize()
-                        : transactionRecord.expenseCategory!.name.capitalize()),
-                    subtitle: transactionRecord.note != null
-                        ? Text(
-                            "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
-                        : Text(transactionRecord.formattedDate),
-                    trailing: Text(
+                ),
+              _ => ListTile(
+                  leading: Icon(
                       transactionRecord.recordType == RecordType.income
-                          ? '+ ${transactionRecord.formattedAmount}'
-                          : '- ${transactionRecord.formattedAmount}',
-                      style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                          color:
-                              transactionRecord.recordType == RecordType.income
-                                  ? Colors.green
-                                  : Colors.red),
-                    ),
-                  )
-              }
-
-              // transactionRecord.recordType == RecordType.transfer
-              //     ? ListTile(
-              //         leading: const Icon(Icons.swap_horiz_rounded),
-              //         title: Text(
-              //             "${accounts.firstWhere((account) => account.id == transactionRecord.accountId).name} -> ${accounts.firstWhere((account) => account.id == transactionRecord.transferAccount2Id).name}"),
-              //         subtitle: transactionRecord.note != null
-              //             ? Text(
-              //                 "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
-              //             : Text(transactionRecord.formattedDate),
-              //         trailing: Text(
-              //           transactionRecord.formattedAmount,
-              //           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              //                 color: Colors.blue,
-              //               ),
-              //         ),
-              //       )
-              //     : ListTile(
-              //         leading: Icon(
-              //             transactionRecord.recordType == RecordType.income
-              //                 ? categoryIcons[transactionRecord.incomeCategory]
-              //                 : categoryIcons[transactionRecord.expenseCategory]),
-              //         title: Text(transactionRecord.recordType ==
-              //                 RecordType.income
-              //             ? transactionRecord.incomeCategory!.name.capitalize()
-              //             : transactionRecord.expenseCategory!.name.capitalize()),
-              //         subtitle: transactionRecord.note != null
-              //             ? Text(
-              //                 "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
-              //             : Text(transactionRecord.formattedDate),
-              //         trailing: Text(
-              //           transactionRecord.recordType == RecordType.income
-              //               ? '+ ${transactionRecord.formattedAmount}'
-              //               : '- ${transactionRecord.formattedAmount}',
-              //           style: Theme.of(context).textTheme.bodySmall!.copyWith(
-              //               color:
-              //                   transactionRecord.recordType == RecordType.income
-              //                       ? Colors.green
-              //                       : Colors.red),
-              //         ),
-              //       ),
-              ),
+                          ? categoryIcons[transactionRecord.incomeCategory]
+                          : categoryIcons[transactionRecord.expenseCategory]),
+                  title: Text(transactionRecord.recordType == RecordType.income
+                      ? transactionRecord.incomeCategory!.name.capitalize()
+                      : transactionRecord.expenseCategory!.name.capitalize()),
+                  subtitle: transactionRecord.note != null
+                      ? Text(
+                          "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
+                      : Text(transactionRecord.formattedDate),
+                  trailing: Text(
+                    transactionRecord.recordType == RecordType.income
+                        ? '+ ${transactionRecord.formattedAmount}'
+                        : '- ${transactionRecord.formattedAmount}',
+                    style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                        color: transactionRecord.recordType == RecordType.income
+                            ? Colors.green
+                            : Colors.red),
+                  ),
+                )
+            },
+          ),
         ),
         const SizedBox(height: 10),
       ],

@@ -40,5 +40,6 @@ final class TabsTransactionAdded extends TabsState {
 
 
 final class TabsTransactionDeleted extends TabsState {
-  TabsTransactionDeleted();
+  final TransactionRecord transactionRecord;
+  TabsTransactionDeleted(this.transactionRecord);
 }

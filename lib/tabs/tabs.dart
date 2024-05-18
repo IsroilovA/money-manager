@@ -35,9 +35,17 @@ class _TabsScreenState extends State<TabsScreen> {
           if (state is TabsTransactionDeleted) {
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text("Transaction deleted"),
-                duration: Duration(seconds: 3),
+              SnackBar(
+                content: const Text("Transaction deleted"),
+                duration: const Duration(seconds: 3),
+                action: SnackBarAction(
+                  label: "Undo",
+                  onPressed: () {
+                    context
+                        .read<TabsCubit>()
+                        .addTransactionBack(state.transactionRecord);
+                  },
+                ),
               ),
             );
           } else if (state is TabsTransactionAdded) {

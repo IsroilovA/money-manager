@@ -36,9 +36,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (ctx) => TransactionsListScreen(
-                        accounts: accounts,
-                        transactionRecords: transactionRecords,
+                      builder: (ctx) => MultiBlocProvider(
+                        providers: [
+                          BlocProvider.value(
+                            value: BlocProvider.of<TabsCubit>(context),
+                          ),
+                          BlocProvider(
+                            create: (context) => HomeCubit(),
+                          ),
+                        ],
+                        child: TransactionsListScreen(
+                          accounts: accounts,
+                          transactionRecords: transactionRecords,
+                        ),
                       ),
                     ),
                   );

@@ -45,7 +45,20 @@ class TabsCubit extends Cubit<TabsState> {
     emit(TabsLoading());
     try {
       await DatabaseHelper.deleteTransationRecord(transactionRecord);
-      emit(TabsTransactionDeleted());
+      emit(TabsTransactionDeleted(transactionRecord));
+    } catch (e) {
+      emit(TabsError(e.toString()));
+    }
+  }
+
+  void addTransactionBack(TransactionRecord transactionRecord) async {
+    try {
+      if (transactionRecord.recordType == RecordType.transfer) {
+        await DatabaseHelper.addTransferTransaction(transactionRecord);
+      } else {
+        await DatabaseHelper.addTransationRecord(transactionRecord);
+      }
+      emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
       emit(TabsError(e.toString()));
     }
