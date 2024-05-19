@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/add_transaction/add_edit_transaction_screen.dart';
+import 'package:money_manager/add_transaction/cubit/add_transaction_cubit.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/database_helper.dart';
@@ -64,11 +65,58 @@ class TabsCubit extends Cubit<TabsState> {
     }
   }
 
+  void editTransaction(
+      BuildContext context, TransactionRecord transactionRecord) async {
+    final editedTransaction =
+        await Navigator.of(context).push<TransactionRecord>(
+      MaterialPageRoute(
+        builder: (ctx) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: BlocProvider.of<TabsCubit>(context),
+            ),
+            BlocProvider(
+              create: (context) => AddTransactionCubit(),
+            ),
+          ],
+          child: AddEditTransaction(transactionRecord: transactionRecord),
+        ),
+      ),
+    );
+    if (editedTransaction == null) {
+      return;
+    }
+    var updatedTransaction = TransactionRecord(
+      date: editedTransaction.date,
+      note: editedTransaction.note,
+      amount: editedTransaction.amount,
+      recordType: editedTransaction.recordType,
+      accountId: editedTransaction.accountId,
+      expenseCategory: editedTransaction.expenseCategory,
+      incomeCategory: editedTransaction.incomeCategory,
+      transferAccount2Id: editedTransaction.transferAccount2Id,
+      id: transactionRecord.id,
+    );
+    try {
+      await DatabaseHelper.editTransaction(updatedTransaction);
+      emit(TabsTransactionAdded(0));
+    } catch (e) {
+      emit(TabsError(e.toString()));
+    }
+  }
+
   void addTtansaction(BuildContext context, int pageIndex) async {
     final newTransaction = await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(
-        builder: (ctx) => BlocProvider.value(
-          value: BlocProvider.of<TabsCubit>(context),
+        builder: (ctx) => MultiBlocProvider(
+          providers: [
+            BlocProvider.value(
+              value: BlocProvider.of<TabsCubit>(context),
+            ),
+            BlocProvider(
+              create: (context) => AddTransactionCubit(),
+            ),
+          ],
           child: const AddEditTransaction(),
         ),
       ),

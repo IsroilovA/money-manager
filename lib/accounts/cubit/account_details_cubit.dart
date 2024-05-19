@@ -1,7 +1,5 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:meta/meta.dart';
 import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
@@ -27,19 +25,21 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
 
   void editAccount(BuildContext context, String accountId) async {
     final account = await DatabaseHelper.getAccountById(accountId);
-    final editedAccount = await Navigator.of(context).push<Account>(
-      MaterialPageRoute(
-        builder: (ctx) => AddEditAccountScreen(account: account),
-      ),
-    );
-    if (editedAccount == null) {
-      return;
-    }
-    try {
-      await DatabaseHelper.editAccount(editedAccount, account.balance);
-      emit(AccountEdited(editedAccount, transactionRecords));
-    } catch (e) {
-      emit(AccountDetailsError(e.toString()));
+    if (context.mounted) {
+      final editedAccount = await Navigator.of(context).push<Account>(
+        MaterialPageRoute(
+          builder: (ctx) => AddEditAccountScreen(account: account),
+        ),
+      );
+      if (editedAccount == null) {
+        return;
+      }
+      try {
+        await DatabaseHelper.editAccount(editedAccount, account.balance);
+        emit(AccountEdited(editedAccount, transactionRecords));
+      } catch (e) {
+        emit(AccountDetailsError(e.toString()));
+      }
     }
   }
 

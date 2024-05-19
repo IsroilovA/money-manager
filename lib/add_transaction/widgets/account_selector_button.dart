@@ -7,9 +7,11 @@ class AccountSelectorButton extends StatefulWidget {
   const AccountSelectorButton({
     super.key,
     required this.onAccountChanged,
+    this.selectedAccountId,
   });
 
-  final ValueChanged<Account> onAccountChanged;
+  final ValueChanged<String> onAccountChanged;
+  final String? selectedAccountId;
 
   @override
   State<AccountSelectorButton> createState() => _AccountSelectorButtonState();
@@ -60,7 +62,7 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                           setState(() {
                             _account = account;
                           });
-                          widget.onAccountChanged(account);
+                          widget.onAccountChanged(account.id);
                           Navigator.of(context).pop();
                         },
                         child: Container(
@@ -96,6 +98,10 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
   @override
   Widget build(BuildContext context) {
     final accounts = context.select((TabsCubit cubit) => cubit.accounts);
+    if (widget.selectedAccountId != null) {
+      _account = accounts
+          .firstWhere((account) => account.id == widget.selectedAccountId);
+    }
     Widget content = const Text("");
     if (_account != null) {
       content = Text(_account!.name);

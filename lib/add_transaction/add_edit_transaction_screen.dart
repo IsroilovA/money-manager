@@ -1,9 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/add_transaction/cubit/add_transaction_cubit.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/transaction_form.dart';
 
 class AddEditTransaction extends StatefulWidget {
-  const AddEditTransaction({super.key});
+  const AddEditTransaction({super.key, this.transactionRecord});
+
+  final TransactionRecord? transactionRecord;
 
   @override
   State<AddEditTransaction> createState() {
@@ -12,9 +16,11 @@ class AddEditTransaction extends StatefulWidget {
 }
 
 class _AddEditTransactionState extends State<AddEditTransaction> {
-  RecordType _recordType = RecordType.income;
   @override
   Widget build(BuildContext context) {
+    final recordType = widget.transactionRecord == null
+        ? context.select((AddTransactionCubit cubit) => cubit.recordType)
+        : widget.transactionRecord!.recordType;
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Transaction'),
@@ -30,11 +36,8 @@ class _AddEditTransactionState extends State<AddEditTransaction> {
               indicatorSize: TabBarIndicatorSize.tab,
               //remove deivder
               dividerHeight: 0,
-              onTap: (index) {
-                setState(() {
-                  _recordType = RecordType.values[index];
-                });
-              },
+              onTap: BlocProvider.of<AddTransactionCubit>(context)
+                  .selectRecordType,
               indicator: BoxDecoration(
                 border: Border.all(
                     width: 1, color: Theme.of(context).colorScheme.primary),
@@ -53,20 +56,9 @@ class _AddEditTransactionState extends State<AddEditTransaction> {
               ],
             ),
             Expanded(
-              child: TabBarView(
-                //to not change the tabs when swiped
-                physics: const NeverScrollableScrollPhysics(),
-                children: [
-                  TransactionForm(
-                    recordType: _recordType,
-                  ),
-                  TransactionForm(
-                    recordType: _recordType,
-                  ),
-                  TransactionForm(
-                    recordType: _recordType,
-                  ),
-                ],
+              child: TransactionForm(
+                recordType: recordType,
+                transactionRecord: widget.transactionRecord,
               ),
             ),
           ],

@@ -36,7 +36,9 @@ class AccountItem extends StatelessWidget {
             ),
           ),
         );
-        BlocProvider.of<TabsCubit>(context).loadAccounts();
+        if (context.mounted) {
+          BlocProvider.of<TabsCubit>(context).loadAccounts();
+        }
       },
       child: Card(
         color: Theme.of(context).colorScheme.primaryContainer,

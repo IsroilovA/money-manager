@@ -94,7 +94,12 @@ class _TabsScreenState extends State<TabsScreen> {
             );
           } else if (state is TabsError) {
             return Center(
-              child: Text("Error: ${state.message}"),
+              child: Text(
+                "Error: ${state.message}",
+                style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
+              ),
             );
           } else {
             return const Center(child: Text("Something is wrond"));

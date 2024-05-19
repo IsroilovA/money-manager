@@ -45,7 +45,6 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
     } else {
       newAccount = Account(balance: enteredBalance, name: _nameController.text);
     }
-
     if (hasPagePushed) {
       Navigator.of(context).pop(newAccount);
     } else {

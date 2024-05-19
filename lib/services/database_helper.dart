@@ -241,6 +241,14 @@ class DatabaseHelper {
     await _updateAccountBalanceDelete(transactionRecord);
   }
 
+  static Future<void> editTransaction(
+      TransactionRecord transactionRecord) async {
+    final db = await _openDB();
+
+    await db.update("transactions", transactionRecord.toJson(),
+        where: 'id = ?', whereArgs: [transactionRecord.id]);
+  }
+
   static Future<List<TransactionRecord>?> getAccountTransactionRecords(
       String accountId) async {
     final db = await _openDB();

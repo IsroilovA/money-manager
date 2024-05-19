@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/add_transaction/cubit/add_transaction_cubit.dart';
 import 'package:money_manager/add_transaction/widgets/category_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 
 class CategorySelectorButton extends StatefulWidget {
   const CategorySelectorButton({
@@ -8,19 +11,28 @@ class CategorySelectorButton extends StatefulWidget {
     required this.recordType,
     this.onExpenseChanged,
     this.onIncomeChanged,
+    this.selectedCategory,
   });
 
   final RecordType recordType;
   final ValueChanged<ExpenseCategory>? onExpenseChanged;
   final ValueChanged<IncomeCategory>? onIncomeChanged;
+  final Enum? selectedCategory;
 
   @override
   State<CategorySelectorButton> createState() => _CategorySelectorButtonState();
 }
 
 class _CategorySelectorButtonState extends State<CategorySelectorButton> {
-  ExpenseCategory? _expenseCategory;
-  IncomeCategory? _incomeCategory;
+  Enum? _selectedCategory;
+
+  @override
+  void initState() {
+    if (widget.selectedCategory != null) {
+      _selectedCategory = widget.selectedCategory;
+    }
+    super.initState();
+  }
 
   void _openBottomSheet() {
     showModalBottomSheet(
@@ -63,7 +75,7 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
                         CategoryItem(
                             onCLick: () {
                               setState(() {
-                                _expenseCategory = category;
+                                _selectedCategory = category;
                               });
                               widget.onExpenseChanged!(category);
                               Navigator.of(context).pop();
@@ -75,13 +87,13 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
                         CategoryItem(
                             onCLick: () {
                               setState(() {
-                                _incomeCategory = category;
+                                _selectedCategory = category;
                               });
                               widget.onIncomeChanged!(category);
                               Navigator.of(context).pop();
                             },
                             icon: categoryIcons[category]!,
-                            category: category.name)
+                            category: category.name.capitalize())
                   ],
                 ),
               ),
@@ -95,11 +107,8 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
   @override
   Widget build(BuildContext context) {
     Widget content = const Text("");
-    if (widget.recordType == RecordType.expense && _expenseCategory != null) {
-      content = Text(_expenseCategory!.name);
-    } else if (widget.recordType == RecordType.income &&
-        _incomeCategory != null) {
-      content = Text(_incomeCategory!.name);
+    if (_selectedCategory != null) {
+      content = Text(_selectedCategory!.name.capitalize());
     }
     return Container(
       decoration: BoxDecoration(
@@ -109,15 +118,26 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
               color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
         ),
       ),
-      child: TextButton(
-          onPressed: _openBottomSheet,
-          style: TextButton.styleFrom(
-            textStyle: Theme.of(context).textTheme.bodyLarge,
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            alignment: Alignment.centerLeft,
-          ),
-          child: content),
+      child: BlocListener<AddTransactionCubit, AddTransactionState>(
+        listener: (context, state) {
+          if (state is RecordTypeChanged) {
+            setState(
+              () {
+                _selectedCategory = null;
+              },
+            );
+          }
+        },
+        child: TextButton(
+            onPressed: _openBottomSheet,
+            style: TextButton.styleFrom(
+              textStyle: Theme.of(context).textTheme.bodyLarge,
+              shape:
+                  const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+              alignment: Alignment.centerLeft,
+            ),
+            child: content),
+      ),
     );
   }
 }
