@@ -16,9 +16,11 @@ class RecordItem extends StatelessWidget {
       children: [
         InkWell(
           onTap: () {
-            context
-                .read<TabsCubit>()
-                .editTransaction(context, transactionRecord);
+            if (transactionRecord.recordType != RecordType.balanceAdjustment) {
+              context
+                  .read<TabsCubit>()
+                  .editTransaction(context, transactionRecord);
+            }
           },
           child: Dismissible(
             onDismissed: (direction) {
@@ -55,7 +57,8 @@ class RecordItem extends StatelessWidget {
                   ),
                 RecordType.balanceAdjustment => ListTile(
                     leading: const Icon(Icons.edit),
-                    title: const Text("Balance Adjustment"),
+                    title: Text(
+                        "${accounts.firstWhere((account) => account.id == transactionRecord.accountId).name} Balance Adjustment"),
                     subtitle: transactionRecord.note != null
                         ? Text(
                             "${transactionRecord.note!} | ${transactionRecord.formattedDate}")
