@@ -23,15 +23,15 @@ enum RecordType {
 }
 
 const categoryColors = {
-  ExpenseCategory.food: Colors.red,
-  ExpenseCategory.savings: Colors.brown,
-  ExpenseCategory.leisure: Colors.blue,
-  ExpenseCategory.shopping: Colors.green,
-  ExpenseCategory.travel: Colors.orange,
-  IncomeCategory.salary: Colors.purple,
-  IncomeCategory.gift: Colors.pink,
-  IncomeCategory.investment: Colors.deepPurple,
-  IncomeCategory.freelance: Colors.amber,
+  ExpenseCategory.food: Color.fromRGBO(255, 82, 82, 1),
+  ExpenseCategory.savings: Color.fromARGB(255, 162, 136, 127),
+  ExpenseCategory.leisure: Color.fromRGBO(64, 196, 255, 1),
+  ExpenseCategory.shopping: Color.fromRGBO(178, 255, 89, 1),
+  ExpenseCategory.travel: Color.fromRGBO(255, 171, 64, 1),
+  IncomeCategory.salary: Color.fromARGB(255, 179, 135, 255),
+  IncomeCategory.gift: Color.fromARGB(255, 252, 126, 168),
+  IncomeCategory.investment: Color.fromRGBO(124, 77, 255, 1),
+  IncomeCategory.freelance: Color.fromRGBO(255, 215, 64, 1),
 };
 
 const categoryIcons = {

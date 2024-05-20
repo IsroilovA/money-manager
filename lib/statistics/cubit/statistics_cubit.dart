@@ -10,7 +10,7 @@ class PieChartData {
   final double amount;
   PieChartData(this.category, this.amount);
 
-  MaterialColor get color {
+  Color get color {
     return categoryColors.entries
         .firstWhere((element) => element.key.name == category)
         .value;
