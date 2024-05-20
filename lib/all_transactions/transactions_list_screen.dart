@@ -5,13 +5,27 @@ import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class TransactionsListScreen extends StatefulWidget {
-  const TransactionsListScreen({super.key});
+  const TransactionsListScreen({super.key, this.filterIndex});
+
+  final int? filterIndex;
 
   @override
   State<TransactionsListScreen> createState() => _TransactionsListScreenState();
 }
 
 class _TransactionsListScreenState extends State<TransactionsListScreen> {
+  @override
+  void initState() {
+    selectedIndex = widget.filterIndex;
+    super.initState();
+  }
+
+  int? selectedIndex;
+  List filters = [
+    "Incomes",
+    "Expenses",
+    "Transfers",
+  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -32,50 +46,92 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
         builder: (context, state) {
           if (state is TabsTransactionDeleted ||
               state is TabsTransactionAdded ||
-              state is TabsAccountsLoaded) {
-            BlocProvider.of<HomeCubit>(context).loadTransactions();
-            return BlocBuilder<HomeCubit, HomeState>(
-              builder: (context, state) {
-                if (state is HomeNoTransactions) {
-                  return Center(
-                    child: Text(
-                      "No records yet",
-                      style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.onBackground,
-                          ),
+              state is TabsAccountsLoaded ||
+              state is TabsPageChanged) {
+            BlocProvider.of<HomeCubit>(context)
+                .loadTransactions(filter: selectedIndex);
+            return Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: List.generate(
+                    filters.length,
+                    (index) => ChoiceChip(
+                      label: Text(
+                        filters[index],
+                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                            color: Theme.of(context).colorScheme.onBackground),
+                      ),
+                      selected: selectedIndex == index,
+                      onSelected: (isSelected) {
+                        setState(
+                          () {
+                            selectedIndex = isSelected ? index : null;
+                          },
+                        );
+                      },
                     ),
-                  );
-                } else if (state is HomeTransactionsLoading) {
-                  return const Center(
-                      child: CircularProgressIndicator.adaptive());
-                } else if (state is HomeTransactionsLoaded) {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: state.transactionRecords.length,
-                    itemBuilder: (context, index) {
-                      final record = state.transactionRecords[index];
-                      return RecordItem(
-                        transactionRecord: record,
+                  ),
+                ),
+                BlocBuilder<HomeCubit, HomeState>(
+                  builder: (context, state) {
+                    if (state is HomeNoTransactions) {
+                      return Center(
+                        child: Text(
+                          "No records yet",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                              ),
+                        ),
                       );
-                    },
-                  );
-                } else if (state is HomeError) {
-                  return Center(
-                    child: Text(
-                      "Error: ${state.message}",
-                      style: Theme.of(context).textTheme.titleLarge,
-                    ),
-                  );
-                } else {
-                  return Center(
-                    child: Text(
-                      "Something is wrong",
-                      style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground),
-                    ),
-                  );
-                }
-              },
+                    } else if (state is HomeTransactionsLoading) {
+                      return const Center(
+                          child: CircularProgressIndicator.adaptive());
+                    } else if (state is HomeTransactionsLoaded) {
+                      return ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: state.transactionRecords.length,
+                        itemBuilder: (context, index) {
+                          final record = state.transactionRecords[index];
+                          return RecordItem(
+                            transactionRecord: record,
+                          );
+                        },
+                      );
+                    } else if (state is HomeError) {
+                      return Center(
+                        child: Text(
+                          "Error: ${state.message}",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleLarge!
+                              .copyWith(
+                                color:
+                                    Theme.of(context).colorScheme.onBackground,
+                              ),
+                        ),
+                      );
+                    } else {
+                      return Center(
+                        child: Text(
+                          "Something is wrong",
+                          style: Theme.of(context)
+                              .textTheme
+                              .titleMedium!
+                              .copyWith(
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground),
+                        ),
+                      );
+                    }
+                  },
+                ),
+              ],
             );
           } else if (state is TabsLoading) {
             return const Center(child: CircularProgressIndicator.adaptive());

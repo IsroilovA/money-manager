@@ -272,6 +272,25 @@ class DatabaseHelper {
     );
   }
 
+  static Future<List<TransactionRecord>?> getTransactionRecordsByRecordType(
+      RecordType recordType) async {
+    final db = await _openDB();
+
+    final List<Map<String, dynamic>> maps = await db.query("transactions",
+        where: 'recordType = ?',
+        orderBy: 'date DESC',
+        whereArgs: [recordType.name]);
+
+    if (maps.isEmpty) {
+      return null;
+    }
+
+    return List.generate(
+      maps.length,
+      (index) => TransactionRecord.fromJson(maps[index]),
+    );
+  }
+
   static Future<double> getTotalAmountByRecordType(
       RecordType recordType) async {
     final db = await _openDB();

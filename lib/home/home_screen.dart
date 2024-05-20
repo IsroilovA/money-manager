@@ -64,9 +64,9 @@ class _HomeScreenState extends State<HomeScreen> {
                             BlocProvider.value(
                               value: BlocProvider.of<TabsCubit>(context),
                             ),
-                            BlocProvider.value(
-                              value: BlocProvider.of<HomeCubit>(context),
-                            ),
+                            BlocProvider(
+                              create: (context) => HomeCubit(),
+                            )
                           ],
                           child: const TransactionsListScreen(),
                         ),
