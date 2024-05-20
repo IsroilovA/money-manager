@@ -282,57 +282,34 @@ class DatabaseHelper {
     } else {
       if (initialTransactionRecord.recordType ==
           updatedTransactionRecord.recordType) {
-        if (initialTransactionRecord.accountId ==
-                updatedTransactionRecord.accountId &&
-            initialTransactionRecord.transferAccount2Id ==
-                updatedTransactionRecord.transferAccount2Id) {
-          final accountSender =
-              await getAccountById(updatedTransactionRecord.accountId);
-          final accountReceiver = await getAccountById(
-              updatedTransactionRecord.transferAccount2Id!);
-          double updatedSenderAmount = 0.0;
-          double updatedReceiverAmount = 0.0;
-          updatedSenderAmount = accountSender.balance -
-              (updatedTransactionRecord.amount -
-                  initialTransactionRecord.amount);
-          updatedReceiverAmount = accountReceiver.balance +
-              (updatedTransactionRecord.amount -
-                  initialTransactionRecord.amount);
-          var batch = db.batch();
-          batch.update("accounts", {'balance': updatedSenderAmount},
-              where: 'id = ?', whereArgs: [accountSender.id]);
-          batch.update("accounts", {'balance': updatedReceiverAmount},
-              where: 'id = ?', whereArgs: [accountReceiver.id]);
-          await batch.commit();
-        } else if (initialTransactionRecord.accountId ==
-                updatedTransactionRecord.accountId &&
-            initialTransactionRecord.transferAccount2Id !=
-                updatedTransactionRecord.transferAccount2Id) {
-          final accountSender =
-              await getAccountById(updatedTransactionRecord.accountId);
-          final newAccountReceiver = await getAccountById(
-              updatedTransactionRecord.transferAccount2Id!);
-          final oldAccountReceiver = await getAccountById(
-              initialTransactionRecord.transferAccount2Id!);
-          double updatedSenderAmount = 0.0;
-          double updatedNewReceiverAmount = 0.0;
-          double updatedOldReceiverAmount = 0.0;
-          updatedSenderAmount = accountSender.balance -
-              (updatedTransactionRecord.amount -
-                  initialTransactionRecord.amount);
-          updatedNewReceiverAmount =
-              newAccountReceiver.balance + updatedTransactionRecord.amount;
-          updatedOldReceiverAmount =
-              oldAccountReceiver.balance - initialTransactionRecord.amount;
-          var batch = db.batch();
-          batch.update("accounts", {'balance': updatedSenderAmount},
-              where: 'id = ?', whereArgs: [accountSender.id]);
-          batch.update("accounts", {'balance': updatedNewReceiverAmount},
-              where: 'id = ?', whereArgs: [newAccountReceiver.id]);
-          batch.update("accounts", {'balance': updatedOldReceiverAmount},
-              where: 'id = ?', whereArgs: [oldAccountReceiver.id]);
-          await batch.commit();
-        }
+        double updatedOldSenderAmount = 0.0;
+        double updatedNewSenderAmount = 0.0;
+        double updatedOldReceiverAmount = 0.0;
+        double updatedNewReceiverAmount = 0.0;
+        final Account oldAccountSender =
+            await getAccountById(initialTransactionRecord.accountId);
+        updatedOldSenderAmount =
+            oldAccountSender.balance + initialTransactionRecord.amount;
+        await db.update("accounts", {'balance': updatedOldSenderAmount},
+            where: 'id = ?', whereArgs: [oldAccountSender.id]);
+        final Account newAccountSender =
+            await getAccountById(updatedTransactionRecord.accountId);
+        updatedNewSenderAmount =
+            newAccountSender.balance - updatedTransactionRecord.amount;
+        await db.update("accounts", {'balance': updatedNewSenderAmount},
+            where: 'id = ?', whereArgs: [newAccountSender.id]);
+        final Account newAccountReceiver =
+            await getAccountById(updatedTransactionRecord.transferAccount2Id!);
+        updatedNewReceiverAmount =
+            newAccountReceiver.balance + updatedTransactionRecord.amount;
+        await db.update("accounts", {'balance': updatedNewReceiverAmount},
+            where: 'id = ?', whereArgs: [newAccountReceiver.id]);
+        final Account oldAccountReceiver =
+            await getAccountById(initialTransactionRecord.transferAccount2Id!);
+        updatedOldReceiverAmount =
+            oldAccountReceiver.balance - initialTransactionRecord.amount;
+        await db.update("accounts", {'balance': updatedOldReceiverAmount},
+            where: 'id = ?', whereArgs: [oldAccountReceiver.id]);
       }
     }
   }
