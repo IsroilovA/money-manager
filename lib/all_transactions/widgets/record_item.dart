@@ -1,17 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class RecordItem extends StatelessWidget {
   const RecordItem(
-      {super.key, required this.transactionRecord, required this.accounts});
+      {super.key, required this.transactionRecord});
   final TransactionRecord transactionRecord;
-  final List<Account> accounts;
   @override
   Widget build(BuildContext context) {
+    final accounts = context.select((TabsCubit cubit) => cubit.accounts);
     return Column(
       children: [
         InkWell(

@@ -274,10 +274,15 @@ class DatabaseHelper {
   static Future<double> getTotalAmountByRecordType(
       RecordType recordType) async {
     final db = await _openDB();
+
+    int thirtyDaysAgoTimeStamp = DateTime.now()
+        .subtract(const Duration(days: 30))
+        .millisecondsSinceEpoch;
+
     // Execute SQL query to calculate the total amount based on recordType
     List<Map<String, dynamic>> result = await db.rawQuery(
-        'SELECT SUM(amount) AS totalAmount FROM transactions WHERE recordType = ?',
-        [recordType.name]);
+        'SELECT SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ?',
+        [recordType.name, thirtyDaysAgoTimeStamp]);
 
     // Extract and return the total amount
     double totalAmount = result[0]['totalAmount'] ?? 0.0;

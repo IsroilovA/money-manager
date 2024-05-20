@@ -24,7 +24,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(HomeTransactionsLoading());
     try {
       final transactions = await DatabaseHelper.getAllTransactionRecords();
-      if (transactions != null && transactions.isNotEmpty) {
+      if (transactions != null) {
         emit(HomeTransactionsLoaded(transactions));
       } else {
         emit(HomeNoTransactions());

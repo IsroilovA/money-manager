@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/goals/goals_screen.dart';
+import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/home_screen.dart';
 import 'package:money_manager/accounts/accounts_list_screen.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
@@ -85,11 +86,14 @@ class _TabsScreenState extends State<TabsScreen> {
           } else if (state is TabsAccountsLoaded) {
             return IndexedStack(
               index: selectedTab,
-              children: const [
-                HomeScreen(),
-                StatisticsScreen(),
-                GoalsScreen(),
-                AccountsScreen()
+              children: [
+                BlocProvider(
+                  create: (context) => HomeCubit(),
+                  child: const HomeScreen(),
+                ),
+                const StatisticsScreen(),
+                const GoalsScreen(),
+                const AccountsScreen()
               ],
             );
           } else if (state is TabsError) {

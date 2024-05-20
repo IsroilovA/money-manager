@@ -30,9 +30,9 @@ class _BalanceCardState extends State<BalanceCard> {
           children: [
             Text(
               "Total Balance",
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              style: Theme.of(context).textTheme.headlineLarge!.copyWith(
                     color: Theme.of(context).colorScheme.onPrimary,
-                    fontSize: 19,
+                    fontSize: 25,
                   ),
             ),
             BlocBuilder<TabsCubit, TabsState>(
@@ -53,7 +53,7 @@ class _BalanceCardState extends State<BalanceCard> {
                       context.select((HomeCubit cubit) => cubit.totalBalance);
                   return Text(
                     currencyFormatter.format(totalBalance),
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                   );
@@ -68,15 +68,13 @@ class _BalanceCardState extends State<BalanceCard> {
               },
             ),
             const SizedBox(height: 20),
-            // Container(
-            //   alignment: Alignment.centerLeft,
-            //   child: Text(
-            //     "Monthly Expenses",
-            //     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-            //           color: Theme.of(context).colorScheme.onPrimary,
-            //         ),
-            //   ),
-            // ),
+            Text(
+              "Monthly Expenses",
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                    color: Theme.of(context).colorScheme.onPrimary,
+                  ),
+            ),
+            const SizedBox(height: 20),
             // // Padding(
             //   padding: const EdgeInsets.symmetric(vertical: 3),
             //   child: LinearProgressIndicator(

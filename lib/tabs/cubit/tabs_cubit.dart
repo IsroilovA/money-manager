@@ -40,8 +40,6 @@ class TabsCubit extends Cubit<TabsState> {
     emit(TabsPageChanged(index));
   }
 
-  int get index => pageIndex;
-
   void deleteTransaction(TransactionRecord transactionRecord) async {
     emit(TabsLoading());
     try {

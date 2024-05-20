@@ -5,6 +5,7 @@ import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class AccountDetails extends StatelessWidget {
   const AccountDetails(
@@ -14,6 +15,7 @@ class AccountDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    BlocProvider.of<TabsCubit>(context).loadAccounts();
     void confirmDelition() {
       showWarningAlertDialog(
         context: context,
@@ -66,15 +68,17 @@ class AccountDetails extends StatelessWidget {
                       color: Theme.of(context).colorScheme.onBackground),
                 )
               : Expanded(
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: transactionRecords.length,
-                    itemBuilder: (context, index) {
-                      return RecordItem(
-                        transactionRecord: transactionRecords[index],
-                        accounts: accounts,
-                      );
-                    },
+                  child: BlocProvider.value(
+                    value: BlocProvider.of<TabsCubit>(context),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: transactionRecords.length,
+                      itemBuilder: (context, index) {
+                        return RecordItem(
+                          transactionRecord: transactionRecords[index],
+                        );
+                      },
+                    ),
                   ),
                 )
         ],

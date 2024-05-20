@@ -23,10 +23,10 @@ class AccountItem extends StatelessWidget {
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) => TabsCubit(),
+                  create: (context) => AccountDetailsCubit(),
                 ),
                 BlocProvider(
-                  create: (context) => AccountDetailsCubit(),
+                  create: (context) => TabsCubit(),
                 ),
               ],
               child: AccountDetails(
