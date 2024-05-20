@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
@@ -290,16 +291,23 @@ class DatabaseHelper {
   }
 
   static Future<List<PieChartData>> getTotalAmountByCategories(
-      RecordType recordType) async {
+      DateTimeRange dateTimeRange, RecordType recordType) async {
     final db = await _openDB();
     // Define the column name based on the recordType
     String categoryColumn =
         recordType == RecordType.expense ? 'expenseCategory' : 'incomeCategory';
 
+    const now = Duration(hours: 24);
+
     // Execute SQL query to calculate the total amount grouped by category
     List<Map<String, dynamic>> maps = await db.rawQuery(
-        'SELECT $categoryColumn, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? GROUP BY $categoryColumn',
-        [recordType.name]);
+      'SELECT $categoryColumn, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date BETWEEN ? AND ? GROUP BY $categoryColumn',
+      [
+        recordType.name,
+        dateTimeRange.start.millisecondsSinceEpoch,
+        dateTimeRange.end.millisecondsSinceEpoch + now.inMilliseconds,
+      ],
+    );
 
     if (maps.isEmpty) {
       return [];
@@ -315,16 +323,19 @@ class DatabaseHelper {
   }
 
   static Future<List<LineChartData>> getTotalAmountByDate(
-      RecordType recordType) async {
+      DateTimeRange dateTimeRange, RecordType recordType) async {
     final db = await _openDB();
 
-    int thirtyDaysAgoTimeStamp = DateTime.now()
-        .subtract(const Duration(days: 30))
-        .millisecondsSinceEpoch;
+    const now = Duration(hours: 24);
 
     List<Map<String, dynamic>> maps = await db.rawQuery(
-        'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ? GROUP BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch")',
-        [recordType.name, thirtyDaysAgoTimeStamp]);
+      'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date BETWEEN ? AND ? GROUP BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch")',
+      [
+        recordType.name,
+        dateTimeRange.start.millisecondsSinceEpoch,
+        dateTimeRange.end.millisecondsSinceEpoch + now.inMilliseconds,
+      ],
+    );
 
     return List.generate(
         maps.length,

@@ -46,7 +46,6 @@ class _TransactionFormState extends State<TransactionForm> {
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
-
     final pickedDate = await showDatePicker(
       context: context,
       initialDate: _selectedDate,

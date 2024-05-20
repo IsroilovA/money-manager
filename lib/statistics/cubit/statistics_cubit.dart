@@ -32,19 +32,24 @@ class LineChartData {
 class StatisticsCubit extends Cubit<StatisticsState> {
   StatisticsCubit() : super(StatisticsInitial());
 
-  void loadRecords() async {
+  void loadRecords({
+    required DateTimeRange incomePieChartRange,
+    required DateTimeRange expensePieChartRange,
+    required DateTimeRange expenseLineChartRange,
+    required DateTimeRange incomeLineChartRange,
+  }) async {
     try {
-      final lineChartIncome =
-          await DatabaseHelper.getTotalAmountByDate(RecordType.income);
-      final lineChartExpense =
-          await DatabaseHelper.getTotalAmountByDate(RecordType.expense);
-      final expenses =
-          await DatabaseHelper.getTotalAmountByCategories(RecordType.expense);
-      final incomes =
-          await DatabaseHelper.getTotalAmountByCategories(RecordType.income);
+      final lineChartIncome = await DatabaseHelper.getTotalAmountByDate(
+          incomeLineChartRange, RecordType.income);
+      final lineChartExpense = await DatabaseHelper.getTotalAmountByDate(
+          expenseLineChartRange, RecordType.expense);
+      final pieChartExpenses = await DatabaseHelper.getTotalAmountByCategories(
+          expensePieChartRange, RecordType.expense);
+      final pieChartIncomes = await DatabaseHelper.getTotalAmountByCategories(
+          incomePieChartRange, RecordType.income);
       emit(StatisticsDataLoaded(
-          pieChartExpense: expenses,
-          pieChartIncome: incomes,
+          pieChartExpense: pieChartExpenses,
+          pieChartIncome: pieChartIncomes,
           lineChartExpense: lineChartExpense,
           lineChartIncome: lineChartIncome));
     } catch (e) {
