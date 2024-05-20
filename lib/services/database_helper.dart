@@ -167,8 +167,7 @@ class DatabaseHelper {
   }
 
   static Future<void> _updateAccountBalanceAdd(
-      TransactionRecord newRecord) async {
-    final db = await _openDB();
+      Database db, TransactionRecord newRecord) async {
     final account = await getAccountById(newRecord.accountId);
     double newBalance;
     if (newRecord.recordType == RecordType.income) {
@@ -181,10 +180,57 @@ class DatabaseHelper {
         where: 'id = ?', whereArgs: [account.id]);
   }
 
-  static Future<void> _updateAccountBalanceDelete(
-      TransactionRecord deletedRecord) async {
-    final db = await _openDB();
+  static Future<void> _updateAccountBalanceEdit(
+    Database db,
+    TransactionRecord initialTransactionRecord,
+    TransactionRecord updatedTransactionRecord,
+  ) async {
+    if (initialTransactionRecord.recordType ==
+        updatedTransactionRecord.recordType) {
+      if (initialTransactionRecord.accountId ==
+          updatedTransactionRecord.accountId) {
+        final account =
+            await getAccountById(updatedTransactionRecord.accountId);
+        double updatedAmount = 0.0;
+        if (updatedTransactionRecord.recordType == RecordType.income) {
+          updatedAmount = account.balance +
+              (updatedTransactionRecord.amount -
+                  initialTransactionRecord.amount);
+        } else if (updatedTransactionRecord.recordType == RecordType.expense) {
+          updatedAmount = account.balance -
+              (updatedTransactionRecord.amount -
+                  initialTransactionRecord.amount);
+        }
+        await db.update("accounts", {'balance': updatedAmount},
+            where: 'id = ?', whereArgs: [account.id]);
+      }else{
+        
+      }
+    } else {
+      if (initialTransactionRecord.accountId ==
+          updatedTransactionRecord.accountId) {
+        final account =
+            await getAccountById(updatedTransactionRecord.accountId);
+        double updatedAmount = 0.0;
+        if (initialTransactionRecord.recordType == RecordType.expense &&
+            updatedTransactionRecord.recordType == RecordType.income) {
+          updatedAmount = account.balance +
+              initialTransactionRecord.amount +
+              updatedTransactionRecord.amount;
+        } else if (initialTransactionRecord.recordType == RecordType.income &&
+            updatedTransactionRecord.recordType == RecordType.expense) {
+          updatedAmount = account.balance -
+              initialTransactionRecord.amount -
+              updatedTransactionRecord.amount;
+        }
+        await db.update("accounts", {'balance': updatedAmount},
+            where: 'id = ?', whereArgs: [account.id]);
+      }
+    }
+  }
 
+  static Future<void> _updateAccountBalanceDelete(
+      Database db, TransactionRecord deletedRecord) async {
     if (deletedRecord.recordType == RecordType.transfer) {
       final accountSender = await getAccountById(deletedRecord.accountId);
       final accountReceiver =
@@ -229,7 +275,7 @@ class DatabaseHelper {
     final db = await _openDB();
 
     await db.insert("transactions", transactionRecord.toJson());
-    await _updateAccountBalanceAdd(transactionRecord);
+    await _updateAccountBalanceAdd(db, transactionRecord);
   }
 
   static Future<void> deleteTransationRecord(
@@ -238,15 +284,18 @@ class DatabaseHelper {
 
     await db.delete("transactions",
         where: 'id = ?', whereArgs: [transactionRecord.id]);
-    await _updateAccountBalanceDelete(transactionRecord);
+    await _updateAccountBalanceDelete(db, transactionRecord);
   }
 
   static Future<void> editTransaction(
-      TransactionRecord transactionRecord) async {
+      TransactionRecord initialTransactionRecord,
+      TransactionRecord updatedTransactionRecord) async {
     final db = await _openDB();
 
-    await db.update("transactions", transactionRecord.toJson(),
-        where: 'id = ?', whereArgs: [transactionRecord.id]);
+    await db.update("transactions", updatedTransactionRecord.toJson(),
+        where: 'id = ?', whereArgs: [updatedTransactionRecord.id]);
+    await _updateAccountBalanceEdit(
+        db, initialTransactionRecord, updatedTransactionRecord);
   }
 
   static Future<List<TransactionRecord>?> getAccountTransactionRecords(

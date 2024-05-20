@@ -51,10 +51,11 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
       await DatabaseHelper.addAccount(newAccount);
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
-            builder: (context) => BlocProvider(
-                  create: (context) => TabsCubit(),
-                  child: const TabsScreen(),
-                )),
+          builder: (context) => BlocProvider(
+            create: (context) => TabsCubit(),
+            child: const TabsScreen(),
+          ),
+        ),
       );
     }
   }

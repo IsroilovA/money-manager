@@ -66,7 +66,7 @@ class TabsCubit extends Cubit<TabsState> {
   }
 
   void editTransaction(
-      BuildContext context, TransactionRecord transactionRecord) async {
+      BuildContext context, TransactionRecord initialTransactionRecord) async {
     final editedTransaction =
         await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(
@@ -79,7 +79,8 @@ class TabsCubit extends Cubit<TabsState> {
               create: (context) => AddTransactionCubit(),
             ),
           ],
-          child: AddEditTransaction(transactionRecord: transactionRecord),
+          child:
+              AddEditTransaction(transactionRecord: initialTransactionRecord),
         ),
       ),
     );
@@ -95,10 +96,11 @@ class TabsCubit extends Cubit<TabsState> {
       expenseCategory: editedTransaction.expenseCategory,
       incomeCategory: editedTransaction.incomeCategory,
       transferAccount2Id: editedTransaction.transferAccount2Id,
-      id: transactionRecord.id,
+      id: initialTransactionRecord.id,
     );
     try {
-      await DatabaseHelper.editTransaction(updatedTransaction);
+      await DatabaseHelper.editTransaction(
+          initialTransactionRecord, updatedTransaction);
       emit(TabsTransactionAdded(0));
     } catch (e) {
       emit(TabsError(e.toString()));

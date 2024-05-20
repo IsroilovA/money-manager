@@ -208,9 +208,11 @@ class _TransactionFormState extends State<TransactionForm> {
                         ? _incomeCategory
                         : _expenseCategory,
                     onExpenseChanged: (value) {
+                      _incomeCategory = null;
                       _expenseCategory = value;
                     },
                     onIncomeChanged: (value) {
+                      _expenseCategory = null;
                       _incomeCategory = value;
                     },
                   ),

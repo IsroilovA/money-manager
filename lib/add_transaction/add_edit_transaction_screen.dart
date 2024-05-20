@@ -17,10 +17,18 @@ class AddEditTransaction extends StatefulWidget {
 
 class _AddEditTransactionState extends State<AddEditTransaction> {
   @override
+  void initState() {
+    if (widget.transactionRecord != null) {
+      BlocProvider.of<AddTransactionCubit>(context)
+          .selectRecordType(widget.transactionRecord!.recordType.index);
+    }
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final recordType = widget.transactionRecord == null
-        ? context.select((AddTransactionCubit cubit) => cubit.recordType)
-        : widget.transactionRecord!.recordType;
+    RecordType recordType =
+        context.select((AddTransactionCubit cubit) => cubit.recordType);
     return Scaffold(
       appBar: AppBar(
         title: const Text('New Transaction'),
@@ -28,7 +36,7 @@ class _AddEditTransactionState extends State<AddEditTransaction> {
       ),
       body: DefaultTabController(
         length: 3,
-        initialIndex: 0,
+        initialIndex: recordType.index,
         child: Column(
           children: [
             TabBar(

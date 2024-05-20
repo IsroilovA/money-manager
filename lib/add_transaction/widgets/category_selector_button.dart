@@ -81,7 +81,7 @@ class _CategorySelectorButtonState extends State<CategorySelectorButton> {
                               Navigator.of(context).pop();
                             },
                             icon: categoryIcons[category]!,
-                            category: category.name)
+                            category: category.name.capitalize())
                     else
                       for (final category in IncomeCategory.values)
                         CategoryItem(
