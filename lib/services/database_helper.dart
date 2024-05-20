@@ -180,7 +180,7 @@ class DatabaseHelper {
         where: 'id = ?', whereArgs: [account.id]);
   }
 
-  static Future<void> _updateAccountBalanceEdit(
+  /*static Future<void> _updateAccountBalanceEdit(
     Database db,
     TransactionRecord initialTransactionRecord,
     TransactionRecord updatedTransactionRecord,
@@ -312,7 +312,7 @@ class DatabaseHelper {
             where: 'id = ?', whereArgs: [oldAccountReceiver.id]);
       }
     }
-  }
+  }*/
 
   static Future<void> _updateAccountBalanceDelete(
       Database db, TransactionRecord deletedRecord) async {
@@ -372,16 +372,16 @@ class DatabaseHelper {
     await _updateAccountBalanceDelete(db, transactionRecord);
   }
 
-  static Future<void> editTransaction(
-      TransactionRecord initialTransactionRecord,
-      TransactionRecord updatedTransactionRecord) async {
-    final db = await _openDB();
+  // static Future<void> editTransaction(
+  //     TransactionRecord initialTransactionRecord,
+  //     TransactionRecord updatedTransactionRecord) async {
+  //   final db = await _openDB();
 
-    await db.update("transactions", updatedTransactionRecord.toJson(),
-        where: 'id = ?', whereArgs: [updatedTransactionRecord.id]);
-    await _updateAccountBalanceEdit(
-        db, initialTransactionRecord, updatedTransactionRecord);
-  }
+  //   await db.update("transactions", updatedTransactionRecord.toJson(),
+  //       where: 'id = ?', whereArgs: [updatedTransactionRecord.id]);
+  //   await _updateAccountBalanceEdit(
+  //       db, initialTransactionRecord, updatedTransactionRecord);
+  // }
 
   static Future<List<TransactionRecord>?> getAccountTransactionRecords(
       String accountId) async {

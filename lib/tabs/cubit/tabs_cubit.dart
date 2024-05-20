@@ -99,8 +99,12 @@ class TabsCubit extends Cubit<TabsState> {
       id: initialTransactionRecord.id,
     );
     try {
-      await DatabaseHelper.editTransaction(
-          initialTransactionRecord, updatedTransaction);
+      await DatabaseHelper.deleteTransationRecord(initialTransactionRecord);
+      if (updatedTransaction.recordType == RecordType.transfer) {
+        await DatabaseHelper.addTransferTransaction(updatedTransaction);
+      } else {
+        await DatabaseHelper.addTransationRecord(updatedTransaction);
+      }
       emit(TabsTransactionAdded(0));
     } catch (e) {
       emit(TabsError(e.toString()));
