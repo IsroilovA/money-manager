@@ -187,7 +187,9 @@ class _TransactionFormState extends State<TransactionForm> {
             titleWidget: AccountSelectorButton(
               selectedAccountId: _accountId,
               onAccountChanged: (value) {
-                _accountId = value;
+                setState(() {
+                  _accountId = value;
+                });
               },
             ),
           ),
@@ -195,8 +197,11 @@ class _TransactionFormState extends State<TransactionForm> {
               ? FormListTile(
                   leadingText: "Account Receiver",
                   titleWidget: AccountSelectorButton(
+                    selectedAccountId: _transferAccount2Id,
                     onAccountChanged: (value) {
-                      _transferAccount2Id = value;
+                      setState(() {
+                        _transferAccount2Id = value;
+                      });
                     },
                   ),
                 )

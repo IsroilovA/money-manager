@@ -185,46 +185,154 @@ class DatabaseHelper {
     TransactionRecord initialTransactionRecord,
     TransactionRecord updatedTransactionRecord,
   ) async {
-    if (initialTransactionRecord.recordType ==
-        updatedTransactionRecord.recordType) {
-      if (initialTransactionRecord.accountId ==
-          updatedTransactionRecord.accountId) {
-        final account =
-            await getAccountById(updatedTransactionRecord.accountId);
-        double updatedAmount = 0.0;
-        if (updatedTransactionRecord.recordType == RecordType.income) {
-          updatedAmount = account.balance +
-              (updatedTransactionRecord.amount -
-                  initialTransactionRecord.amount);
-        } else if (updatedTransactionRecord.recordType == RecordType.expense) {
-          updatedAmount = account.balance -
-              (updatedTransactionRecord.amount -
-                  initialTransactionRecord.amount);
+    if (initialTransactionRecord.recordType != RecordType.transfer &&
+        updatedTransactionRecord.recordType != RecordType.transfer) {
+      if (initialTransactionRecord.recordType ==
+          updatedTransactionRecord.recordType) {
+        if (initialTransactionRecord.accountId ==
+            updatedTransactionRecord.accountId) {
+          final account =
+              await getAccountById(updatedTransactionRecord.accountId);
+          double updatedAmount = 0.0;
+          if (updatedTransactionRecord.recordType == RecordType.income) {
+            updatedAmount = account.balance +
+                (updatedTransactionRecord.amount -
+                    initialTransactionRecord.amount);
+          } else if (updatedTransactionRecord.recordType ==
+              RecordType.expense) {
+            updatedAmount = account.balance -
+                (updatedTransactionRecord.amount -
+                    initialTransactionRecord.amount);
+          }
+          await db.update("accounts", {'balance': updatedAmount},
+              where: 'id = ?', whereArgs: [account.id]);
+        } else {
+          final initialAccount =
+              await getAccountById(initialTransactionRecord.accountId);
+          final updatedAccount =
+              await getAccountById(updatedTransactionRecord.accountId);
+          double initialAccountUpdatedAmount = 0.0;
+          double updatedAccountUpdatedAmount = 0.0;
+          if (updatedTransactionRecord.recordType == RecordType.income) {
+            initialAccountUpdatedAmount =
+                initialAccount.balance - initialTransactionRecord.amount;
+            updatedAccountUpdatedAmount =
+                updatedAccount.balance + updatedTransactionRecord.amount;
+          } else if (updatedTransactionRecord.recordType ==
+              RecordType.expense) {
+            initialAccountUpdatedAmount =
+                initialAccount.balance + initialTransactionRecord.amount;
+            updatedAccountUpdatedAmount =
+                updatedAccount.balance - updatedTransactionRecord.amount;
+          }
+          var batch = db.batch();
+          batch.update("accounts", {'balance': initialAccountUpdatedAmount},
+              where: 'id = ?', whereArgs: [initialAccount.id]);
+          batch.update("accounts", {'balance': updatedAccountUpdatedAmount},
+              where: 'id = ?', whereArgs: [updatedAccount.id]);
+          await batch.commit();
         }
-        await db.update("accounts", {'balance': updatedAmount},
-            where: 'id = ?', whereArgs: [account.id]);
-      }else{
-        
+      } else {
+        if (initialTransactionRecord.accountId ==
+            updatedTransactionRecord.accountId) {
+          final account =
+              await getAccountById(updatedTransactionRecord.accountId);
+          double updatedAmount = 0.0;
+          if (initialTransactionRecord.recordType == RecordType.expense &&
+              updatedTransactionRecord.recordType == RecordType.income) {
+            updatedAmount = account.balance +
+                initialTransactionRecord.amount +
+                updatedTransactionRecord.amount;
+          } else if (initialTransactionRecord.recordType == RecordType.income &&
+              updatedTransactionRecord.recordType == RecordType.expense) {
+            updatedAmount = account.balance -
+                initialTransactionRecord.amount -
+                updatedTransactionRecord.amount;
+          }
+          await db.update("accounts", {'balance': updatedAmount},
+              where: 'id = ?', whereArgs: [account.id]);
+        } else {
+          final initialAccount =
+              await getAccountById(initialTransactionRecord.accountId);
+          final updatedAccount =
+              await getAccountById(updatedTransactionRecord.accountId);
+          double initialAccountUpdatedAmount = 0.0;
+          double updatedAccountUpdatedAmount = 0.0;
+          if (initialTransactionRecord.recordType == RecordType.expense &&
+              updatedTransactionRecord.recordType == RecordType.income) {
+            initialAccountUpdatedAmount =
+                initialAccount.balance + initialTransactionRecord.amount;
+            updatedAccountUpdatedAmount =
+                updatedAccount.balance + updatedTransactionRecord.amount;
+          } else if (initialTransactionRecord.recordType == RecordType.income &&
+              updatedTransactionRecord.recordType == RecordType.expense) {
+            initialAccountUpdatedAmount =
+                initialAccount.balance - initialTransactionRecord.amount;
+            updatedAccountUpdatedAmount =
+                updatedAccount.balance - updatedTransactionRecord.amount;
+          }
+          var batch = db.batch();
+          batch.update("accounts", {'balance': initialAccountUpdatedAmount},
+              where: 'id = ?', whereArgs: [initialAccount.id]);
+          batch.update("accounts", {'balance': updatedAccountUpdatedAmount},
+              where: 'id = ?', whereArgs: [updatedAccount.id]);
+          await batch.commit();
+        }
       }
     } else {
-      if (initialTransactionRecord.accountId ==
-          updatedTransactionRecord.accountId) {
-        final account =
-            await getAccountById(updatedTransactionRecord.accountId);
-        double updatedAmount = 0.0;
-        if (initialTransactionRecord.recordType == RecordType.expense &&
-            updatedTransactionRecord.recordType == RecordType.income) {
-          updatedAmount = account.balance +
-              initialTransactionRecord.amount +
-              updatedTransactionRecord.amount;
-        } else if (initialTransactionRecord.recordType == RecordType.income &&
-            updatedTransactionRecord.recordType == RecordType.expense) {
-          updatedAmount = account.balance -
-              initialTransactionRecord.amount -
-              updatedTransactionRecord.amount;
+      if (initialTransactionRecord.recordType ==
+          updatedTransactionRecord.recordType) {
+        if (initialTransactionRecord.accountId ==
+                updatedTransactionRecord.accountId &&
+            initialTransactionRecord.transferAccount2Id ==
+                updatedTransactionRecord.transferAccount2Id) {
+          final accountSender =
+              await getAccountById(updatedTransactionRecord.accountId);
+          final accountReceiver = await getAccountById(
+              updatedTransactionRecord.transferAccount2Id!);
+          double updatedSenderAmount = 0.0;
+          double updatedReceiverAmount = 0.0;
+          updatedSenderAmount = accountSender.balance -
+              (updatedTransactionRecord.amount -
+                  initialTransactionRecord.amount);
+          updatedReceiverAmount = accountReceiver.balance +
+              (updatedTransactionRecord.amount -
+                  initialTransactionRecord.amount);
+          var batch = db.batch();
+          batch.update("accounts", {'balance': updatedSenderAmount},
+              where: 'id = ?', whereArgs: [accountSender.id]);
+          batch.update("accounts", {'balance': updatedReceiverAmount},
+              where: 'id = ?', whereArgs: [accountReceiver.id]);
+          await batch.commit();
+        } else if (initialTransactionRecord.accountId ==
+                updatedTransactionRecord.accountId &&
+            initialTransactionRecord.transferAccount2Id !=
+                updatedTransactionRecord.transferAccount2Id) {
+          final accountSender =
+              await getAccountById(updatedTransactionRecord.accountId);
+          final newAccountReceiver = await getAccountById(
+              updatedTransactionRecord.transferAccount2Id!);
+          final oldAccountReceiver = await getAccountById(
+              initialTransactionRecord.transferAccount2Id!);
+          double updatedSenderAmount = 0.0;
+          double updatedNewReceiverAmount = 0.0;
+          double updatedOldReceiverAmount = 0.0;
+          updatedSenderAmount = accountSender.balance -
+              (updatedTransactionRecord.amount -
+                  initialTransactionRecord.amount);
+          updatedNewReceiverAmount =
+              newAccountReceiver.balance + updatedTransactionRecord.amount;
+          updatedOldReceiverAmount =
+              oldAccountReceiver.balance - initialTransactionRecord.amount;
+          var batch = db.batch();
+          batch.update("accounts", {'balance': updatedSenderAmount},
+              where: 'id = ?', whereArgs: [accountSender.id]);
+          batch.update("accounts", {'balance': updatedNewReceiverAmount},
+              where: 'id = ?', whereArgs: [newAccountReceiver.id]);
+          batch.update("accounts", {'balance': updatedOldReceiverAmount},
+              where: 'id = ?', whereArgs: [oldAccountReceiver.id]);
+          await batch.commit();
         }
-        await db.update("accounts", {'balance': updatedAmount},
-            where: 'id = ?', whereArgs: [account.id]);
       }
     }
   }
