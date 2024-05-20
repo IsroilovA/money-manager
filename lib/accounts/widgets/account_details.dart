@@ -8,10 +8,8 @@ import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class AccountDetails extends StatelessWidget {
-  const AccountDetails(
-      {super.key, required this.account, required this.accounts});
+  const AccountDetails({super.key, required this.account});
   final Account account;
-  final List<Account> accounts;
 
   @override
   Widget build(BuildContext context) {
@@ -102,29 +100,58 @@ class AccountDetails extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
-        child: BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
+        child: BlocBuilder<TabsCubit, TabsState>(
+          buildWhen: (previous, current) {
+            if (current is TabsTransactionDeleted ||
+                current is TabsAccountsLoaded ||
+                current is TabsTransactionAdded ||
+                current is TabsLoading) {
+              return true;
+            }
+            return false;
+          },
           builder: (context, state) {
-            if (state is AccountTransactionsLoaded) {
-              return buildAccountDetailsScreen(
-                  state.account, state.transactionRecords);
-            } else if (state is AccountDetailsInitial) {
+            if (state is TabsTransactionDeleted ||
+                state is TabsTransactionAdded ||
+                state is TabsAccountsLoaded) {
               BlocProvider.of<AccountDetailsCubit>(context)
                   .loadAccountTransaction(account.id);
-              return const Center(
-                child: CircularProgressIndicator.adaptive(),
+              return BlocBuilder<AccountDetailsCubit, AccountDetailsState>(
+                builder: (context, state) {
+                  if (state is AccountTransactionsLoaded) {
+                    return buildAccountDetailsScreen(
+                        state.account, state.transactionRecords);
+                  } else if (state is AccountDetailsInitial) {
+                    BlocProvider.of<AccountDetailsCubit>(context)
+                        .loadAccountTransaction(account.id);
+                    return const Center(
+                      child: CircularProgressIndicator.adaptive(),
+                    );
+                  } else if (state is AccountEdited) {
+                    return buildAccountDetailsScreen(
+                        state.account, state.transactionRecords);
+                  } else if (state is NoAccountTransactions) {
+                    return buildAccountDetailsScreen(account, null);
+                  } else if (state is AccountDetailsError) {
+                    return Center(
+                      child: Text("Error: ${state.message}"),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text("something went wrong"),
+                    );
+                  }
+                },
               );
-            } else if (state is AccountEdited) {
-              return buildAccountDetailsScreen(
-                  state.account, state.transactionRecords);
-            } else if (state is NoAccountTransactions) {
-              return buildAccountDetailsScreen(account, null);
-            } else if (state is AccountDetailsError) {
-              return Center(
-                child: Text("Error: ${state.message}"),
-              );
+            } else if (state is TabsLoading) {
+              return const Center(child: CircularProgressIndicator.adaptive());
             } else {
-              return const Center(
-                child: Text("something went wrong"),
+              return Center(
+                child: Text(
+                  "Something is wrong2",
+                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground),
+                ),
               );
             }
           },

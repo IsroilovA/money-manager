@@ -31,7 +31,6 @@ class AccountItem extends StatelessWidget {
               ],
               child: AccountDetails(
                 account: account,
-                accounts: accounts,
               ),
             ),
           ),
