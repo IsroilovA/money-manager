@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:intl/intl.dart';
 import 'package:money_manager/add_transaction/widgets/account_selector_button.dart';
+import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/category_selector_button.dart';
@@ -61,7 +60,8 @@ class _TransactionFormState extends State<TransactionForm> {
   }
 
   void _saveTransaction() {
-    final enteredAmount = double.tryParse(_amountController.text);
+    final enteredAmount =
+        double.tryParse(_amountController.text.replaceAll(",", ''));
     final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
     final noteNotEntered = _noteController.text.trim().isEmpty;
     TransactionRecord newRecord;
@@ -160,58 +160,7 @@ class _TransactionFormState extends State<TransactionForm> {
           ),
           FormListTile(
             leadingText: "Amount",
-            titleWidget: TextField(
-              showCursor: false,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: Theme.of(context).colorScheme.primary),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              controller: _amountController,
-              inputFormatters: [
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  final RegExp regExp = RegExp(r'^\d*\.?\d{0,2}$');
-                  if (newValue.text.isEmpty) {
-                    return newValue.copyWith(text: '');
-                  }
-                  if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
-                    final formatter = NumberFormat.decimalPattern();
-                    String formattedText = formatter.format(
-                        double.parse(newValue.text.replaceAll(',', '')));
-
-                    return newValue.copyWith(
-                        text: formattedText,
-                        selection: TextSelection.collapsed(
-                            offset: formattedText.length));
-                  }
-
-                  // Otherwise, return the old value, preventing the invalid input
-                  return oldValue;
-                }),
-                // TextInputFormatter.withFunction((oldValue, newValue) {
-                //   if (newValue.text.isEmpty) {
-                //     return newValue.copyWith(text: '');
-                //   }
-                //   final formatter =
-                //       NumberFormat.decimalPatternDigits(decimalDigits: 2);
-                //   print(newValue.text.replaceAll(',', ''));
-                //   final formattedValue = formatter
-                //       .format(double.parse(newValue.text.replaceAll(',', '')));
-                //   print(formattedValue);
-                //   return TextEditingValue(
-                //     text: formattedValue,
-                //     selection: TextSelection.collapsed(
-                //         offset: formattedValue.length - 3),
-                //   );
-                // })
-              ],
-              maxLines: 1,
-              maxLength: 20,
-              decoration: const InputDecoration(
-                prefixText: 'UZS ',
-              ),
-            ),
+            titleWidget: AmountTextField(amountController: _amountController),
           ),
           FormListTile(
             leadingText: _recordType == RecordType.transfer

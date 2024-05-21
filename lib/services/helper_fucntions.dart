@@ -14,6 +14,29 @@ extension StringExtension on String {
   }
 }
 
+String insertComas(String text) {
+  String newText = '';
+  int indexOfDot = text.indexOf('.');
+  if (indexOfDot != -1) {
+    newText = text.substring(indexOfDot, text.length);
+    for (var i = 0; i < indexOfDot; i++) {
+      if (i != 0 && i % 3 == 0) {
+        newText = ',$newText';
+      }
+      newText =
+          text[text.length - i - 1 - (text.length - indexOfDot)] + newText;
+    }
+    return newText;
+  }
+  for (var i = 0; i < text.length; i++) {
+    if (i != 0 && i % 3 == 0) {
+      newText = ',$newText';
+    }
+    newText = text[text.length - i - 1] + newText;
+  }
+  return newText;
+}
+
 void showWarningAlertDialog(
     {required BuildContext context,
     required String text,
@@ -43,6 +66,8 @@ void showWarningAlertDialog(
       context: context,
       builder: (ctx) => AlertDialog(
         title: const Text("Invalid Input!"),
+        titleTextStyle:
+            TextStyle(color: Theme.of(context).colorScheme.onBackground),
         content: Text(text),
         actions: [
           TextButton(
@@ -82,6 +107,14 @@ void showFormAlertDialog(BuildContext context, String text) {
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
+        titleTextStyle: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: Theme.of(context).colorScheme.onSurface),
+        contentTextStyle: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(color: Theme.of(context).colorScheme.onSurface),
         title: const Text("Invalid Input!"),
         content: Text(text),
         actions: [

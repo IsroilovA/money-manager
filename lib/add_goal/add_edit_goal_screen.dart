@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
@@ -20,8 +21,9 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
   final _goalBalanceController = TextEditingController();
   void _saveGoal() async {
     final enteredCurrentBalance =
-        double.tryParse(_currentBalanceController.text);
-    final enteredGoalBalance = double.tryParse(_goalBalanceController.text);
+        double.tryParse(_currentBalanceController.text.replaceAll(',', ''));
+    final enteredGoalBalance =
+        double.tryParse(_goalBalanceController.text.replaceAll(',', ''));
     final currentBalanceIsInvalid =
         enteredCurrentBalance == null || enteredCurrentBalance <= 0;
     final enteredBalanceIsInvalid =
@@ -88,47 +90,13 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
             ),
           ),
           FormListTile(
-            leadingText: "Current Balance",
-            titleWidget: TextField(
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: Theme.of(context).colorScheme.primary),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              controller: _currentBalanceController,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
-              ],
-              maxLines: 1,
-              maxLength: 20,
-              decoration: const InputDecoration(
-                prefixText: 'UZS ',
-              ),
-            ),
-          ),
+              leadingText: "Current Balance",
+              titleWidget:
+                  AmountTextField(amountController: _currentBalanceController)),
           FormListTile(
-            leadingText: "Goal Balance",
-            titleWidget: TextField(
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: Theme.of(context).colorScheme.primary),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              controller: _goalBalanceController,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d*\.?\d{0,2}'),
-                ),
-              ],
-              maxLines: 1,
-              maxLength: 20,
-              decoration: const InputDecoration(
-                prefixText: 'UZS ',
-              ),
-            ),
-          ),
+              leadingText: "Goal Balance",
+              titleWidget:
+                  AmountTextField(amountController: _goalBalanceController)),
           const SizedBox(height: 20),
           Row(
             mainAxisSize: MainAxisSize.max,
