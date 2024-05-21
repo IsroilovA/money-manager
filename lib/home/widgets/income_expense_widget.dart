@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/all_transactions/transactions_list_screen.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
@@ -20,7 +21,6 @@ class IncomeExpenseWidget extends StatefulWidget {
 class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
   @override
   Widget build(BuildContext context) {
-    int? filterIndex = widget.isIncome ? 1 : 0;
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
@@ -35,7 +35,8 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                 )
               ],
               child: TransactionsListScreen(
-                filterIndex: filterIndex,
+                filter:
+                    widget.isIncome ? RecordType.income : RecordType.expense,
               ),
             ),
           ),

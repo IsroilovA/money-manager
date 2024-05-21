@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
+import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
+import 'package:money_manager/services/helper_fucntions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class TransactionsListScreen extends StatefulWidget {
-  const TransactionsListScreen({super.key, this.filterIndex});
+  const TransactionsListScreen({super.key, this.filter});
 
-  final int? filterIndex;
+  final RecordType? filter;
 
   @override
   State<TransactionsListScreen> createState() => _TransactionsListScreenState();
@@ -16,15 +19,18 @@ class TransactionsListScreen extends StatefulWidget {
 class _TransactionsListScreenState extends State<TransactionsListScreen> {
   @override
   void initState() {
-    selectedIndex = widget.filterIndex;
+    if (widget.filter != null) {
+      selectedIndex = widget.filter!.index;
+    }
     super.initState();
   }
 
   int? selectedIndex;
-  List filters = [
-    "Incomes",
-    "Expenses",
-    "Transfers",
+  List<RecordType> filters = [
+    RecordType.income,
+    RecordType.expense,
+    RecordType.transfer,
+    RecordType.balanceAdjustment,
   ];
   @override
   Widget build(BuildContext context) {
@@ -48,28 +54,41 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
               state is TabsTransactionAdded ||
               state is TabsAccountsLoaded ||
               state is TabsPageChanged) {
-            BlocProvider.of<HomeCubit>(context)
-                .loadTransactions(filter: selectedIndex);
+            BlocProvider.of<HomeCubit>(context).loadTransactions(
+                filter: selectedIndex == null ? null : filters[selectedIndex!]);
             return Column(
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: List.generate(
-                    filters.length,
-                    (index) => ChoiceChip(
-                      label: Text(
-                        filters[index],
-                        style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                            color: Theme.of(context).colorScheme.onBackground),
-                      ),
-                      selected: selectedIndex == index,
-                      onSelected: (isSelected) {
-                        setState(
-                          () {
-                            selectedIndex = isSelected ? index : null;
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    children: List.generate(
+                      filters.length,
+                      (index) => Container(
+                        margin: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 12),
+                        child: ChoiceChip(
+                          label: Text(
+                            index == 3
+                                ? "Balance Adjustments"
+                                : "${filters[index].name.capitalize()}s",
+                            style: Theme.of(context)
+                                .textTheme
+                                .bodyMedium!
+                                .copyWith(
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground),
+                          ),
+                          selected: selectedIndex == index,
+                          onSelected: (isSelected) {
+                            setState(
+                              () {
+                                selectedIndex = isSelected ? index : null;
+                              },
+                            );
                           },
-                        );
-                      },
+                        ),
+                      ),
                     ),
                   ),
                 ),

@@ -20,22 +20,16 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
-  void loadTransactions({int? filter}) async {
+  void loadTransactions({RecordType? filter}) async {
     emit(HomeTransactionsLoading());
     try {
       List<TransactionRecord>? transactions;
       switch (filter) {
-        case 0:
-          transactions = await DatabaseHelper.getTransactionRecordsByRecordType(
-              RecordType.income);
-        case 1:
-          transactions = await DatabaseHelper.getTransactionRecordsByRecordType(
-              RecordType.expense);
-        case 2:
-          transactions = await DatabaseHelper.getTransactionRecordsByRecordType(
-              RecordType.transfer);
-        case _:
+        case null:
           transactions = await DatabaseHelper.getAllTransactionRecords();
+        case _:
+          transactions =
+              await DatabaseHelper.getTransactionRecordsByRecordType(filter);
       }
       // final transactions = await DatabaseHelper.getAllTransactionRecords();
       if (transactions != null) {
