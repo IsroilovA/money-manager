@@ -98,14 +98,12 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
                   const TextInputType.numberWithOptions(decimal: true),
               controller: _currentBalanceController,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d+\.?\d{0,2}'),
-                ),
+                FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
               ],
               maxLines: 1,
               maxLength: 20,
               decoration: const InputDecoration(
-                prefixText: '\$ ',
+                prefixText: 'UZS ',
               ),
             ),
           ),
@@ -121,13 +119,13 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
               controller: _goalBalanceController,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d+\.?\d{0,2}'),
+                  RegExp(r'^\d*\.?\d{0,2}'),
                 ),
               ],
               maxLines: 1,
               maxLength: 20,
               decoration: const InputDecoration(
-                prefixText: '\$ ',
+                prefixText: 'UZS ',
               ),
             ),
           ),

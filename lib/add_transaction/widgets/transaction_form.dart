@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:intl/intl.dart';
 import 'package:money_manager/add_transaction/widgets/account_selector_button.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
@@ -168,14 +169,46 @@ class _TransactionFormState extends State<TransactionForm> {
                   const TextInputType.numberWithOptions(decimal: true),
               controller: _amountController,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(
-                  RegExp(r'^\d+\.?\d{0,2}'),
-                ),
+                TextInputFormatter.withFunction((oldValue, newValue) {
+                  final RegExp regExp = RegExp(r'^\d*\.?\d{0,2}$');
+                  if (newValue.text.isEmpty) {
+                    return newValue.copyWith(text: '');
+                  }
+                  if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
+                    final formatter = NumberFormat.decimalPattern();
+                    String formattedText = formatter.format(
+                        double.parse(newValue.text.replaceAll(',', '')));
+
+                    return newValue.copyWith(
+                        text: formattedText,
+                        selection: TextSelection.collapsed(
+                            offset: formattedText.length));
+                  }
+
+                  // Otherwise, return the old value, preventing the invalid input
+                  return oldValue;
+                }),
+                // TextInputFormatter.withFunction((oldValue, newValue) {
+                //   if (newValue.text.isEmpty) {
+                //     return newValue.copyWith(text: '');
+                //   }
+                //   final formatter =
+                //       NumberFormat.decimalPatternDigits(decimalDigits: 2);
+                //   print(newValue.text.replaceAll(',', ''));
+                //   final formattedValue = formatter
+                //       .format(double.parse(newValue.text.replaceAll(',', '')));
+                //   print(formattedValue);
+                //   return TextEditingValue(
+                //     text: formattedValue,
+                //     selection: TextSelection.collapsed(
+                //         offset: formattedValue.length - 3),
+                //   );
+                // })
               ],
               maxLines: 1,
               maxLength: 20,
               decoration: const InputDecoration(
-                prefixText: '\$ ',
+                prefixText: 'UZS ',
               ),
             ),
           ),

@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
-final currencyFormatter = NumberFormat.currency(locale: "en_US", symbol: '\$');
+final currencyFormatter = NumberFormat.currency(locale: "uz_US");
 
 final dateFormatter = DateFormat.yMd();
 
@@ -14,7 +14,7 @@ extension StringExtension on String {
   }
 }
 
-void showWarningAlertDialog (
+void showWarningAlertDialog(
     {required BuildContext context,
     required String text,
     required void Function() onYesClicked}) {

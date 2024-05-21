@@ -106,13 +106,13 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
               controller: _balanceController,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(
-                  RegExp(r'^-?\d*\.?\d*'),
+                  RegExp(r'^-?\d*\.?\d{0,2}'),
                 ),
               ],
               maxLines: 1,
               maxLength: 20,
               decoration: const InputDecoration(
-                prefixText: '\$ ',
+                prefixText: 'UZS ',
               ),
             ),
           ),
