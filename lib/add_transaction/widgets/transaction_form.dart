@@ -161,6 +161,7 @@ class _TransactionFormState extends State<TransactionForm> {
           FormListTile(
             leadingText: "Amount",
             titleWidget: TextField(
+              showCursor: false,
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!

@@ -97,6 +97,8 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
           FormListTile(
             leadingText: "Amount",
             titleWidget: TextField(
+              enableInteractiveSelection: false,
+              showCursor: false,
               style: Theme.of(context)
                   .textTheme
                   .bodyLarge!
@@ -105,9 +107,30 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
                   const TextInputType.numberWithOptions(decimal: true),
               controller: _balanceController,
               inputFormatters: [
-                FilteringTextInputFormatter.allow(
-                  RegExp(r'^-?\d*\.?\d{0,2}'),
-                ),
+                TextInputFormatter.withFunction((oldValue, newValue) {
+                  final RegExp regExp = RegExp(r'^-?\d*\.?\d{0,2}$');
+                  if (newValue.text.isEmpty) {
+                    return newValue.copyWith(text: '');
+                  }
+                  if (regExp.hasMatch(newValue.text)) {
+                    return newValue;
+                  } else if (!oldValue.text.contains('-') &&
+                      newValue.text.contains('-')) {
+                    return newValue.copyWith(
+                        text:
+                            '-${newValue.text.substring(0, newValue.text.length - 1)}');
+                  } else if (!newValue.text.contains(" ") &&
+                      oldValue.text.contains('-')) {
+                    String newText =
+                        newValue.text.substring(1, newValue.text.length - 1);
+                    return newValue.copyWith(
+                      text: newText,
+                      selection:
+                          TextSelection.collapsed(offset: newText.length),
+                    );
+                  }
+                  return oldValue;
+                }),
               ],
               maxLines: 1,
               maxLength: 20,
