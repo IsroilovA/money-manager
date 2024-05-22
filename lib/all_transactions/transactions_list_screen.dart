@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';

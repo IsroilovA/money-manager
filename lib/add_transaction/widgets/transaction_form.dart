@@ -33,7 +33,8 @@ class _TransactionFormState extends State<TransactionForm> {
     if (widget.transactionRecord != null) {
       _selectedDate = widget.transactionRecord!.date;
       _accountId = widget.transactionRecord!.accountId;
-      _amountController.text = widget.transactionRecord!.amount.toString();
+      _amountController.text =
+          insertComas(widget.transactionRecord!.amount.toString());
       _recordType = widget.transactionRecord!.recordType;
       _noteController.text = widget.transactionRecord!.note ?? "";
       _expenseCategory = widget.transactionRecord!.expenseCategory;
@@ -160,7 +161,10 @@ class _TransactionFormState extends State<TransactionForm> {
           ),
           FormListTile(
             leadingText: "Amount",
-            titleWidget: AmountTextField(amountController: _amountController),
+            titleWidget: AmountTextField(
+              amountController: _amountController,
+              textInputFormatter: PositiveCurrencyInputFormatter(),
+            ),
           ),
           FormListTile(
             leadingText: _recordType == RecordType.transfer

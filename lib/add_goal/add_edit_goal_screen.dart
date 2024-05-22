@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/goal.dart';
@@ -58,8 +57,10 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
   void initState() {
     if (widget.goal != null) {
       _nameController.text = widget.goal!.name;
-      _currentBalanceController.text = widget.goal!.currentBalance.toString();
-      _goalBalanceController.text = widget.goal!.goalBalance.toString();
+      _currentBalanceController.text =
+          insertComas(widget.goal!.currentBalance.toString());
+      _goalBalanceController.text =
+          insertComas(widget.goal!.goalBalance.toString());
     }
     super.initState();
   }
@@ -91,12 +92,16 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
           ),
           FormListTile(
               leadingText: "Current Balance",
-              titleWidget:
-                  AmountTextField(amountController: _currentBalanceController)),
+              titleWidget: AmountTextField(
+                amountController: _currentBalanceController,
+                textInputFormatter: PositiveCurrencyInputFormatter(),
+              )),
           FormListTile(
               leadingText: "Goal Balance",
-              titleWidget:
-                  AmountTextField(amountController: _goalBalanceController)),
+              titleWidget: AmountTextField(
+                amountController: _goalBalanceController,
+                textInputFormatter: PositiveCurrencyInputFormatter(),
+              )),
           const SizedBox(height: 20),
           Row(
             mainAxisSize: MainAxisSize.max,

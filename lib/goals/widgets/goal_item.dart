@@ -23,7 +23,9 @@ class GoalItem extends StatelessWidget {
               ),
             ),
           );
-          BlocProvider.of<GoalCubit>(context).loadGoals();
+          if (context.mounted) {
+            BlocProvider.of<GoalCubit>(context).loadGoals();
+          }
         },
         titleTextStyle: Theme.of(context)
             .textTheme

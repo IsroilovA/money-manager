@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
 
 class AmountTextField extends StatelessWidget {
   const AmountTextField({
     super.key,
     required this.amountController,
+    required this.textInputFormatter,
   });
 
   final TextEditingController amountController;
+  final TextInputFormatter textInputFormatter;
 
   @override
   Widget build(BuildContext context) {
@@ -21,27 +22,10 @@ class AmountTextField extends StatelessWidget {
           .copyWith(color: Theme.of(context).colorScheme.primary),
       keyboardType: const TextInputType.numberWithOptions(decimal: true),
       controller: amountController,
-      inputFormatters: [
-        TextInputFormatter.withFunction((oldValue, newValue) {
-          final RegExp regExp = RegExp(r'^\d*\.?\d{0,2}$');
-          if (newValue.text.isEmpty) {
-            return newValue.copyWith(text: '');
-          }
-          if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
-            String newText = insertComas(newValue.text.replaceAll(',', ''));
-            return newValue.copyWith(
-              text: newText,
-              selection: TextSelection.collapsed(offset: newText.length),
-            );
-          }
-          return oldValue;
-        }),
-      ],
+      inputFormatters: [textInputFormatter],
       maxLines: 1,
-      maxLength: 20,
-      decoration: const InputDecoration(
-        prefixText: 'UZS ',
-      ),
+      maxLength: 21,
+      decoration: const InputDecoration(prefixText: 'UZS ', counterText: ''),
     );
   }
 }

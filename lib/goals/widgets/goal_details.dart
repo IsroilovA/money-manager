@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/goals/cubit/goal_cubit.dart';
 import 'package:money_manager/services/helper_fucntions.dart';
@@ -40,7 +40,7 @@ class GoalDetails extends StatelessWidget {
                         height: 20,
                       ),
                       Text(
-                        "${goal.currentBalance} / ${goal.goalBalance} \$",
+                        "${insertComas(goal.currentBalance.toString())} / ${insertComas(goal.goalBalance.toString())} UZS",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Theme.of(context).colorScheme.onBackground,
                             ),
@@ -63,37 +63,22 @@ class GoalDetails extends StatelessWidget {
         ),
         TextButton(
           onPressed: () async {
-            double addedAmount = 0.0;
+            double addedRemovedAmount = 0.0;
             await showDialog(
               context: context,
               builder: (context) {
-                final addedAmountController = TextEditingController();
+                final amountController = TextEditingController();
                 return SimpleDialog(
                   contentPadding: const EdgeInsets.all(15),
                   title: Text(
-                    "Add saved amount",
+                    "Add/Remove saved amount",
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
                         color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   children: [
-                    TextField(
-                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                          color: Theme.of(context).colorScheme.primary),
-                      keyboardType:
-                          const TextInputType.numberWithOptions(decimal: true),
-                      controller: addedAmountController,
-                      inputFormatters: [
-                        FilteringTextInputFormatter.allow(
-                          RegExp(r'^\d+\.?\d{0,2}'),
-                        ),
-                      ],
-                      maxLines: 1,
-                      maxLength: 20,
-                      decoration: const InputDecoration(
-                        label: Text("Add amount"),
-                        prefixText: '\$ ',
-                      ),
-                    ),
+                    AmountTextField(
+                        amountController: amountController,
+                        textInputFormatter: NegativeCurrencyInputFormatter()),
                     Row(mainAxisAlignment: MainAxisAlignment.end, children: [
                       TextButton(
                         onPressed: () {
@@ -104,17 +89,25 @@ class GoalDetails extends StatelessWidget {
                       const SizedBox(width: 15),
                       TextButton(
                         onPressed: () {
-                          final enteredAddedAmount =
-                              double.tryParse(addedAmountController.text);
-                          final addedAmountIsInvalid =
-                              enteredAddedAmount == null ||
-                                  enteredAddedAmount <= 0;
-                          if (addedAmountIsInvalid) {
+                          final enteredAmount = double.tryParse(
+                              amountController.text.replaceAll(',', ''));
+                          if (enteredAmount == null) {
                             showFormAlertDialog(
                                 context, "enter a valid amount");
                             return;
                           }
-                          addedAmount = enteredAddedAmount;
+                          if (goal.currentBalance + enteredAmount >
+                              goal.goalBalance) {
+                            showFormAlertDialog(context,
+                                "You added more than needed to meet the goal");
+                            return;
+                          } else if (enteredAmount < 0 &&
+                              goal.currentBalance + enteredAmount < 0) {
+                            showFormAlertDialog(context,
+                                "You can't remove more amount than there is");
+                            return;
+                          }
+                          addedRemovedAmount = enteredAmount;
                           Navigator.pop(context);
                         },
                         child: const Text("Insert"),
@@ -124,10 +117,13 @@ class GoalDetails extends StatelessWidget {
                 );
               },
             );
-            if (addedAmount == 0) {
+            if (addedRemovedAmount == 0) {
               return;
             }
-            BlocProvider.of<GoalCubit>(context).addAmount(goal, addedAmount);
+            if (context.mounted) {
+              BlocProvider.of<GoalCubit>(context)
+                  .addAmount(goal, addedRemovedAmount);
+            }
           },
           style: TextButton.styleFrom(
             backgroundColor: Theme.of(context).colorScheme.primary,
@@ -140,7 +136,7 @@ class GoalDetails extends StatelessWidget {
               ),
             ),
           ),
-          child: const Text("Add saved amount"),
+          child: const Text("Add/Remove saved amount"),
         )
       ]);
     }

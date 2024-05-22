@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/database_helper.dart';
@@ -49,6 +49,7 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
       Navigator.of(context).pop(newAccount);
     } else {
       await DatabaseHelper.addAccount(newAccount);
+      // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
@@ -64,7 +65,7 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
   void initState() {
     if (widget.account != null) {
       _nameController.text = widget.account!.name;
-      _balanceController.text = widget.account!.balance.toString();
+      _balanceController.text = insertComas(widget.account!.balance.toString());
     }
     super.initState();
   }
@@ -95,50 +96,11 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
             ),
           ),
           FormListTile(
-            leadingText: "Amount",
-            titleWidget: TextField(
-              enableInteractiveSelection: false,
-              showCursor: false,
-              style: Theme.of(context)
-                  .textTheme
-                  .bodyLarge!
-                  .copyWith(color: Theme.of(context).colorScheme.primary),
-              keyboardType:
-                  const TextInputType.numberWithOptions(decimal: true),
-              controller: _balanceController,
-              inputFormatters: [
-                TextInputFormatter.withFunction((oldValue, newValue) {
-                  final RegExp regExp = RegExp(r'^-?\d*\.?\d{0,2}$');
-                  if (newValue.text.isEmpty) {
-                    return newValue.copyWith(text: '');
-                  }
-                  if (regExp.hasMatch(newValue.text)) {
-                    return newValue;
-                  } else if (!oldValue.text.contains('-') &&
-                      newValue.text.contains('-')) {
-                    return newValue.copyWith(
-                        text:
-                            '-${newValue.text.substring(0, newValue.text.length - 1)}');
-                  } else if (!newValue.text.contains(" ") &&
-                      oldValue.text.contains('-')) {
-                    String newText =
-                        newValue.text.substring(1, newValue.text.length - 1);
-                    return newValue.copyWith(
-                      text: newText,
-                      selection:
-                          TextSelection.collapsed(offset: newText.length),
-                    );
-                  }
-                  return oldValue;
-                }),
-              ],
-              maxLines: 1,
-              maxLength: 20,
-              decoration: const InputDecoration(
-                prefixText: 'UZS ',
-              ),
-            ),
-          ),
+              leadingText: "Amount",
+              titleWidget: AmountTextField(
+                amountController: _balanceController,
+                textInputFormatter: NegativeCurrencyInputFormatter(),
+              )),
           const SizedBox(height: 20),
           TextButton(
             onPressed: _saveAccount,

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
 final currencyFormatter = NumberFormat.currency(locale: "uz_US");
@@ -11,6 +12,64 @@ final dateFormatter = DateFormat.yMd();
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
+  }
+}
+
+class PositiveCurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final RegExp regExp = RegExp(r'^\d*\.?\d{0,2}$');
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+    if (newValue.text.length <= 20) {
+      if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
+        String newText = insertComas(newValue.text.replaceAll(',', ''));
+        return newValue.copyWith(
+          text: newText,
+          selection: TextSelection.collapsed(offset: newText.length),
+        );
+      }
+    }
+    return oldValue;
+  }
+}
+
+class NegativeCurrencyInputFormatter extends TextInputFormatter {
+  @override
+  TextEditingValue formatEditUpdate(
+      TextEditingValue oldValue, TextEditingValue newValue) {
+    final RegExp regExp = RegExp(r'^-?\d*\.?\d{0,2}$');
+    String newText;
+    if (newValue.text.isEmpty) {
+      return newValue.copyWith(text: '');
+    }
+    if (newValue.text.length <= 20) {
+      if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
+        newText = insertComas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
+        if (newValue.text.contains('-')) {
+          newText = '-$newText';
+        }
+        return newValue.copyWith(
+          text: newText,
+          selection: TextSelection.collapsed(offset: newText.length),
+        );
+      } else if (!oldValue.text.contains('-') && newValue.text.contains('-')) {
+        newText = insertComas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
+        return newValue.copyWith(
+          text: '-$newText',
+          selection: TextSelection.collapsed(offset: newText.length),
+        );
+      } else if (!newValue.text.contains(" ") && oldValue.text.contains('-')) {
+        newText = insertComas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
+        return newValue.copyWith(
+          text: newText,
+          selection: TextSelection.collapsed(offset: newText.length),
+        );
+      }
+    }
+    return oldValue;
   }
 }
 

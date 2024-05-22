@@ -34,11 +34,13 @@ class GoalCubit extends Cubit<GoalState> {
 
   void editGoal(BuildContext context, String goalId) async {
     final goal = await DatabaseHelper.getGoalById(goalId);
-    final editedGoal = await Navigator.of(context).push<Goal>(
-      MaterialPageRoute(
-        builder: (ctx) => AddEditGoalScreen(goal: goal),
-      ),
-    );
+    final editedGoal = context.mounted
+        ? await Navigator.of(context).push<Goal>(
+            MaterialPageRoute(
+              builder: (ctx) => AddEditGoalScreen(goal: goal),
+            ),
+          )
+        : null;
     if (editedGoal == null) {
       return;
     }
