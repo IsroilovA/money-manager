@@ -80,15 +80,12 @@ class BalanceCard extends StatelessWidget {
             ),
             const SizedBox(height: 20),
             // Widgets to display income and expenses
-            BlocProvider(
-              create: (context) => HomeCubit(),
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IncomeExpenseWidget(isIncome: true),
-                  IncomeExpenseWidget(isIncome: false),
-                ],
-              ),
+            const Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                IncomeExpenseWidget(isIncome: true),
+                IncomeExpenseWidget(isIncome: false),
+              ],
             ),
           ],
         ),

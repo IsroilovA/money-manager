@@ -7,14 +7,9 @@ import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/home/widgets/top_spending_card.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
-class HomeScreen extends StatefulWidget {
+class HomeScreen extends StatelessWidget {
   const HomeScreen({super.key});
 
-  @override
-  State<HomeScreen> createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Padding(

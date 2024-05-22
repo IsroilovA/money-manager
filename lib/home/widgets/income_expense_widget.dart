@@ -21,8 +21,6 @@ class IncomeExpenseWidget extends StatefulWidget {
 class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
   @override
   Widget build(BuildContext context) {
-    Map<RecordType, double> balancesByCategories =
-        context.select((HomeCubit cubit) => cubit.balancesByCategories);
     return InkWell(
       onTap: () {
         Navigator.of(context).push(
@@ -75,8 +73,8 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                       // Rebuild widget when transactions are added, deleted, or accounts are loaded
                       if (current is TabsTransactionAdded ||
                           current is TabsTransactionDeleted ||
-                          current is TabsAccountsLoaded ||
-                          current is TabsLoading) {
+                          current is TabsLoading ||
+                          current is TabsAccountsLoaded) {
                         return true;
                       }
                       return false;
@@ -116,16 +114,14 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                           "Error",
                           style: Theme.of(context)
                               .textTheme
-                              .bodyMedium!
+                              .headlineSmall!
                               .copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground),
+                                color: Theme.of(context).colorScheme.onPrimary,
+                              ),
                         );
                       }
                     },
-                  )
+                  ),
                 ],
               )
             ],
