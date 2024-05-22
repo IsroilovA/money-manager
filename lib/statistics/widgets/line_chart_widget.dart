@@ -80,10 +80,11 @@ class LineChartWidget extends StatelessWidget {
                     primaryYAxis: const NumericAxis(
                       labelFormat: '{value} \$',
                     ),
-                    series: <LineSeries<LineChartData, int>>[
-                      LineSeries<LineChartData, int>(
+                    primaryXAxis: const DateTimeAxis(),
+                    series: <LineSeries<LineChartData, DateTime>>[
+                      LineSeries<LineChartData, DateTime>(
                         dataSource: lineChartData,
-                        xValueMapper: (LineChartData data, _) => data.date.day,
+                        xValueMapper: (LineChartData data, _) => data.date,
                         yValueMapper: (LineChartData data, _) => data.amount,
                         markerSettings: const MarkerSettings(isVisible: true),
                         dataLabelSettings: const DataLabelSettings(

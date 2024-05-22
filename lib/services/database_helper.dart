@@ -348,7 +348,7 @@ class DatabaseHelper {
     const now = Duration(hours: 24);
 
     List<Map<String, dynamic>> maps = await db.rawQuery(
-      'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date BETWEEN ? AND ? GROUP BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch")',
+      'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date BETWEEN ? AND ? GROUP BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch") ORDER BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch") ASC',
       [
         recordType.name,
         dateTimeRange.start.millisecondsSinceEpoch,

@@ -75,33 +75,6 @@ class _BalanceCardState extends State<BalanceCard> {
                   ),
             ),
             const SizedBox(height: 20),
-            // // Padding(
-            //   padding: const EdgeInsets.symmetric(vertical: 3),
-            //   child: LinearProgressIndicator(
-            //     valueColor: const AlwaysStoppedAnimation<Color>(Colors.green),
-            //     value: 2 / 3,
-            //     minHeight: 10,
-            //     borderRadius: BorderRadius.circular(8),
-            //   ),
-            // ),
-            // Row(
-            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //   children: [
-            //     Text(
-            //       "100",
-            //       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            //             color: Theme.of(context).colorScheme.onPrimary,
-            //           ),
-            //     ),
-            //     Text(
-            //       "totalBalance",
-            //       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-            //             color: Theme.of(context).colorScheme.onPrimary,
-            //           ),
-            //     ),
-            //   ],
-            // ),
-            // const SizedBox(height: 15),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
