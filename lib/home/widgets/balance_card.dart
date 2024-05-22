@@ -33,7 +33,8 @@ class BalanceCard extends StatelessWidget {
             BlocBuilder<HomeCubit, HomeState>(
               buildWhen: (previous, current) {
                 // Rebuild widget when transactions are added, deleted, or accounts are loaded
-                if (current is HomeTransactionsLoaded) {
+                if (current is HomeTransactionsLoaded ||
+                    current is HomeNoTransactions) {
                   return true;
                 }
                 return false;
@@ -42,6 +43,13 @@ class BalanceCard extends StatelessWidget {
                 if (state is HomeTransactionsLoaded) {
                   return Text(
                     currencyFormatter.format(state.totalBalance),
+                    style: Theme.of(context).textTheme.headlineMedium!.copyWith(
+                          color: Theme.of(context).colorScheme.onPrimary,
+                        ),
+                  );
+                } else if (state is HomeNoTransactions) {
+                  return Text(
+                    currencyFormatter.format(0),
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),

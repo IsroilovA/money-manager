@@ -67,7 +67,7 @@ class LineChartWidget extends StatelessWidget {
             lineChartData.isEmpty
                 ? Center(
                     child: Text(
-                      "Add data to see line chart",
+                      "No data for selected range",
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                             color: Theme.of(context).colorScheme.onBackground,
                           ),

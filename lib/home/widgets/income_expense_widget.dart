@@ -71,7 +71,8 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                   BlocBuilder<HomeCubit, HomeState>(
                     buildWhen: (previous, current) {
                       // Rebuild widget when transactions are added, deleted, or accounts are loaded
-                      if (current is HomeTransactionsLoaded) {
+                      if (current is HomeTransactionsLoaded ||
+                          current is HomeNoTransactions) {
                         return true;
                       }
                       return false;
@@ -95,7 +96,22 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                                       .colorScheme
                                       .onBackground),
                         );
-                      } else {
+                      } else if(state is HomeNoTransactions){
+                        return Text(
+                          widget.isIncome
+                              ? "0.00"
+                              : "0.00",
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium!
+                              .copyWith(
+                                  fontWeight: FontWeight.bold,
+                                  color: Theme.of(context)
+                                      .colorScheme
+                                      .onBackground),
+                        );
+                      }
+                      else {
                         return const Center(
                           child: CircularProgressIndicator.adaptive(
                             strokeWidth: 2,
