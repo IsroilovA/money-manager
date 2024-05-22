@@ -3,7 +3,7 @@ part of 'home_cubit.dart';
 @immutable
 sealed class HomeState {}
 
-final class HomeInitial extends HomeState{}
+final class HomeInitial extends HomeState {}
 
 final class HomeTransactionsLoading extends HomeState {}
 
@@ -17,6 +17,9 @@ final class HomeError extends HomeState {
 
 final class HomeTransactionsLoaded extends HomeState {
   final List<TransactionRecord> transactionRecords;
+  final double totalBalance;
+  final Map<RecordType, double> balancesByCategories;
 
-  HomeTransactionsLoaded(this.transactionRecords);
+  HomeTransactionsLoaded(
+      this.transactionRecords, this.totalBalance, this.balancesByCategories);
 }

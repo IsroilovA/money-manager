@@ -68,34 +68,24 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                         fontWeight: FontWeight.bold,
                         color: Theme.of(context).colorScheme.onBackground),
                   ),
-                  BlocBuilder<TabsCubit, TabsState>(
+                  BlocBuilder<HomeCubit, HomeState>(
                     buildWhen: (previous, current) {
                       // Rebuild widget when transactions are added, deleted, or accounts are loaded
-                      if (current is TabsTransactionAdded ||
-                          current is TabsTransactionDeleted ||
-                          current is TabsLoading ||
-                          current is TabsAccountsLoaded) {
+                      if (current is HomeTransactionsLoaded) {
                         return true;
                       }
                       return false;
                     },
                     builder: (context, state) {
-                      if (state is TabsTransactionAdded ||
-                          state is TabsTransactionDeleted ||
-                          state is TabsAccountsLoaded) {
-                        BlocProvider.of<HomeCubit>(context)
-                            .getTotalRecordTypeAmount();
-                        Map<RecordType, double> balancesByCategories =
-                            context.select((HomeCubit cubit) =>
-                                cubit.balancesByCategories);
+                      if (state is HomeTransactionsLoaded) {
                         return Text(
                           widget.isIncome
-                              ? insertCommas(
-                                  balancesByCategories[RecordType.income]
-                                      .toString())
-                              : insertCommas(
-                                  balancesByCategories[RecordType.expense]
-                                      .toString()),
+                              ? insertCommas(state
+                                  .balancesByCategories[RecordType.income]
+                                  .toString())
+                              : insertCommas(state
+                                  .balancesByCategories[RecordType.expense]
+                                  .toString()),
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -105,19 +95,11 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                                       .colorScheme
                                       .onBackground),
                         );
-                      } else if (state is TabsLoading) {
-                        return const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        );
                       } else {
-                        return Text(
-                          "Error",
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall!
-                              .copyWith(
-                                color: Theme.of(context).colorScheme.onPrimary,
-                              ),
+                        return const Center(
+                          child: CircularProgressIndicator.adaptive(
+                            strokeWidth: 2,
+                          ),
                         );
                       }
                     },

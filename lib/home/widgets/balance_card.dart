@@ -3,7 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
 import 'package:money_manager/services/helper_functions.dart';
-import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class BalanceCard extends StatelessWidget {
   const BalanceCard({super.key});
@@ -31,41 +30,27 @@ class BalanceCard extends StatelessWidget {
                     fontSize: 25,
                   ),
             ),
-            BlocBuilder<TabsCubit, TabsState>(
+            BlocBuilder<HomeCubit, HomeState>(
               buildWhen: (previous, current) {
                 // Rebuild widget when transactions are added, deleted, or accounts are loaded
-                if (current is TabsTransactionAdded ||
-                    current is TabsTransactionDeleted ||
-                    current is TabsLoading ||
-                    current is TabsAccountsLoaded) {
+                if (current is HomeTransactionsLoaded) {
                   return true;
                 }
                 return false;
               },
               builder: (context, state) {
-                if (state is TabsTransactionAdded ||
-                    state is TabsTransactionDeleted ||
-                    state is TabsAccountsLoaded) {
-                  // Fetch the total balance
-                  BlocProvider.of<HomeCubit>(context).getTotalBalance();
-                  double totalBalance =
-                      context.select((HomeCubit cubit) => cubit.totalBalance);
+                if (state is HomeTransactionsLoaded) {
                   return Text(
-                    currencyFormatter.format(totalBalance),
+                    currencyFormatter.format(state.totalBalance),
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
                   );
-                } else if (state is TabsLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
-                  );
                 } else {
-                  return Text(
-                    "Error",
-                    style: Theme.of(context).textTheme.headlineSmall!.copyWith(
-                          color: Theme.of(context).colorScheme.onPrimary,
-                        ),
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(
+                      strokeWidth: 2,
+                    ),
                   );
                 }
               },

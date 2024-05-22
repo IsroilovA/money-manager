@@ -8,18 +8,6 @@ part 'home_state.dart';
 class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
-  double totalBalance = 0.0;
-  Map<RecordType, double> balancesByCategories = {};
-
-  // Fetch the total balance from the database
-  void getTotalBalance() async {
-    try {
-      totalBalance = await DatabaseHelper.getTotalBalance();
-    } catch (e) {
-      emit(HomeError(e.toString()));
-    }
-  }
-
   // Load transactions from the database with an optional filter for record type
   void loadTransactions({RecordType? filter}) async {
     emit(HomeTransactionsLoading());
@@ -32,19 +20,14 @@ class HomeCubit extends Cubit<HomeState> {
             await DatabaseHelper.getTransactionRecordsByRecordType(filter);
       }
       if (transactions != null) {
-        emit(HomeTransactionsLoaded(transactions));
+        final totalBalance = await DatabaseHelper.getTotalBalance();
+        final balancesByCategories =
+            await DatabaseHelper.getTotalIncomeExpenseAmount();
+        emit(HomeTransactionsLoaded(
+            transactions, totalBalance, balancesByCategories));
       } else {
         emit(HomeNoTransactions());
       }
-    } catch (e) {
-      emit(HomeError(e.toString()));
-    }
-  }
-
-  // Fetch total amounts for income and expense record types
-  void getTotalRecordTypeAmount() async {
-    try {
-      balancesByCategories = await DatabaseHelper.getTotalIncomeExpenseAmount();
     } catch (e) {
       emit(HomeError(e.toString()));
     }
