@@ -49,7 +49,7 @@ class BalanceCard extends StatelessWidget {
                   );
                 } else if (state is HomeNoTransactions) {
                   return Text(
-                    currencyFormatter.format(0),
+                    currencyFormatter.format(state.totalBalance),
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
