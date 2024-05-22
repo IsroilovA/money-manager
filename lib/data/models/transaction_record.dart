@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:json_annotation/json_annotation.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:uuid/uuid.dart';
 part 'transaction_record.g.dart';
 

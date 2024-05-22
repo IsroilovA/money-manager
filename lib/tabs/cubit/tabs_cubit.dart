@@ -47,7 +47,7 @@ class TabsCubit extends Cubit<TabsState> {
   void deleteTransaction(TransactionRecord transactionRecord) async {
     emit(TabsLoading());
     try {
-      await DatabaseHelper.deleteTransationRecord(transactionRecord);
+      await DatabaseHelper.deleteTransactionRecord(transactionRecord);
       emit(TabsTransactionDeleted(transactionRecord));
     } catch (e) {
       emit(TabsError(e.toString()));
@@ -60,7 +60,7 @@ class TabsCubit extends Cubit<TabsState> {
       if (transactionRecord.recordType == RecordType.transfer) {
         await DatabaseHelper.addTransferTransaction(transactionRecord);
       } else {
-        await DatabaseHelper.addTransationRecord(transactionRecord);
+        await DatabaseHelper.addTransactionRecord(transactionRecord);
       }
       emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
@@ -103,11 +103,11 @@ class TabsCubit extends Cubit<TabsState> {
       id: initialTransactionRecord.id,
     );
     try {
-      await DatabaseHelper.deleteTransationRecord(initialTransactionRecord);
+      await DatabaseHelper.deleteTransactionRecord(initialTransactionRecord);
       if (updatedTransaction.recordType == RecordType.transfer) {
         await DatabaseHelper.addTransferTransaction(updatedTransaction);
       } else {
-        await DatabaseHelper.addTransationRecord(updatedTransaction);
+        await DatabaseHelper.addTransactionRecord(updatedTransaction);
       }
       emit(TabsTransactionAdded(0));
     } catch (e) {
@@ -139,7 +139,7 @@ class TabsCubit extends Cubit<TabsState> {
       if (newTransaction.recordType == RecordType.transfer) {
         await DatabaseHelper.addTransferTransaction(newTransaction);
       } else {
-        await DatabaseHelper.addTransationRecord(newTransaction);
+        await DatabaseHelper.addTransactionRecord(newTransaction);
       }
       emit(TabsTransactionAdded(pageIndex));
     } catch (e) {

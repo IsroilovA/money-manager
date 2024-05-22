@@ -4,13 +4,15 @@ import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/database_helper.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
+/// A screen for adding or editing an account.
 class AddEditAccountScreen extends StatefulWidget {
   const AddEditAccountScreen({super.key, this.account});
 
+  /// The account to be edited, if any.
   final Account? account;
 
   @override
@@ -22,15 +24,17 @@ class AddEditAccountScreen extends StatefulWidget {
 class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
   final _nameController = TextEditingController();
   final _balanceController = TextEditingController();
+
+  /// Saves the account and performs validation checks.
   void _saveAccount() async {
     final enteredBalance = double.tryParse(_balanceController.text);
     final amountIsInvalid = enteredBalance == null;
-    final nameEntered = _nameController.text.trim().isEmpty;
+    final nameNotEntered = _nameController.text.trim().isEmpty;
     Account newAccount;
     if (amountIsInvalid) {
-      showFormAlertDialog(context, "enter a valid amount");
+      showFormAlertDialog(context, "Enter a valid amount");
       return;
-    } else if (nameEntered) {
+    } else if (nameNotEntered) {
       showFormAlertDialog(context, "Enter the name of the account");
       return;
     }
@@ -63,11 +67,13 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
 
   @override
   void initState() {
+    super.initState();
+    // Initialize form fields if editing an existing account.
     if (widget.account != null) {
       _nameController.text = widget.account!.name;
-      _balanceController.text = insertComas(widget.account!.balance.toString());
+      _balanceController.text =
+          insertCommas(widget.account!.balance.toString());
     }
-    super.initState();
   }
 
   @override
@@ -76,13 +82,14 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
     return Scaffold(
       appBar: AppBar(
         title: widget.account == null
-            ? const Text('New account')
-            : const Text("Edit account"),
+            ? const Text('New Account')
+            : const Text("Edit Account"),
         centerTitle: true,
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Form list tile for entering the account name.
           FormListTile(
             leadingText: "Name",
             titleWidget: TextField(
@@ -95,13 +102,16 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
               maxLength: 60,
             ),
           ),
+          // Form list tile for entering the account balance.
           FormListTile(
-              leadingText: "Amount",
-              titleWidget: AmountTextField(
-                amountController: _balanceController,
-                textInputFormatter: NegativeCurrencyInputFormatter(),
-              )),
+            leadingText: "Amount",
+            titleWidget: AmountTextField(
+              amountController: _balanceController,
+              textInputFormatter: NegativeCurrencyInputFormatter(),
+            ),
+          ),
           const SizedBox(height: 20),
+          // Button to save the account.
           TextButton(
             onPressed: _saveAccount,
             style: TextButton.styleFrom(
@@ -116,7 +126,7 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
               ),
             ),
             child: const Text("Save"),
-          )
+          ),
         ],
       ),
     );

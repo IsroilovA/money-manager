@@ -3,8 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/goals/cubit/goal_cubit.dart';
 import 'package:money_manager/goals/widgets/goal_details.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 
+/// A widget that displays a goal item with its details. When tapped, it navigates to the goal details screen.
 class GoalItem extends StatelessWidget {
   const GoalItem({super.key, required this.goal});
 
@@ -15,6 +16,7 @@ class GoalItem extends StatelessWidget {
     return Card(
       child: ListTile(
         onTap: () async {
+          // Navigate to the goal details screen
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => BlocProvider(
@@ -24,6 +26,7 @@ class GoalItem extends StatelessWidget {
             ),
           );
           if (context.mounted) {
+            // Reload goals after returning from the goal details screen
             BlocProvider.of<GoalCubit>(context).loadGoals();
           }
         },
@@ -42,7 +45,9 @@ class GoalItem extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  // Display current balance of the goal
                   Text(currencyFormatter.format(goal.currentBalance)),
+                  // Display percentage progress towards the goal
                   Text(
                       "${(goal.currentBalance / goal.goalBalance * 100).toStringAsFixed(1)}%"),
                 ],

@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/goal.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 
+/// A screen for adding or editing a goal.
 class AddEditGoalScreen extends StatefulWidget {
   const AddEditGoalScreen({super.key, this.goal});
 
+  /// The goal to be edited, if any.
   final Goal? goal;
   @override
   State<AddEditGoalScreen> createState() {
@@ -18,6 +20,8 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
   final _nameController = TextEditingController();
   final _currentBalanceController = TextEditingController();
   final _goalBalanceController = TextEditingController();
+
+  /// Saves the goal and performs validation checks.
   void _saveGoal() async {
     final enteredCurrentBalance =
         double.tryParse(_currentBalanceController.text.replaceAll(',', ''));
@@ -27,12 +31,12 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
         enteredCurrentBalance == null || enteredCurrentBalance <= 0;
     final enteredBalanceIsInvalid =
         enteredGoalBalance == null || enteredGoalBalance <= 0;
-    final nameEntered = _nameController.text.trim().isEmpty;
+    final nameNotEntered = _nameController.text.trim().isEmpty;
     Goal newGoal;
     if (currentBalanceIsInvalid || enteredBalanceIsInvalid) {
-      showFormAlertDialog(context, "enter a valid amount");
+      showFormAlertDialog(context, "Enter a valid amount");
       return;
-    } else if (nameEntered) {
+    } else if (nameNotEntered) {
       showFormAlertDialog(context, "Enter the name of the goal");
       return;
     }
@@ -55,14 +59,15 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
 
   @override
   void initState() {
+    super.initState();
+    // Initialize form fields if editing an existing goal.
     if (widget.goal != null) {
       _nameController.text = widget.goal!.name;
       _currentBalanceController.text =
-          insertComas(widget.goal!.currentBalance.toString());
+          insertCommas(widget.goal!.currentBalance.toString());
       _goalBalanceController.text =
-          insertComas(widget.goal!.goalBalance.toString());
+          insertCommas(widget.goal!.goalBalance.toString());
     }
-    super.initState();
   }
 
   @override
@@ -71,13 +76,14 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
     return Scaffold(
       appBar: AppBar(
         title: widget.goal == null
-            ? const Text('New goal')
-            : const Text("Edit goal"),
+            ? const Text('New Goal')
+            : const Text("Edit Goal"),
         centerTitle: true,
       ),
       body: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Form list tile for entering the goal name.
           FormListTile(
             leadingText: "Name",
             titleWidget: TextField(
@@ -90,19 +96,24 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
               maxLength: 60,
             ),
           ),
+          // Form list tile for entering the current balance.
           FormListTile(
-              leadingText: "Current Balance",
-              titleWidget: AmountTextField(
-                amountController: _currentBalanceController,
-                textInputFormatter: PositiveCurrencyInputFormatter(),
-              )),
+            leadingText: "Current Balance",
+            titleWidget: AmountTextField(
+              amountController: _currentBalanceController,
+              textInputFormatter: PositiveCurrencyInputFormatter(),
+            ),
+          ),
+          // Form list tile for entering the goal balance.
           FormListTile(
-              leadingText: "Goal Balance",
-              titleWidget: AmountTextField(
-                amountController: _goalBalanceController,
-                textInputFormatter: PositiveCurrencyInputFormatter(),
-              )),
+            leadingText: "Goal Balance",
+            titleWidget: AmountTextField(
+              amountController: _goalBalanceController,
+              textInputFormatter: PositiveCurrencyInputFormatter(),
+            ),
+          ),
           const SizedBox(height: 20),
+          // Row of buttons for saving or canceling the goal.
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -137,9 +148,9 @@ class _AddEditGoalScreenState extends State<AddEditGoalScreen> {
                   ),
                 ),
                 child: const Text('Cancel'),
-              )
+              ),
             ],
-          )
+          ),
         ],
       ),
     );

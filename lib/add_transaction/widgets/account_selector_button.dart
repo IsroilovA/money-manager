@@ -19,7 +19,7 @@ class AccountSelectorButton extends StatefulWidget {
 
 class _AccountSelectorButtonState extends State<AccountSelectorButton> {
   Account? _account;
-
+  // Method to open the bottom sheet to select an account
   void _openBottomSheet(List<Account> accounts) {
     showModalBottomSheet(
       isScrollControlled: true,
@@ -42,10 +42,11 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                           color: Theme.of(context).colorScheme.onBackground),
                     ),
                     IconButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        icon: const Icon(Icons.close))
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      icon: const Icon(Icons.close),
+                    ),
                   ],
                 ),
               ),
@@ -68,23 +69,22 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                         child: Container(
                           decoration: BoxDecoration(
                             color: Theme.of(context).colorScheme.surfaceVariant,
-                            border: Border.all(
-                              width: 0.3,
-                            ),
+                            border: Border.all(width: 0.3),
                           ),
                           child: Center(
-                              child: Text(
-                            account.name,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodySmall!
-                                .copyWith(
-                                    color: Theme.of(context)
-                                        .colorScheme
-                                        .onSurfaceVariant),
-                          )),
+                            child: Text(
+                              account.name,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall!
+                                  .copyWith(
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .onSurfaceVariant),
+                            ),
+                          ),
                         ),
-                      )
+                      ),
                   ],
                 ),
               ),
@@ -97,34 +97,41 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
 
   @override
   Widget build(BuildContext context) {
+    // Get the list of accounts from the TabsCubit
     final accounts = context.select((TabsCubit cubit) => cubit.accounts);
+
+    // Set the initially selected account if provided
     if (widget.selectedAccountId != null) {
       _account = accounts
           .firstWhere((account) => account.id == widget.selectedAccountId);
     }
+
+    // Widget to display the selected account name or empty if none selected
     Widget content = const Text("");
     if (_account != null) {
       content = Text(_account!.name);
     }
+
     return Container(
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(
-              width: 1.0,
-              color: Theme.of(context).colorScheme.primary.withOpacity(0.7)),
+            width: 1.0,
+            color: Theme.of(context).colorScheme.primary.withOpacity(0.7),
+          ),
         ),
       ),
       child: TextButton(
-          onPressed: () {
-            _openBottomSheet(accounts);
-          },
-          style: TextButton.styleFrom(
-            textStyle: Theme.of(context).textTheme.bodyLarge,
-            shape:
-                const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-            alignment: Alignment.centerLeft,
-          ),
-          child: content),
+        onPressed: () {
+          _openBottomSheet(accounts);
+        },
+        style: TextButton.styleFrom(
+          textStyle: Theme.of(context).textTheme.bodyLarge,
+          shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
+          alignment: Alignment.centerLeft,
+        ),
+        child: content,
+      ),
     );
   }
 }

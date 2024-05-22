@@ -9,6 +9,7 @@ part 'goal_state.dart';
 class GoalCubit extends Cubit<GoalState> {
   GoalCubit() : super(GoalInitial());
 
+  // Load all goals from the database and emit the appropriate state
   void loadGoals() async {
     try {
       final goals = await DatabaseHelper.getAllGoals();
@@ -22,6 +23,7 @@ class GoalCubit extends Cubit<GoalState> {
     }
   }
 
+  // Add a specified amount to a goal and emit the updated goal state
   void addAmount(Goal goal, double addedBalance) async {
     try {
       await DatabaseHelper.addGoalSavedAmount(goal, addedBalance);
@@ -32,6 +34,7 @@ class GoalCubit extends Cubit<GoalState> {
     }
   }
 
+  // Edit a goal by navigating to the AddEditGoalScreen and emitting the updated goal state
   void editGoal(BuildContext context, String goalId) async {
     final goal = await DatabaseHelper.getGoalById(goalId);
     final editedGoal = context.mounted
@@ -53,6 +56,7 @@ class GoalCubit extends Cubit<GoalState> {
     }
   }
 
+  // Delete a goal and emit an appropriate state
   void deleteGoal(Goal goal) async {
     try {
       await DatabaseHelper.deleteGoal(goal);
@@ -61,6 +65,7 @@ class GoalCubit extends Cubit<GoalState> {
     }
   }
 
+  // Add a new goal by navigating to the AddEditGoalScreen and emitting the initial state
   void addGoal(BuildContext context) async {
     final newGoal = await Navigator.of(context).push<Goal>(
       MaterialPageRoute(

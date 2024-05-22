@@ -12,6 +12,7 @@ class HomeCubit extends Cubit<HomeState> {
   double totalExpense = 0.0;
   double totalIncome = 0.0;
 
+  // Fetch the total balance from the database
   void getTotalBalance() async {
     try {
       totalBalance = await DatabaseHelper.getTotalBalance();
@@ -20,18 +21,17 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  // Load transactions from the database with an optional filter for record type
   void loadTransactions({RecordType? filter}) async {
     emit(HomeTransactionsLoading());
     try {
       List<TransactionRecord>? transactions;
-      switch (filter) {
-        case null:
-          transactions = await DatabaseHelper.getAllTransactionRecords();
-        case _:
-          transactions =
-              await DatabaseHelper.getTransactionRecordsByRecordType(filter);
+      if (filter == null) {
+        transactions = await DatabaseHelper.getAllTransactionRecords();
+      } else {
+        transactions =
+            await DatabaseHelper.getTransactionRecordsByRecordType(filter);
       }
-      // final transactions = await DatabaseHelper.getAllTransactionRecords();
       if (transactions != null) {
         emit(HomeTransactionsLoaded(transactions));
       } else {
@@ -42,6 +42,7 @@ class HomeCubit extends Cubit<HomeState> {
     }
   }
 
+  // Fetch total amounts for income and expense record types
   void getTotalRecordTypeAmount() async {
     try {
       totalExpense =

@@ -5,13 +5,20 @@ import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/category_selector_button.dart';
 import 'package:money_manager/add_transaction/widgets/date_selector_button.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 
+/// A form widget for adding and editing transactions.
 class TransactionForm extends StatefulWidget {
-  const TransactionForm(
-      {super.key, required this.recordType, this.transactionRecord});
+  const TransactionForm({
+    super.key,
+    required this.recordType,
+    this.transactionRecord,
+  });
 
+  /// The type of record (expense, income, transfer).
   final RecordType recordType;
+
+  /// The transaction record being edited, if any.
   final TransactionRecord? transactionRecord;
 
   @override
@@ -30,20 +37,22 @@ class _TransactionFormState extends State<TransactionForm> {
 
   @override
   void initState() {
+    super.initState();
+    // Initialize form fields if editing an existing transaction.
     if (widget.transactionRecord != null) {
       _selectedDate = widget.transactionRecord!.date;
       _accountId = widget.transactionRecord!.accountId;
       _amountController.text =
-          insertComas(widget.transactionRecord!.amount.toString());
+          insertCommas(widget.transactionRecord!.amount.toString());
       _recordType = widget.transactionRecord!.recordType;
       _noteController.text = widget.transactionRecord!.note ?? "";
       _expenseCategory = widget.transactionRecord!.expenseCategory;
       _incomeCategory = widget.transactionRecord!.incomeCategory;
       _transferAccount2Id = widget.transactionRecord!.transferAccount2Id;
     }
-    super.initState();
   }
 
+  /// Presents a date picker to select a transaction date.
   void _presentDatePicker() async {
     final now = DateTime.now();
     final firstDate = DateTime(now.year - 1, now.month, now.day);
@@ -60,6 +69,7 @@ class _TransactionFormState extends State<TransactionForm> {
     });
   }
 
+  /// Saves the transaction and performs validation checks.
   void _saveTransaction() {
     final enteredAmount =
         double.tryParse(_amountController.text.replaceAll(",", ''));
@@ -67,7 +77,7 @@ class _TransactionFormState extends State<TransactionForm> {
     final noteNotEntered = _noteController.text.trim().isEmpty;
     TransactionRecord newRecord;
     if (amountIsInvalid) {
-      showFormAlertDialog(context, "enter a valid amount");
+      showFormAlertDialog(context, "Enter a valid amount");
       return;
     }
 
@@ -152,6 +162,7 @@ class _TransactionFormState extends State<TransactionForm> {
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
+          // Form list tile for selecting the date.
           FormListTile(
             leadingText: "Date",
             titleWidget: DateSelectorButton(
@@ -159,6 +170,7 @@ class _TransactionFormState extends State<TransactionForm> {
               selectedDate: _selectedDate,
             ),
           ),
+          // Form list tile for entering the amount.
           FormListTile(
             leadingText: "Amount",
             titleWidget: AmountTextField(
@@ -166,6 +178,7 @@ class _TransactionFormState extends State<TransactionForm> {
               textInputFormatter: PositiveCurrencyInputFormatter(),
             ),
           ),
+          // Form list tile for selecting the account.
           FormListTile(
             leadingText: _recordType == RecordType.transfer
                 ? "Account Sender"
@@ -179,6 +192,7 @@ class _TransactionFormState extends State<TransactionForm> {
               },
             ),
           ),
+          // Form list tile for selecting the receiver account in case of transfer.
           _recordType == RecordType.transfer
               ? FormListTile(
                   leadingText: "Account Receiver",
@@ -208,6 +222,7 @@ class _TransactionFormState extends State<TransactionForm> {
                     },
                   ),
                 ),
+          // Form list tile for entering a note.
           FormListTile(
             leadingText: "Note",
             titleWidget: TextField(
@@ -220,6 +235,7 @@ class _TransactionFormState extends State<TransactionForm> {
               maxLength: 60,
             ),
           ),
+          // Row of buttons for saving or canceling the transaction.
           Row(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

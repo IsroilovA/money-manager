@@ -23,8 +23,10 @@ class _HomeScreenState extends State<HomeScreen> {
         primary: true,
         child: Column(
           children: [
+            // Balance card showing the total balance
             const BalanceCard(),
             const SizedBox(height: 20),
+            // Section title for Top Spendings
             Text(
               "Top Spendings",
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
@@ -32,6 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   color: Theme.of(context).colorScheme.onBackground),
             ),
             const SizedBox(height: 18),
+            // Row showing top spending categories
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -46,6 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
             const SizedBox(height: 20),
+            // Section title for Recent Transactions with a button to view all
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -57,6 +61,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 TextButton(
                   onPressed: () {
+                    //on pressed navigato to TransactionsList with cubits passed
                     Navigator.of(context).push(
                       MaterialPageRoute(
                         builder: (ctx) => MultiBlocProvider(
@@ -77,6 +82,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 )
               ],
             ),
+            // BlocBuilder to manage the state of the transactions
             BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
                 if (current is TabsTransactionDeleted ||
@@ -91,6 +97,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (state is TabsTransactionDeleted ||
                     state is TabsAccountsLoaded ||
                     state is TabsTransactionAdded) {
+                  // Load transactions if the state indicates changes
                   BlocProvider.of<HomeCubit>(context).loadTransactions();
                   return BlocBuilder<HomeCubit, HomeState>(
                     builder: (context, state) {
@@ -126,10 +133,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               ? state.transactionRecords.length
                               : 5,
                           itemBuilder: (context, index) {
-                            final record = state.transactionRecords[index];
                             return RecordItem(
-                              transactionRecord: record,
-                            );
+                                transactionRecord:
+                                    state.transactionRecords[index]);
                           },
                         );
                       } else if (state is HomeError) {
@@ -140,7 +146,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           ),
                         );
                       } else {
-                        return const Center(child: Text("Something is wrong"));
+                        return const Center(
+                            child: Text("Something went wrong"));
                       }
                     },
                   );
@@ -149,7 +156,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: CircularProgressIndicator.adaptive(),
                   );
                 } else {
-                  return const Text("error");
+                  return const Text("Error");
                 }
               },
             ),

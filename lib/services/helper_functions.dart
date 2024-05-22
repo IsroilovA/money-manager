@@ -5,16 +5,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
 
+// Currency formatter for the locale "uz_US"
 final currencyFormatter = NumberFormat.currency(locale: "uz_US");
 
+// Date formatter for year-month-day format
 final dateFormatter = DateFormat.yMd();
 
+// Extension on String to capitalize the first letter
 extension StringExtension on String {
   String capitalize() {
     return "${this[0].toUpperCase()}${substring(1).toLowerCase()}";
   }
 }
 
+// Formatter to allow only positive currency values with two decimal places
 class PositiveCurrencyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -25,7 +29,7 @@ class PositiveCurrencyInputFormatter extends TextInputFormatter {
     }
     if (newValue.text.length <= 20) {
       if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
-        String newText = insertComas(newValue.text.replaceAll(',', ''));
+        String newText = insertCommas(newValue.text.replaceAll(',', ''));
         return newValue.copyWith(
           text: newText,
           selection: TextSelection.collapsed(offset: newText.length),
@@ -36,6 +40,7 @@ class PositiveCurrencyInputFormatter extends TextInputFormatter {
   }
 }
 
+// Formatter to allow negative and positive currency values with two decimal places
 class NegativeCurrencyInputFormatter extends TextInputFormatter {
   @override
   TextEditingValue formatEditUpdate(
@@ -47,7 +52,7 @@ class NegativeCurrencyInputFormatter extends TextInputFormatter {
     }
     if (newValue.text.length <= 20) {
       if (regExp.hasMatch(newValue.text.replaceAll(',', ''))) {
-        newText = insertComas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
+        newText = insertCommas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
         if (newValue.text.contains('-')) {
           newText = '-$newText';
         }
@@ -56,13 +61,13 @@ class NegativeCurrencyInputFormatter extends TextInputFormatter {
           selection: TextSelection.collapsed(offset: newText.length),
         );
       } else if (!oldValue.text.contains('-') && newValue.text.contains('-')) {
-        newText = insertComas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
+        newText = insertCommas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
         return newValue.copyWith(
           text: '-$newText',
           selection: TextSelection.collapsed(offset: newText.length),
         );
       } else if (!newValue.text.contains(" ") && oldValue.text.contains('-')) {
-        newText = insertComas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
+        newText = insertCommas(newValue.text.replaceAll(RegExp(r'[,\-]'), ''));
         return newValue.copyWith(
           text: newText,
           selection: TextSelection.collapsed(offset: newText.length),
@@ -73,7 +78,8 @@ class NegativeCurrencyInputFormatter extends TextInputFormatter {
   }
 }
 
-String insertComas(String text) {
+// Helper function to insert commas into a numerical string
+String insertCommas(String text) {
   String newText = '';
   int indexOfDot = text.indexOf('.');
   if (indexOfDot != -1) {
@@ -96,10 +102,12 @@ String insertComas(String text) {
   return newText;
 }
 
-void showWarningAlertDialog(
-    {required BuildContext context,
-    required String text,
-    required void Function() onYesClicked}) {
+// Function to show a warning alert dialog
+void showWarningAlertDialog({
+  required BuildContext context,
+  required String text,
+  required void Function() onYesClicked,
+}) {
   if (Platform.isIOS) {
     showCupertinoDialog(
       context: context,
@@ -145,6 +153,7 @@ void showWarningAlertDialog(
   }
 }
 
+// Function to show an alert dialog for form validation
 void showFormAlertDialog(BuildContext context, String text) {
   if (Platform.isIOS) {
     showCupertinoDialog(

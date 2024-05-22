@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class TransactionsListScreen extends StatefulWidget {
@@ -16,6 +16,14 @@ class TransactionsListScreen extends StatefulWidget {
 }
 
 class _TransactionsListScreenState extends State<TransactionsListScreen> {
+  int? selectedIndex;
+  List<RecordType> filters = [
+    RecordType.income,
+    RecordType.expense,
+    RecordType.transfer,
+    RecordType.balanceAdjustment,
+  ];
+
   @override
   void initState() {
     if (widget.filter != null) {
@@ -24,13 +32,6 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
     super.initState();
   }
 
-  int? selectedIndex;
-  List<RecordType> filters = [
-    RecordType.income,
-    RecordType.expense,
-    RecordType.transfer,
-    RecordType.balanceAdjustment,
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,6 +41,7 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
       ),
       body: BlocBuilder<TabsCubit, TabsState>(
         buildWhen: (previous, current) {
+          // Rebuild when transactions are added, deleted, or accounts are loaded
           if (current is TabsTransactionDeleted ||
               current is TabsAccountsLoaded ||
               current is TabsTransactionAdded ||
@@ -53,10 +55,12 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
               state is TabsTransactionAdded ||
               state is TabsAccountsLoaded ||
               state is TabsPageChanged) {
+            // Load transactions with the selected filter
             BlocProvider.of<HomeCubit>(context).loadTransactions(
                 filter: selectedIndex == null ? null : filters[selectedIndex!]);
             return Column(
               children: [
+                // Filter chips for different transaction types
                 SingleChildScrollView(
                   scrollDirection: Axis.horizontal,
                   child: Row(
@@ -80,17 +84,16 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
                           ),
                           selected: selectedIndex == index,
                           onSelected: (isSelected) {
-                            setState(
-                              () {
-                                selectedIndex = isSelected ? index : null;
-                              },
-                            );
+                            setState(() {
+                              selectedIndex = isSelected ? index : null;
+                            });
                           },
                         ),
                       ),
                     ),
                   ),
                 ),
+                // Display the list of transactions based on the state
                 BlocBuilder<HomeCubit, HomeState>(
                   builder: (context, state) {
                     if (state is HomeNoTransactions) {
@@ -156,7 +159,7 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
           } else {
             return Center(
               child: Text(
-                "Something is wrong2",
+                "Something is wrong",
                 style: Theme.of(context).textTheme.titleMedium!.copyWith(
                     color: Theme.of(context).colorScheme.onBackground),
               ),

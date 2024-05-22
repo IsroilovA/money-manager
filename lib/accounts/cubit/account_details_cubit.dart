@@ -8,11 +8,14 @@ import 'package:money_manager/services/database_helper.dart';
 
 part 'account_details_state.dart';
 
+/// A Cubit to manage the state of account details.
 class AccountDetailsCubit extends Cubit<AccountDetailsState> {
   AccountDetailsCubit() : super(AccountDetailsInitial());
 
+  /// List of transaction records associated with the account.
   List<TransactionRecord>? transactionRecords;
 
+  /// Loads the transaction records for a specific account.
   void loadAccountTransaction(String accountId) async {
     try {
       transactionRecords =
@@ -20,10 +23,11 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
       final account = await DatabaseHelper.getAccountById(accountId);
       emit(AccountTransactionsLoaded(account, transactionRecords));
     } catch (e) {
-      AccountDetailsError(e.toString());
+      emit(AccountDetailsError(e.toString()));
     }
   }
 
+  /// Navigates to the edit account screen and updates the account details if edited.
   void editAccount(BuildContext context, String accountId) async {
     final account = await DatabaseHelper.getAccountById(accountId);
     if (context.mounted) {
@@ -44,6 +48,7 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
     }
   }
 
+  /// Deletes the specified account.
   void deleteAccount(Account account) async {
     try {
       await DatabaseHelper.deleteAccount(account);

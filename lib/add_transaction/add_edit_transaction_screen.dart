@@ -4,9 +4,11 @@ import 'package:money_manager/add_transaction/cubit/add_transaction_cubit.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/add_transaction/widgets/transaction_form.dart';
 
+/// A screen for adding or editing a transaction.
 class AddEditTransaction extends StatefulWidget {
   const AddEditTransaction({super.key, this.transactionRecord});
 
+  /// The transaction record to be edited, if any.
   final TransactionRecord? transactionRecord;
 
   @override
@@ -18,15 +20,17 @@ class AddEditTransaction extends StatefulWidget {
 class _AddEditTransactionState extends State<AddEditTransaction> {
   @override
   void initState() {
+    super.initState();
+    // If editing an existing transaction, set the record type in the cubit.
     if (widget.transactionRecord != null) {
       BlocProvider.of<AddTransactionCubit>(context)
           .selectRecordType(widget.transactionRecord!.recordType.index);
     }
-    super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Retrieve the current record type from the cubit.
     RecordType recordType =
         context.select((AddTransactionCubit cubit) => cubit.recordType);
     return Scaffold(
@@ -39,11 +43,13 @@ class _AddEditTransactionState extends State<AddEditTransaction> {
         initialIndex: recordType.index,
         child: Column(
           children: [
+            // A tab bar to switch between income, expense, and transfer tabs.
             TabBar(
-              //make the indicator the size of the full tab
+              // Make the indicator the size of the full tab.
               indicatorSize: TabBarIndicatorSize.tab,
-              //remove deivder
-              dividerHeight: 0,
+              // Remove the divider.
+              dividerColor: Colors.transparent,
+              // Change the record type in the cubit when a tab is tapped.
               onTap: BlocProvider.of<AddTransactionCubit>(context)
                   .selectRecordType,
               indicator: BoxDecoration(
@@ -63,6 +69,7 @@ class _AddEditTransactionState extends State<AddEditTransaction> {
                 )
               ],
             ),
+            // Display the transaction form corresponding to the selected tab.
             Expanded(
               child: TransactionForm(
                 recordType: recordType,

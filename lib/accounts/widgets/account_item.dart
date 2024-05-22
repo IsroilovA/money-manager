@@ -5,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/accounts/cubit/account_details_cubit.dart';
 import 'package:money_manager/accounts/widgets/account_details.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
+/// A widget that displays an account item with its name and balance.
+/// When tapped, it navigates to the account details screen.
 class AccountItem extends StatelessWidget {
   const AccountItem({super.key, required this.account, required this.accounts});
 
@@ -18,6 +20,7 @@ class AccountItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () async {
+        // Navigate to the account details screen
         await Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => MultiBlocProvider(
@@ -36,6 +39,7 @@ class AccountItem extends StatelessWidget {
           ),
         );
         if (context.mounted) {
+          // Reload accounts after returning from the account details screen
           BlocProvider.of<TabsCubit>(context).loadAccounts();
         }
       },
@@ -46,11 +50,13 @@ class AccountItem extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            // Display account name
             Text(
               account.name.capitalize(),
               style: Theme.of(context).textTheme.titleMedium!.copyWith(
                   color: Theme.of(context).colorScheme.onPrimaryContainer),
             ),
+            // Display account balance
             BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
                 if (current is TabsTransactionAdded ||

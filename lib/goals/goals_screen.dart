@@ -18,9 +18,13 @@ class GoalsScreen extends StatelessWidget {
           },
           builder: (context, state) {
             if (state is GoalsLoaded) {
+              // Display the list of goals
               return ListView.builder(
+                //add one tot he goals count
                 itemCount: state.goals.length + 1,
                 itemBuilder: (context, index) {
+                  // If the index is within the goals list, show a GoalItem
+                  // Otherwise, show an add button
                   return (index != state.goals.length)
                       ? GoalItem(goal: state.goals[index])
                       : IconButton(
@@ -35,6 +39,7 @@ class GoalsScreen extends StatelessWidget {
                 },
               );
             } else if (state is NoGoals) {
+              // Display message and add button when there are no goals
               return Center(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -60,21 +65,25 @@ class GoalsScreen extends StatelessWidget {
                 ),
               );
             } else if (state is GoalInitial) {
+              // Load goals when the initial state is reached
               BlocProvider.of<GoalCubit>(context).loadGoals();
               return const Center(
                 child: CircularProgressIndicator.adaptive(),
               );
             } else if (state is GoalLoading) {
+              // Show loading indicator while loading goals
               return const Center(
                 child: CircularProgressIndicator.adaptive(),
               );
             } else if (state is GoalError) {
+              // Display error message if there is an error
               return Center(
                 child: Text("Error: ${state.message}"),
               );
             } else {
+              // Fallback for any unexpected state
               return const Center(
-                child: Text("something went wrong"),
+                child: Text("Something went wrong"),
               );
             }
           },

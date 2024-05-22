@@ -3,17 +3,20 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/goals/cubit/goal_cubit.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 class GoalDetails extends StatelessWidget {
   const GoalDetails({super.key, required this.goal});
   final Goal goal;
+
   @override
   Widget build(BuildContext context) {
+    // Function to build the goal details screen
     Widget buildGoalDetailsScreen(Goal goal) {
       var width = MediaQuery.of(context).size.width;
       return Column(children: [
+        // Gauge to show goal progress
         SfRadialGauge(
           axes: <RadialAxis>[
             RadialAxis(
@@ -29,6 +32,7 @@ class GoalDetails extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      // Display percentage of goal achieved
                       Text(
                         "${(goal.currentBalance / goal.goalBalance * 100).toStringAsFixed(1)} %",
                         style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -36,11 +40,10 @@ class GoalDetails extends StatelessWidget {
                               fontSize: 60,
                             ),
                       ),
-                      const SizedBox(
-                        height: 20,
-                      ),
+                      const SizedBox(height: 20),
+                      // Display current balance and goal balance
                       Text(
-                        "${insertComas(goal.currentBalance.toString())} / ${insertComas(goal.goalBalance.toString())} UZS",
+                        "${insertCommas(goal.currentBalance.toString())} / ${insertCommas(goal.goalBalance.toString())} UZS",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                               color: Theme.of(context).colorScheme.onBackground,
                             ),
@@ -58,9 +61,8 @@ class GoalDetails extends StatelessWidget {
             )
           ],
         ),
-        const SizedBox(
-          height: 50,
-        ),
+        const SizedBox(height: 50),
+        // Button to add or remove saved amount
         TextButton(
           onPressed: () async {
             double addedRemovedAmount = 0.0;
@@ -76,6 +78,7 @@ class GoalDetails extends StatelessWidget {
                         color: Theme.of(context).colorScheme.onSurfaceVariant),
                   ),
                   children: [
+                    // Input field for amount with formatter
                     AmountTextField(
                         amountController: amountController,
                         textInputFormatter: NegativeCurrencyInputFormatter()),
@@ -93,7 +96,7 @@ class GoalDetails extends StatelessWidget {
                               amountController.text.replaceAll(',', ''));
                           if (enteredAmount == null) {
                             showFormAlertDialog(
-                                context, "enter a valid amount");
+                                context, "Enter a valid amount");
                             return;
                           }
                           if (goal.currentBalance + enteredAmount >
@@ -131,9 +134,7 @@ class GoalDetails extends StatelessWidget {
             minimumSize: Size(width * 0.8, 0),
             textStyle: Theme.of(context).textTheme.titleMedium,
             shape: const RoundedRectangleBorder(
-              borderRadius: BorderRadius.all(
-                Radius.circular(10),
-              ),
+              borderRadius: BorderRadius.all(Radius.circular(10)),
             ),
           ),
           child: const Text("Add/Remove saved amount"),
@@ -146,6 +147,7 @@ class GoalDetails extends StatelessWidget {
         title: const Text("Goal details"),
         centerTitle: true,
         actions: [
+          // Button to delete the goal
           IconButton(
             onPressed: () {
               BlocProvider.of<GoalCubit>(context).deleteGoal(goal);
@@ -153,6 +155,7 @@ class GoalDetails extends StatelessWidget {
             },
             icon: const Icon(Icons.delete),
           ),
+          // Button to edit the goal
           IconButton(
             onPressed: () {
               BlocProvider.of<GoalCubit>(context).editGoal(context, goal.id);

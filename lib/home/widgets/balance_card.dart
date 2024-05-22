@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/income_expense_widget.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class BalanceCard extends StatefulWidget {
@@ -28,6 +28,7 @@ class _BalanceCardState extends State<BalanceCard> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Title for the total balance
             Text(
               "Total Balance",
               style: Theme.of(context).textTheme.headlineLarge!.copyWith(
@@ -37,6 +38,7 @@ class _BalanceCardState extends State<BalanceCard> {
             ),
             BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
+                // Rebuild widget when transactions are added, deleted, or accounts are loaded
                 if (current is TabsTransactionAdded ||
                     current is TabsTransactionDeleted ||
                     current is TabsAccountsLoaded) {
@@ -48,6 +50,7 @@ class _BalanceCardState extends State<BalanceCard> {
                 if (state is TabsTransactionAdded ||
                     state is TabsTransactionDeleted ||
                     state is TabsAccountsLoaded) {
+                  // Fetch the total balance
                   BlocProvider.of<HomeCubit>(context).getTotalBalance();
                   double totalBalance =
                       context.select((HomeCubit cubit) => cubit.totalBalance);
@@ -59,7 +62,7 @@ class _BalanceCardState extends State<BalanceCard> {
                   );
                 } else {
                   return Text(
-                    "error",
+                    "Error",
                     style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
@@ -68,6 +71,7 @@ class _BalanceCardState extends State<BalanceCard> {
               },
             ),
             const SizedBox(height: 20),
+            // Title for monthly expenses
             Text(
               "Monthly Expenses",
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
@@ -75,6 +79,7 @@ class _BalanceCardState extends State<BalanceCard> {
                   ),
             ),
             const SizedBox(height: 20),
+            // Widgets to display income and expenses
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [

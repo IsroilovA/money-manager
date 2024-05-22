@@ -3,7 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/all_transactions/transactions_list_screen.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class IncomeExpenseWidget extends StatefulWidget {
@@ -50,6 +50,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
           padding: const EdgeInsets.all(8.0),
           child: Row(
             children: [
+              // Icon representing income or expense
               Icon(
                 widget.isIncome
                     ? Icons.arrow_circle_down
@@ -57,11 +58,10 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                 size: 37,
                 color: widget.isIncome ? Colors.green : Colors.red,
               ),
-              const SizedBox(
-                width: 3,
-              ),
+              const SizedBox(width: 3),
               Column(
                 children: [
+                  // Display "Income" or "Expense" based on the widget's state
                   Text(
                     widget.isIncome ? "Income" : "Expense",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
@@ -70,6 +70,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                   ),
                   BlocBuilder<TabsCubit, TabsState>(
                     buildWhen: (previous, current) {
+                      // Rebuild widget when transactions are added, deleted, or accounts are loaded
                       if (current is TabsTransactionAdded ||
                           current is TabsTransactionDeleted ||
                           current is TabsAccountsLoaded) {
@@ -81,6 +82,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                       if (state is TabsTransactionAdded ||
                           state is TabsTransactionDeleted ||
                           state is TabsAccountsLoaded) {
+                        // Fetch total amounts for income and expense
                         BlocProvider.of<HomeCubit>(context)
                             .getTotalRecordTypeAmount();
                         double expense = context
@@ -102,7 +104,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                         );
                       } else {
                         return Text(
-                          "error",
+                          "Error",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
