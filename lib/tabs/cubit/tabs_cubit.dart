@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_account/add_edit_account_screen.dart';
@@ -11,16 +10,19 @@ import 'package:money_manager/services/database_helper.dart';
 
 part 'tabs_state.dart';
 
+// Cubit for managing the state of the tabs in the application
 class TabsCubit extends Cubit<TabsState> {
   TabsCubit() : super(TabsInitial());
 
   int pageIndex = 0;
   List<Account> accounts = [];
 
+  // Fetch the balance of a specific account by its ID
   Future<double> getAccountBalance(String id) async {
     return (await DatabaseHelper.getAccountById(id)).balance;
   }
 
+  // Load all accounts from the database and update the state
   void loadAccounts() async {
     try {
       final receivedAccounts = await DatabaseHelper.getAllAccounts();
@@ -35,11 +37,13 @@ class TabsCubit extends Cubit<TabsState> {
     }
   }
 
+  // Select a page in the tabs and update the state
   void selectPage(int index) async {
     pageIndex = index;
     emit(TabsPageChanged(index));
   }
 
+  // Delete a transaction from the database and update the state
   void deleteTransaction(TransactionRecord transactionRecord) async {
     emit(TabsLoading());
     try {
@@ -50,6 +54,7 @@ class TabsCubit extends Cubit<TabsState> {
     }
   }
 
+  // Add a transaction back to the database and update the state
   void addTransactionBack(TransactionRecord transactionRecord) async {
     try {
       if (transactionRecord.recordType == RecordType.transfer) {
@@ -63,6 +68,7 @@ class TabsCubit extends Cubit<TabsState> {
     }
   }
 
+  // Edit an existing transaction and update the state
   void editTransaction(
       BuildContext context, TransactionRecord initialTransactionRecord) async {
     final editedTransaction =
@@ -109,7 +115,8 @@ class TabsCubit extends Cubit<TabsState> {
     }
   }
 
-  void addTtansaction(BuildContext context, int pageIndex) async {
+  // Add a new transaction and update the state
+  void addTransaction(BuildContext context, int pageIndex) async {
     final newTransaction = await Navigator.of(context).push<TransactionRecord>(
       MaterialPageRoute(
         builder: (ctx) => MultiBlocProvider(
@@ -140,6 +147,7 @@ class TabsCubit extends Cubit<TabsState> {
     }
   }
 
+  // Add a new account and update the state
   void addAccount(BuildContext context) async {
     final newAccount = await Navigator.of(context).push<Account>(
       MaterialPageRoute(
@@ -151,7 +159,7 @@ class TabsCubit extends Cubit<TabsState> {
     }
     try {
       await DatabaseHelper.addAccount(newAccount);
-      pageIndex = 3;
+      pageIndex = 3; // Assume 3 is the index for the accounts page
       emit(TabsInitial());
     } catch (e) {
       emit(TabsError(e.toString()));

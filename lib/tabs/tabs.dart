@@ -8,6 +8,7 @@ import 'package:money_manager/accounts/accounts_list_screen.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
+// Main screen that handles navigation between different tabs
 class TabsScreen extends StatefulWidget {
   const TabsScreen({super.key});
 
@@ -26,6 +27,7 @@ class _TabsScreenState extends State<TabsScreen> {
       3 => "Accounts",
       _ => throw UnimplementedError(),
     };
+
     return Scaffold(
       appBar: AppBar(
         title: Text(pageTitle),
@@ -34,6 +36,7 @@ class _TabsScreenState extends State<TabsScreen> {
       body: BlocConsumer<TabsCubit, TabsState>(
         listener: (context, state) {
           if (state is TabsTransactionDeleted) {
+            // Show a snackbar when a transaction is deleted
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
@@ -50,6 +53,7 @@ class _TabsScreenState extends State<TabsScreen> {
               ),
             );
           } else if (state is TabsTransactionAdded) {
+            // Show a snackbar when a transaction is added
             ScaffoldMessenger.of(context).clearSnackBars();
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -58,6 +62,7 @@ class _TabsScreenState extends State<TabsScreen> {
               ),
             );
           } else if (state is TabsNoAccounts) {
+            // Navigate to the AddEditAccountScreen if no accounts are found
             Navigator.of(context).pushReplacement(
               MaterialPageRoute(
                 builder: (context) => const AddEditAccountScreen(),
@@ -106,13 +111,13 @@ class _TabsScreenState extends State<TabsScreen> {
               ),
             );
           } else {
-            return const Center(child: Text("Something is wrond"));
+            return const Center(child: Text("Something is wrong"));
           }
         },
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          context.read<TabsCubit>().addTtansaction(context, selectedTab);
+          context.read<TabsCubit>().addTransaction(context, selectedTab);
         },
         shape: const CircleBorder(),
         foregroundColor: Theme.of(context).colorScheme.onPrimary,
@@ -132,21 +137,25 @@ class _TabsScreenState extends State<TabsScreen> {
         type: BottomNavigationBarType.fixed,
         items: const [
           BottomNavigationBarItem(
-              icon: Icon(Icons.home_outlined),
-              label: "Home",
-              activeIcon: Icon(Icons.home)),
+            icon: Icon(Icons.home_outlined),
+            label: "Home",
+            activeIcon: Icon(Icons.home),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.bar_chart_outlined),
-              label: "Statistics",
-              activeIcon: Icon(Icons.bar_chart)),
+            icon: Icon(Icons.bar_chart_outlined),
+            label: "Statistics",
+            activeIcon: Icon(Icons.bar_chart),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.rocket_launch_outlined),
-              label: "Goals",
-              activeIcon: Icon(Icons.rocket_launch)),
+            icon: Icon(Icons.rocket_launch_outlined),
+            label: "Goals",
+            activeIcon: Icon(Icons.rocket_launch),
+          ),
           BottomNavigationBarItem(
-              icon: Icon(Icons.account_balance_outlined),
-              label: "Accounts",
-              activeIcon: Icon(Icons.account_balance))
+            icon: Icon(Icons.account_balance_outlined),
+            label: "Accounts",
+            activeIcon: Icon(Icons.account_balance),
+          ),
         ],
       ),
     );

@@ -5,17 +5,21 @@ import 'package:money_manager/services/database_helper.dart';
 
 part 'statistics_state.dart';
 
+// Class to represent data for a Pie Chart
 class PieChartData {
   final String category;
   final double amount;
+
   PieChartData(this.category, this.amount);
 
+  // Get the color associated with the category
   Color get color {
     return categoryColors.entries
         .firstWhere((element) => element.key.name == category)
         .value;
   }
 
+  // Get the icon associated with the category
   IconData get icon {
     return categoryIcons.entries
         .firstWhere((element) => element.key.name == category)
@@ -23,15 +27,19 @@ class PieChartData {
   }
 }
 
+// Class to represent data for a Line Chart
 class LineChartData {
-  LineChartData(this.date, this.amount);
   final DateTime date;
   final double amount;
+
+  LineChartData(this.date, this.amount);
 }
 
+// Cubit for managing the state of statistics in the application
 class StatisticsCubit extends Cubit<StatisticsState> {
   StatisticsCubit() : super(StatisticsInitial());
 
+  // Load records for the statistics based on the provided date ranges
   void loadRecords({
     required DateTimeRange incomePieChartRange,
     required DateTimeRange expensePieChartRange,
@@ -47,6 +55,7 @@ class StatisticsCubit extends Cubit<StatisticsState> {
           expensePieChartRange, RecordType.expense);
       final pieChartIncomes = await DatabaseHelper.getTotalAmountByCategories(
           incomePieChartRange, RecordType.income);
+
       emit(StatisticsDataLoaded(
           pieChartExpense: pieChartExpenses,
           pieChartIncome: pieChartIncomes,
