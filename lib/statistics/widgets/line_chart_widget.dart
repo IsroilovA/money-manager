@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:money_manager/services/helper_fucntions.dart';
+import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:syncfusion_flutter_charts/charts.dart';
 
