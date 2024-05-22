@@ -53,7 +53,7 @@ class AccountItem extends StatelessWidget {
             // Display account name
             Text(
               account.name.capitalize(),
-              style: Theme.of(context).textTheme.titleMedium!.copyWith(
+              style: Theme.of(context).textTheme.titleLarge!.copyWith(
                   color: Theme.of(context).colorScheme.onPrimaryContainer),
             ),
             // Display account balance

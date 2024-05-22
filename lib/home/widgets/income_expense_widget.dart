@@ -91,8 +91,8 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                             .select((HomeCubit cubit) => cubit.totalIncome);
                         return Text(
                           widget.isIncome
-                              ? currencyFormatter.format(income)
-                              : currencyFormatter.format(expense),
+                              ? insertCommas(income.toString())
+                              : insertCommas(expense.toString()),
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!

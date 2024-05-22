@@ -27,7 +27,8 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
 
   /// Saves the account and performs validation checks.
   void _saveAccount() async {
-    final enteredBalance = double.tryParse(_balanceController.text);
+    final enteredBalance =
+        double.tryParse(_balanceController.text.replaceAll(',', ''));
     final amountIsInvalid = enteredBalance == null;
     final nameNotEntered = _nameController.text.trim().isEmpty;
     Account newAccount;
