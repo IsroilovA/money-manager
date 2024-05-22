@@ -7,7 +7,10 @@ final class HomeInitial extends HomeState {}
 
 final class HomeTransactionsLoading extends HomeState {}
 
-final class HomeNoTransactions extends HomeState {}
+final class HomeNoTransactions extends HomeState {
+  final double totalBalance;
+  HomeNoTransactions(this.totalBalance);
+}
 
 final class HomeError extends HomeState {
   final String message;

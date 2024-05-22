@@ -19,14 +19,14 @@ class HomeCubit extends Cubit<HomeState> {
         transactions =
             await DatabaseHelper.getTransactionRecordsByRecordType(filter);
       }
+      final totalBalance = await DatabaseHelper.getTotalBalance();
       if (transactions != null) {
-        final totalBalance = await DatabaseHelper.getTotalBalance();
         final balancesByCategories =
             await DatabaseHelper.getTotalIncomeExpenseAmount();
         emit(HomeTransactionsLoaded(
             transactions, totalBalance, balancesByCategories));
       } else {
-        emit(HomeNoTransactions());
+        emit(HomeNoTransactions(totalBalance));
       }
     } catch (e) {
       emit(HomeError(e.toString()));
