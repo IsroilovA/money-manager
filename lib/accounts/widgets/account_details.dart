@@ -41,10 +41,9 @@ class AccountDetails extends StatelessWidget {
         children: [
           // Display account balance
           ListTile(
-            titleTextStyle: Theme.of(context)
-                .textTheme
-                .headlineLarge!
-                .copyWith(color: Theme.of(context).colorScheme.onBackground),
+            titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
+                fontSize: 27,
+                color: Theme.of(context).colorScheme.onBackground),
             leading: const Icon(
               Icons.account_balance_wallet,
               size: 50,
@@ -116,7 +115,6 @@ class AccountDetails extends StatelessWidget {
             // Rebuild the UI when certain states are emitted
             if (current is TabsTransactionDeleted ||
                 current is TabsAccountsLoaded ||
-                current is TabsTransactionAdded ||
                 current is TabsLoading) {
               return true;
             }
@@ -125,7 +123,6 @@ class AccountDetails extends StatelessWidget {
           builder: (context, state) {
             // Handle different states and display appropriate UI
             if (state is TabsTransactionDeleted ||
-                state is TabsTransactionAdded ||
                 state is TabsAccountsLoaded) {
               BlocProvider.of<AccountDetailsCubit>(context)
                   .loadAccountTransaction(account.id);

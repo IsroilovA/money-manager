@@ -173,6 +173,8 @@ class DatabaseHelper {
     double newBalance;
     if (newRecord.recordType == RecordType.income) {
       newBalance = account.balance + newRecord.amount;
+    } else if (newRecord.recordType == RecordType.balanceAdjustment) {
+      newBalance = account.balance + newRecord.amount;
     } else {
       newBalance = account.balance - newRecord.amount;
     }
@@ -198,7 +200,12 @@ class DatabaseHelper {
       await batch.commit();
     } else if (deletedRecord.recordType == RecordType.balanceAdjustment) {
       final account = await getAccountById(deletedRecord.accountId);
-      double newBalance = account.balance - deletedRecord.amount;
+      double newBalance;
+      if (deletedRecord.amount >= 0) {
+        newBalance = account.balance - deletedRecord.amount;
+      } else {
+        newBalance = account.balance - deletedRecord.amount;
+      }
       await db.update("accounts", {'balance': newBalance},
           where: 'id = ?', whereArgs: [account.id]);
     } else {
@@ -245,7 +252,9 @@ class DatabaseHelper {
       String accountId) async {
     final db = await _openDB();
     final List<Map<String, dynamic>> maps = await db.query("transactions",
-        where: 'accountId = ?', whereArgs: [accountId], orderBy: 'date DESC');
+        where: 'accountId = ? OR transferAccount2Id = ?',
+        whereArgs: [accountId, accountId],
+        orderBy: 'date DESC');
 
     if (maps.isEmpty) {
       return null;
@@ -293,19 +302,29 @@ class DatabaseHelper {
   }
 
   // Calculate the total amount for a specific record type within the last 30 days
-  static Future<double> getTotalAmountByRecordType(
-      RecordType recordType) async {
+  static Future<Map<RecordType, double>> getTotalIncomeExpenseAmount() async {
     final db = await _openDB();
     int thirtyDaysAgoTimeStamp = DateTime.now()
         .subtract(const Duration(days: 30))
         .millisecondsSinceEpoch;
 
-    List<Map<String, dynamic>> result = await db.rawQuery(
-        'SELECT SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ?',
-        [recordType.name, thirtyDaysAgoTimeStamp]);
+    // List<Map<String, dynamic>> result = await db.rawQuery(
+    //     'SELECT SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ?',
+    //     [recordType.name, thirtyDaysAgoTimeStamp]);
 
-    double totalAmount = result[0]['totalAmount'] ?? 0.0;
-    return totalAmount;
+    var batch = db.batch();
+    batch.rawQuery(
+        'SELECT SUM(amount) AS incomeAmount FROM transactions WHERE recordType = ? AND date >= ?',
+        [RecordType.income.name, thirtyDaysAgoTimeStamp]);
+    batch.rawQuery(
+        'SELECT SUM(amount) AS expenseAmount FROM transactions WHERE recordType = ? AND date >= ?',
+        [RecordType.expense.name, thirtyDaysAgoTimeStamp]);
+
+    dynamic result = await batch.commit();
+    double incomeAmount = result[0][0]['incomeAmount'] ?? 0.0;
+    double expenseAmount = result[1][0]['expenseAmount'] ?? 0.0;
+
+    return {RecordType.income: incomeAmount, RecordType.expense: expenseAmount};
   }
 
   // Retrieve total amount by categories for a given date range and record type

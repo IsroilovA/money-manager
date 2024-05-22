@@ -56,6 +56,7 @@ class TabsCubit extends Cubit<TabsState> {
 
   // Add a transaction back to the database and update the state
   void addTransactionBack(TransactionRecord transactionRecord) async {
+    emit(TabsLoading());
     try {
       if (transactionRecord.recordType == RecordType.transfer) {
         await DatabaseHelper.addTransferTransaction(transactionRecord);

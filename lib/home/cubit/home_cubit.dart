@@ -9,8 +9,7 @@ class HomeCubit extends Cubit<HomeState> {
   HomeCubit() : super(HomeInitial());
 
   double totalBalance = 0.0;
-  double totalExpense = 0.0;
-  double totalIncome = 0.0;
+  Map<RecordType, double> balancesByCategories = {};
 
   // Fetch the total balance from the database
   void getTotalBalance() async {
@@ -45,10 +44,7 @@ class HomeCubit extends Cubit<HomeState> {
   // Fetch total amounts for income and expense record types
   void getTotalRecordTypeAmount() async {
     try {
-      totalExpense =
-          await DatabaseHelper.getTotalAmountByRecordType(RecordType.expense);
-      totalIncome =
-          await DatabaseHelper.getTotalAmountByRecordType(RecordType.income);
+      balancesByCategories = await DatabaseHelper.getTotalIncomeExpenseAmount();
     } catch (e) {
       emit(HomeError(e.toString()));
     }

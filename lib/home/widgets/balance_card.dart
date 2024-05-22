@@ -5,14 +5,9 @@ import 'package:money_manager/home/widgets/income_expense_widget.dart';
 import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
-class BalanceCard extends StatefulWidget {
+class BalanceCard extends StatelessWidget {
   const BalanceCard({super.key});
 
-  @override
-  State<BalanceCard> createState() => _BalanceCardState();
-}
-
-class _BalanceCardState extends State<BalanceCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -41,6 +36,7 @@ class _BalanceCardState extends State<BalanceCard> {
                 // Rebuild widget when transactions are added, deleted, or accounts are loaded
                 if (current is TabsTransactionAdded ||
                     current is TabsTransactionDeleted ||
+                    current is TabsLoading ||
                     current is TabsAccountsLoaded) {
                   return true;
                 }
@@ -59,6 +55,10 @@ class _BalanceCardState extends State<BalanceCard> {
                     style: Theme.of(context).textTheme.headlineMedium!.copyWith(
                           color: Theme.of(context).colorScheme.onPrimary,
                         ),
+                  );
+                } else if (state is TabsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
                   );
                 } else {
                   return Text(
@@ -80,12 +80,15 @@ class _BalanceCardState extends State<BalanceCard> {
             ),
             const SizedBox(height: 20),
             // Widgets to display income and expenses
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                IncomeExpenseWidget(isIncome: true),
-                IncomeExpenseWidget(isIncome: false),
-              ],
+            BlocProvider(
+              create: (context) => HomeCubit(),
+              child: const Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  IncomeExpenseWidget(isIncome: true),
+                  IncomeExpenseWidget(isIncome: false),
+                ],
+              ),
             ),
           ],
         ),
