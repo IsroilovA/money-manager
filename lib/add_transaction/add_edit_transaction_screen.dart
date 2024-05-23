@@ -35,7 +35,9 @@ class _AddEditTransactionState extends State<AddEditTransaction> {
         context.select((AddTransactionCubit cubit) => cubit.recordType);
     return Scaffold(
       appBar: AppBar(
-        title: const Text('New Transaction'),
+        title: Text(widget.transactionRecord == null
+            ? 'New Transaction'
+            : 'Edit Transaction'),
         centerTitle: true,
       ),
       body: DefaultTabController(
