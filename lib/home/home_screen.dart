@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/accounts/widgets/account_item.dart';
 import 'package:money_manager/all_transactions/transactions_list_screen.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
@@ -17,6 +18,7 @@ class HomeScreen extends StatelessWidget {
       child: SingleChildScrollView(
         primary: true,
         child: Column(
+          mainAxisSize: MainAxisSize.min,
           children: [
             // Balance card showing the total balance
             const BalanceCard(),
@@ -27,6 +29,57 @@ class HomeScreen extends StatelessWidget {
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.onBackground),
+            ),
+            const SizedBox(height: 18),
+            //List of all Accounts
+            BlocBuilder<TabsCubit, TabsState>(
+              buildWhen: (previous, current) {
+                if (current is TabsAccountsLoaded || current is TabsLoading) {
+                  return true;
+                }
+                return false;
+              },
+              builder: (context, state) {
+                if (state is TabsAccountsLoaded) {
+                  return SizedBox(
+                    height: 150,
+                    child: ListView.builder(
+                      itemExtent: 150,
+                      shrinkWrap: true,
+                      scrollDirection: Axis.horizontal,
+                      itemCount: state.accounts.length + 1,
+                      itemBuilder: (context, index) {
+                        return (index != state.accounts.length)
+                            ? AccountItem(account: state.accounts[index])
+                            : InkWell(
+                                onTap: () {
+                                  // Trigger the addAccount function when the 'Add Account' card is tapped
+                                  BlocProvider.of<TabsCubit>(context)
+                                      .addAccount(context);
+                                },
+                                child: const Card(
+                                  elevation: 2,
+                                  child: Icon(
+                                    Icons.add,
+                                  ),
+                                ),
+                              );
+                      },
+                    ),
+                  );
+                } else if (state is TabsLoading) {
+                  return const Center(
+                    child: CircularProgressIndicator.adaptive(),
+                  );
+                } else {
+                  return Center(
+                      child: Text(
+                    "Something went wrong",
+                    style: Theme.of(context).textTheme.titleLarge!.copyWith(
+                        color: Theme.of(context).colorScheme.onBackground),
+                  ));
+                }
+              },
             ),
             const SizedBox(height: 18),
             // Row showing top spending categories

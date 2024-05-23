@@ -25,7 +25,6 @@ class AccountsScreen extends StatelessWidget {
           return (index != accounts.length)
               ? AccountItem(
                   account: accounts[index],
-                  accounts: accounts,
                 )
               : InkWell(
                   onTap: () {

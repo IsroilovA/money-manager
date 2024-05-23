@@ -105,7 +105,7 @@ class PieChartWidget extends StatelessWidget {
                       child: Text(
                         "${(pieChartData[index].amount / totalAmount * 100).toStringAsFixed(1)}%",
                         style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                              color: Theme.of(context).colorScheme.onPrimary,
+                              color: Colors.black,
                             ),
                       ),
                     ),

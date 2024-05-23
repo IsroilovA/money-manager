@@ -11,10 +11,9 @@ import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 /// A widget that displays an account item with its name and balance.
 /// When tapped, it navigates to the account details screen.
 class AccountItem extends StatelessWidget {
-  const AccountItem({super.key, required this.account, required this.accounts});
+  const AccountItem({super.key, required this.account});
 
   final Account account;
-  final List<Account> accounts;
 
   @override
   Widget build(BuildContext context) {
