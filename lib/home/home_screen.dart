@@ -5,7 +5,6 @@ import 'package:money_manager/all_transactions/transactions_list_screen.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
-import 'package:money_manager/home/widgets/top_spending_card.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -25,12 +24,12 @@ class HomeScreen extends StatelessWidget {
             const SizedBox(height: 20),
             // Section title for Top Spendings
             Text(
-              "Top Spendings",
+              "Accounts",
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.onBackground),
             ),
-            const SizedBox(height: 18),
+            const SizedBox(height: 10),
             //List of all Accounts
             BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
@@ -42,7 +41,7 @@ class HomeScreen extends StatelessWidget {
               builder: (context, state) {
                 if (state is TabsAccountsLoaded) {
                   return SizedBox(
-                    height: 150,
+                    height: 130,
                     child: ListView.builder(
                       itemExtent: 150,
                       shrinkWrap: true,
@@ -81,22 +80,7 @@ class HomeScreen extends StatelessWidget {
                 }
               },
             ),
-            const SizedBox(height: 18),
-            // Row showing top spending categories
-            const Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                TopSpendingCard(
-                    icon: Icons.soup_kitchen_outlined, category: "Food"),
-                TopSpendingCard(
-                    icon: Icons.local_gas_station_outlined, category: "Fuel"),
-                TopSpendingCard(
-                    icon: Icons.luggage_outlined, category: "Travel"),
-                TopSpendingCard(
-                    icon: Icons.shopping_cart_outlined, category: "Shopping"),
-              ],
-            ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 10),
             // Section title for Recent Transactions with a button to view all
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,

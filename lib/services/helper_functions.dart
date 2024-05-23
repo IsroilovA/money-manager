@@ -132,9 +132,15 @@ void showWarningAlertDialog({
     showDialog(
       context: context,
       builder: (ctx) => AlertDialog(
-        title: const Text("Invalid Input!"),
-        titleTextStyle:
-            TextStyle(color: Theme.of(context).colorScheme.onBackground),
+        title: const Text("Warning!"),
+        titleTextStyle: Theme.of(context)
+            .textTheme
+            .titleLarge!
+            .copyWith(color: Theme.of(context).colorScheme.onSurface),
+        contentTextStyle: Theme.of(context)
+            .textTheme
+            .bodyMedium!
+            .copyWith(color: Theme.of(context).colorScheme.onSurface),
         content: Text(text),
         actions: [
           TextButton(

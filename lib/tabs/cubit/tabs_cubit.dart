@@ -160,7 +160,6 @@ class TabsCubit extends Cubit<TabsState> {
     }
     try {
       await DatabaseHelper.addAccount(newAccount);
-      pageIndex = 3; // Assume 3 is the index for the accounts page
       emit(TabsInitial());
     } catch (e) {
       emit(TabsError(e.toString()));

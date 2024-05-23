@@ -4,7 +4,6 @@ import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/home_screen.dart';
-import 'package:money_manager/accounts/accounts_list_screen.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
@@ -24,7 +23,6 @@ class _TabsScreenState extends State<TabsScreen> {
       0 => "Home",
       1 => "Statistics",
       2 => "Goals",
-      3 => "Accounts",
       _ => throw UnimplementedError(),
     };
 
@@ -98,7 +96,6 @@ class _TabsScreenState extends State<TabsScreen> {
                 ),
                 const StatisticsScreen(),
                 const GoalsScreen(),
-                const AccountsScreen()
               ],
             );
           } else if (state is TabsError) {
@@ -127,7 +124,6 @@ class _TabsScreenState extends State<TabsScreen> {
           size: 40,
         ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomNavigationBar(
         onTap: BlocProvider.of<TabsCubit>(context).selectPage,
         currentIndex: selectedTab,
@@ -150,11 +146,6 @@ class _TabsScreenState extends State<TabsScreen> {
             icon: Icon(Icons.rocket_launch_outlined),
             label: "Goals",
             activeIcon: Icon(Icons.rocket_launch),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.account_balance_outlined),
-            label: "Accounts",
-            activeIcon: Icon(Icons.account_balance),
           ),
         ],
       ),
