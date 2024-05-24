@@ -33,7 +33,7 @@ class HomeScreen extends StatelessWidget {
             //List of all Accounts
             BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
-                if (current is TabsAccountsLoaded || current is TabsLoading) {
+                if (current is TabsAccountsLoaded) {
                   return true;
                 }
                 return false;
@@ -65,10 +65,6 @@ class HomeScreen extends StatelessWidget {
                               );
                       },
                     ),
-                  );
-                } else if (state is TabsLoading) {
-                  return const Center(
-                    child: CircularProgressIndicator.adaptive(),
                   );
                 } else {
                   return Center(

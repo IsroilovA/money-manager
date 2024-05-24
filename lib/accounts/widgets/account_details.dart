@@ -49,7 +49,7 @@ class AccountDetails extends StatelessWidget {
               size: 50,
             ),
             title: const Text("Balance: "),
-            trailing: Text(
+            subtitle: Text(
               account.formattedBalance,
               style: Theme.of(context).textTheme.titleLarge!.copyWith(
                     color: account.balance >= 0 ? Colors.green : Colors.red,
