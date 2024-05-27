@@ -3,8 +3,7 @@
 Money Manager is a Flutter application designed to help you manage your finances efficiently. With this app, you can add multiple accounts (wallets), track your expenses and incomes, transfer money between accounts, and view simple statistics for a selected date range.
 
 ## Screenshots
-![Screenshot 1](assets/screenshots/Screenshot_1716546010.png)
-![Screenshot 2](assets/screenshots/Screenshot_1716548486.png)
+![Screenshot 1](assets/screenshots/Screenshot_1716546010.png) ![Screenshot 2](assets/screenshots/Screenshot_1716548486.png)
 ![Screenshot 3](assets/screenshots/Screenshot_1716548567.png)
 ![Screenshot 4](assets/screenshots/Screenshot_1716548580.png)
 ![Screenshot 5](assets/screenshots/Screenshot_1716548633.png)
