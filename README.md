@@ -4,8 +4,11 @@ Money Manager is a Flutter application designed to help you manage your finances
 
 ## Core Features Implementation
 
+## Local Database with `sqflite` package.
+- The app stores all the information locally on the device only. This feature is implemented using a SQLite database managed with the `sqflite` package.
+
 ### Adding Multiple Accounts (Wallets)
-- **Implementation:** The app allows users to create multiple accounts, each representing a wallet. This feature is implemented using a SQLite database managed with the `sqflite` package.
+- The app allows users to create multiple accounts, each representing a wallet.
 
 ### Tracking Transactions
 - **Expense and Income Tracking:** Users can add expenses and incomes to their accounts. Each transaction is recorded in the database with relevant details such as amount, category, and timestamp.
