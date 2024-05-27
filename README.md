@@ -3,16 +3,16 @@
 Money Manager is a Flutter application designed to help you manage your finances efficiently. With this app, you can add multiple accounts (wallets), track your expenses and incomes, transfer money between accounts, and view simple statistics for a selected date range.
 
 ## Screenshots
-![Screenshot 1](assets/screenshots/Screenshot_1716546010.png) ![Screenshot 2](assets/screenshots/Screenshot_1716548486.png)
-![Screenshot 3](assets/screenshots/Screenshot_1716548567.png)
-![Screenshot 4](assets/screenshots/Screenshot_1716548580.png)
-![Screenshot 5](assets/screenshots/Screenshot_1716548633.png)
-![Screenshot 6](assets/screenshots/Screenshot_1716548641.png)
-![Screenshot 7](assets/screenshots/Screenshot_1716548669.png)
-![Screenshot 8](assets/screenshots/Screenshot_1716548680.png)
-![Screenshot 9](assets/screenshots/Screenshot_1716548775.png)
-![Screenshot 10](assets/screenshots/Screenshot_1716548781.png)
-![Screenshot 11](assets/screenshots/Screenshot_1716548790.png)
+<img src="assets/screenshots/Screenshot_1716546010.png" alt="Screenshot 1" width="200">
+<img src="assets/screenshots/Screenshot_1716548486.png" alt="Screenshot 2" width="200">
+<img src="assets/screenshots/Screenshot_1716548580.png" alt="Screenshot 4" width="200">
+<img src="assets/screenshots/Screenshot_1716548633.png" alt="Screenshot 5" width="200">
+<img src="assets/screenshots/Screenshot_1716548641.png" alt="Screenshot 6" width="200">
+<img src="assets/screenshots/Screenshot_1716548669.png" alt="Screenshot 7" width="200">
+<img src="assets/screenshots/Screenshot_1716548680.png" alt="Screenshot 8" width="200">
+<img src="assets/screenshots/Screenshot_1716548775.png" alt="Screenshot 9" width="200">
+<img src="assets/screenshots/Screenshot_1716548781.png" alt="Screenshot 10" width="200">
+
 ## Core Features Implementation
 
 ### Local Database with `sqflite` package.
