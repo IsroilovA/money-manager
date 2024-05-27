@@ -4,8 +4,6 @@ Money Manager is a Flutter application designed to help you manage your finances
 
 ## Screenshots
 <div style="display: flex; flex-wrap: wrap; gap: 10px;">
-  <img src="assets/screenshots/Screenshot_1716546010.png" alt="Screenshot 1" width="200">
-  <img src="assets/screenshots/Screenshot_1716548486.png" alt="Screenshot 2" width="200">
   <img src="assets/screenshots/Screenshot_1716548580.png" alt="Screenshot 4" width="200">
   <img src="assets/screenshots/Screenshot_1716548633.png" alt="Screenshot 5" width="200">
   <img src="assets/screenshots/Screenshot_1716548641.png" alt="Screenshot 6" width="200">
@@ -13,6 +11,9 @@ Money Manager is a Flutter application designed to help you manage your finances
   <img src="assets/screenshots/Screenshot_1716548680.png" alt="Screenshot 8" width="200">
   <img src="assets/screenshots/Screenshot_1716548775.png" alt="Screenshot 9" width="200">
   <img src="assets/screenshots/Screenshot_1716548781.png" alt="Screenshot 10" width="200">
+  <img src="assets/screenshots/Screenshot_1716546010.png" alt="Screenshot 1" width="200">
+  <img src="assets/screenshots/Screenshot_1716548486.png" alt="Screenshot 2" width="200">
+  <img src="assets/screenshots/Screenshot_1716548790.png" alt="Screenshot 3" width="200">
 </div>
 
 ## Core Features Implementation
