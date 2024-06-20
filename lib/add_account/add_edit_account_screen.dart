@@ -53,7 +53,7 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
     if (hasPagePushed) {
       Navigator.of(context).pop(newAccount);
     } else {
-      await DatabaseHelper.addAccount(newAccount);
+      await MoneyManagerRepository.addAccount(newAccount);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(

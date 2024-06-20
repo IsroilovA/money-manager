@@ -14,15 +14,16 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       List<TransactionRecord>? transactions;
       if (filter == null) {
-        transactions = await DatabaseHelper.getAllTransactionRecords();
+        transactions = await MoneyManagerRepository.getAllTransactionRecords();
       } else {
         transactions =
-            await DatabaseHelper.getTransactionRecordsByRecordType(filter);
+            await MoneyManagerRepository.getTransactionRecordsByRecordType(
+                filter);
       }
-      final totalBalance = await DatabaseHelper.getTotalBalance();
+      final totalBalance = await MoneyManagerRepository.getTotalBalance();
       if (transactions != null) {
         final balancesByCategories =
-            await DatabaseHelper.getTotalIncomeExpenseAmount();
+            await MoneyManagerRepository.getTotalIncomeExpenseAmount();
         emit(HomeTransactionsLoaded(
             transactions, totalBalance, balancesByCategories));
       } else {

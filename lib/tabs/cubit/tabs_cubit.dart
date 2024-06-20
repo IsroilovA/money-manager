@@ -19,13 +19,13 @@ class TabsCubit extends Cubit<TabsState> {
 
   // Fetch the balance of a specific account by its ID
   Future<double> getAccountBalance(String id) async {
-    return (await DatabaseHelper.getAccountById(id)).balance;
+    return (await MoneyManagerRepository.getAccountById(id)).balance;
   }
 
   // Load all accounts from the database and update the state
   void loadAccounts() async {
     try {
-      final receivedAccounts = await DatabaseHelper.getAllAccounts();
+      final receivedAccounts = await MoneyManagerRepository.getAllAccounts();
       if (receivedAccounts != null) {
         accounts = receivedAccounts;
         emit(TabsAccountsLoaded(accounts));
@@ -47,7 +47,7 @@ class TabsCubit extends Cubit<TabsState> {
   void deleteTransaction(TransactionRecord transactionRecord) async {
     emit(TabsLoading());
     try {
-      await DatabaseHelper.deleteTransactionRecord(transactionRecord);
+      await MoneyManagerRepository.deleteTransactionRecord(transactionRecord);
       emit(TabsTransactionDeleted(transactionRecord));
     } catch (e) {
       emit(TabsError(e.toString()));
@@ -59,9 +59,9 @@ class TabsCubit extends Cubit<TabsState> {
     emit(TabsLoading());
     try {
       if (transactionRecord.recordType == RecordType.transfer) {
-        await DatabaseHelper.addTransferTransaction(transactionRecord);
+        await MoneyManagerRepository.addTransferTransaction(transactionRecord);
       } else {
-        await DatabaseHelper.addTransactionRecord(transactionRecord);
+        await MoneyManagerRepository.addTransactionRecord(transactionRecord);
       }
       emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
@@ -104,11 +104,12 @@ class TabsCubit extends Cubit<TabsState> {
       id: initialTransactionRecord.id,
     );
     try {
-      await DatabaseHelper.deleteTransactionRecord(initialTransactionRecord);
+      await MoneyManagerRepository.deleteTransactionRecord(
+          initialTransactionRecord);
       if (updatedTransaction.recordType == RecordType.transfer) {
-        await DatabaseHelper.addTransferTransaction(updatedTransaction);
+        await MoneyManagerRepository.addTransferTransaction(updatedTransaction);
       } else {
-        await DatabaseHelper.addTransactionRecord(updatedTransaction);
+        await MoneyManagerRepository.addTransactionRecord(updatedTransaction);
       }
       emit(TabsTransactionAdded(0));
     } catch (e) {
@@ -138,9 +139,9 @@ class TabsCubit extends Cubit<TabsState> {
     }
     try {
       if (newTransaction.recordType == RecordType.transfer) {
-        await DatabaseHelper.addTransferTransaction(newTransaction);
+        await MoneyManagerRepository.addTransferTransaction(newTransaction);
       } else {
-        await DatabaseHelper.addTransactionRecord(newTransaction);
+        await MoneyManagerRepository.addTransactionRecord(newTransaction);
       }
       emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
@@ -159,7 +160,7 @@ class TabsCubit extends Cubit<TabsState> {
       return;
     }
     try {
-      await DatabaseHelper.addAccount(newAccount);
+      await MoneyManagerRepository.addAccount(newAccount);
       emit(TabsInitial());
     } catch (e) {
       emit(TabsError(e.toString()));

@@ -5,33 +5,39 @@ import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
+import 'package:sqflite/sqlite_api.dart';
 
-class DatabaseHelper {
-  static const int _version = 1;
-  static const String _dbName = "MoneyManager.db";
+class MoneyManagerRepository {
+  MoneyManagerRepository({required Database moneyManagerDb})
+      : _moneyManagerDb = moneyManagerDb;
 
-  // Open the database and create tables if they do not exist
-  static Future<Database> _openDB() async {
-    return openDatabase(
-      join(await getDatabasesPath(), _dbName),
-      onCreate: (db, version) async {
-        var batch = db.batch();
-        batch.execute(
-            "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
-        batch.execute(
-            "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, transferAccount2Id TEXT, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
-        batch.execute(
-            "CREATE TABLE goals(id TEXT PRIMARY KEY, name TEXT, currentBalance REAL, goalBalance REAL)");
-        await batch.commit();
-      },
-      version: _version,
-    );
-  }
+  final Database _moneyManagerDb;
+
+  // const int _version = 1;
+  // const String __moneyManagerDbName = "MoneyManager._moneyManagerDb";
+
+  // // Open the database and create tables if they do not exist
+  // Future<Database> _open_moneyManagerDb() async {
+  //   return openDatabase(
+  //     join(await getDatabasesPath(), __moneyManagerDbName),
+  //     onCreate: (_moneyManagerDb, version) async {
+  //       var batch = _moneyManagerDb.batch();
+  //       batch.execute(
+  //           "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
+  //       batch.execute(
+  //           "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, transferAccount2Id TEXT, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
+  //       batch.execute(
+  //           "CREATE TABLE goals(id TEXT PRIMARY KEY, name TEXT, currentBalance REAL, goalBalance REAL)");
+  //       await batch.commit();
+  //     },
+  //     version: _version,
+  //   );
+  // }
 
   // Retrieve all goals from the database
-  static Future<List<Goal>?> getAllGoals() async {
-    final db = await _openDB();
-    final List<Map<String, dynamic>> maps = await db.query("goals");
+  Future<List<Goal>?> getAllGoals() async {
+    final List<Map<String, dynamic>> maps =
+        await _moneyManagerDb.query("goals");
 
     if (maps.isEmpty) {
       return null;
@@ -44,46 +50,43 @@ class DatabaseHelper {
   }
 
   // Retrieve a specific goal by its ID
-  static Future<Goal> getGoalById(String id) async {
-    final db = await _openDB();
-    final List<Map<String, dynamic>> maps =
-        await db.query("goals", where: 'id = ?', whereArgs: [id], limit: 1);
+  Future<Goal> getGoalById(String id) async {
+    final List<Map<String, dynamic>> maps = await _moneyManagerDb.query("goals",
+        where: 'id = ?', whereArgs: [id], limit: 1);
 
     return Goal.fromJson(maps.first);
   }
 
   // Add a saved amount to a specific goal
-  static Future<void> addGoalSavedAmount(Goal goal, double addedBalance) async {
-    final db = await _openDB();
-    var newCurrentBalance = goal.currentBalance + addedBalance;
+  Future<void> addGoalSavedAmount(
+      Goal goal, double adde_moneyManagerDbalance) async {
+    var newCurrentBalance = goal.currentBalance + adde_moneyManagerDbalance;
 
-    await db.update("goals", {'currentBalance': newCurrentBalance},
+    await _moneyManagerDb.update("goals", {'currentBalance': newCurrentBalance},
         where: 'id = ?', whereArgs: [goal.id]);
   }
 
   // Insert a new goal into the database
-  static Future<void> addGoal(Goal goal) async {
-    final db = await _openDB();
-    await db.insert("goals", goal.toJson());
+  Future<void> addGoal(Goal goal) async {
+    await _moneyManagerDb.insert("goals", goal.toJson());
   }
 
   // Update an existing goal in the database
-  static Future<void> editGoal(Goal goal) async {
-    final db = await _openDB();
-    await db
+  Future<void> editGoal(Goal goal) async {
+    await _moneyManagerDb
         .update("goals", goal.toJson(), where: 'id = ?', whereArgs: [goal.id]);
   }
 
   // Delete a goal from the database
-  static Future<void> deleteGoal(Goal goal) async {
-    final db = await _openDB();
-    await db.delete("goals", where: 'id = ?', whereArgs: [goal.id]);
+  Future<void> deleteGoal(Goal goal) async {
+    await _moneyManagerDb
+        .delete("goals", where: 'id = ?', whereArgs: [goal.id]);
   }
 
   // Retrieve all accounts from the database
-  static Future<List<Account>?> getAllAccounts() async {
-    final db = await _openDB();
-    final List<Map<String, dynamic>> maps = await db.query("accounts");
+  Future<List<Account>?> getAllAccounts() async {
+    final List<Map<String, dynamic>> maps =
+        await _moneyManagerDb.query("accounts");
 
     if (maps.isEmpty) {
       return null;
@@ -96,39 +99,34 @@ class DatabaseHelper {
   }
 
   // Check if there are any accounts in the database
-  static Future<bool> hasAccounts() async {
-    final db = await _openDB();
-    List<Map<String, dynamic>> maps = await db.query("accounts", limit: 1);
+  Future<bool> hasAccounts() async {
+    List<Map<String, dynamic>> maps =
+        await _moneyManagerDb.query("accounts", limit: 1);
     return maps.isNotEmpty;
   }
 
   // Calculate the total balance of all accounts
-  static Future<double> getTotalBalance() async {
-    final db = await _openDB();
-    List<Map<String, dynamic>> result =
-        await db.rawQuery('SELECT SUM(balance) AS totalBalance FROM accounts');
+  Future<double> getTotalBalance() async {
+    List<Map<String, dynamic>> result = await _moneyManagerDb
+        .rawQuery('SELECT SUM(balance) AS totalBalance FROM accounts');
     double totalBalance = result[0]['totalBalance'] ?? 0.0;
     return totalBalance;
   }
 
   // Insert a new account into the database
-  static Future<void> addAccount(Account account) async {
-    final db = await _openDB();
-    await db.insert("accounts", account.toJson());
+  Future<void> addAccount(Account account) async {
+    await _moneyManagerDb.insert("accounts", account.toJson());
   }
 
   // Update an existing account and create a balance adjustment record
-  static Future<void> editAccount(
-      Account account, double previousBalance) async {
-    final db = await _openDB();
-
+  Future<void> editAccount(Account account, double previousBalance) async {
     final record = TransactionRecord(
         date: DateTime.now(),
         amount: account.balance - previousBalance,
         recordType: RecordType.balanceAdjustment,
         accountId: account.id);
 
-    var batch = db.batch();
+    var batch = _moneyManagerDb.batch();
     batch.insert("transactions", record.toJson());
     batch.update("accounts", account.toJson(),
         where: 'id = ?', whereArgs: [account.id]);
@@ -136,9 +134,8 @@ class DatabaseHelper {
   }
 
   // Delete an account and its related transactions from the database
-  static Future<void> deleteAccount(Account account) async {
-    final db = await _openDB();
-    var batch = db.batch();
+  Future<void> deleteAccount(Account account) async {
+    var batch = _moneyManagerDb.batch();
 
     batch.delete("accounts", where: 'id = ?', whereArgs: [account.id]);
     batch.delete("transactions",
@@ -148,16 +145,14 @@ class DatabaseHelper {
   }
 
   // Insert a transfer transaction and update account balances
-  static Future<void> addTransferTransaction(
-      TransactionRecord newRecord) async {
-    final db = await _openDB();
+  Future<void> addTransferTransaction(TransactionRecord newRecord) async {
     final accountSender = await getAccountById(newRecord.accountId);
     final accountReceiver = await getAccountById(newRecord.transferAccount2Id!);
 
     final newBalanceSender = accountSender.balance - newRecord.amount;
     final newBalanceReceiver = accountReceiver.balance + newRecord.amount;
 
-    var batch = db.batch();
+    var batch = _moneyManagerDb.batch();
     batch.insert("transactions", newRecord.toJson());
     batch.update("accounts", {'balance': newBalanceSender},
         where: 'id = ?', whereArgs: [accountSender.id]);
@@ -167,8 +162,8 @@ class DatabaseHelper {
   }
 
   // Helper method to update account balance when adding a transaction
-  static Future<void> _updateAccountBalanceAdd(
-      Database db, TransactionRecord newRecord) async {
+  Future<void> _updateAccountBalanceAdd(
+      Database _moneyManagerDb, TransactionRecord newRecord) async {
     final account = await getAccountById(newRecord.accountId);
     double newBalance;
     if (newRecord.recordType == RecordType.income) {
@@ -179,20 +174,20 @@ class DatabaseHelper {
       newBalance = account.balance - newRecord.amount;
     }
 
-    await db.update("accounts", {'balance': newBalance},
+    await _moneyManagerDb.update("accounts", {'balance': newBalance},
         where: 'id = ?', whereArgs: [account.id]);
   }
 
   // Helper method to update account balance when deleting a transaction
-  static Future<void> _updateAccountBalanceDelete(
-      Database db, TransactionRecord deletedRecord) async {
+  Future<void> _updateAccountBalanceDelete(
+      Database _moneyManagerDb, TransactionRecord deletedRecord) async {
     if (deletedRecord.recordType == RecordType.transfer) {
       final accountSender = await getAccountById(deletedRecord.accountId);
       final accountReceiver =
           await getAccountById(deletedRecord.transferAccount2Id!);
       final newBalanceSender = accountSender.balance + deletedRecord.amount;
       final newBalanceReceiver = accountReceiver.balance - deletedRecord.amount;
-      var batch = db.batch();
+      var batch = _moneyManagerDb.batch();
       batch.update("accounts", {'balance': newBalanceSender},
           where: 'id = ?', whereArgs: [accountSender.id]);
       batch.update("accounts", {'balance': newBalanceReceiver},
@@ -206,7 +201,7 @@ class DatabaseHelper {
       } else {
         newBalance = account.balance - deletedRecord.amount;
       }
-      await db.update("accounts", {'balance': newBalance},
+      await _moneyManagerDb.update("accounts", {'balance': newBalance},
           where: 'id = ?', whereArgs: [account.id]);
     } else {
       final account = await getAccountById(deletedRecord.accountId);
@@ -216,42 +211,38 @@ class DatabaseHelper {
       } else {
         newBalance = account.balance + deletedRecord.amount;
       }
-      await db.update("accounts", {'balance': newBalance},
+      await _moneyManagerDb.update("accounts", {'balance': newBalance},
           where: 'id = ?', whereArgs: [account.id]);
     }
   }
 
   // Retrieve a specific account by its ID
-  static Future<Account> getAccountById(String id) async {
-    final db = await _openDB();
-    final List<Map<String, dynamic>> maps =
-        await db.query("accounts", where: 'id = ?', whereArgs: [id], limit: 1);
+  Future<Account> getAccountById(String id) async {
+    final List<Map<String, dynamic>> maps = await _moneyManagerDb
+        .query("accounts", where: 'id = ?', whereArgs: [id], limit: 1);
 
     return Account.fromJson(maps.first);
   }
 
   // Insert a new transaction record and update account balance
-  static Future<void> addTransactionRecord(
-      TransactionRecord transactionRecord) async {
-    final db = await _openDB();
-    await db.insert("transactions", transactionRecord.toJson());
-    await _updateAccountBalanceAdd(db, transactionRecord);
+  Future<void> addTransactionRecord(TransactionRecord transactionRecord) async {
+    await _moneyManagerDb.insert("transactions", transactionRecord.toJson());
+    await _updateAccountBalanceAdd(_moneyManagerDb, transactionRecord);
   }
 
   // Delete a transaction record and update account balance
-  static Future<void> deleteTransactionRecord(
+  Future<void> deleteTransactionRecord(
       TransactionRecord transactionRecord) async {
-    final db = await _openDB();
-    await db.delete("transactions",
+    await _moneyManagerDb.delete("transactions",
         where: 'id = ?', whereArgs: [transactionRecord.id]);
-    await _updateAccountBalanceDelete(db, transactionRecord);
+    await _updateAccountBalanceDelete(_moneyManagerDb, transactionRecord);
   }
 
   // Retrieve all transaction records for a specific account
-  static Future<List<TransactionRecord>?> getAccountTransactionRecords(
+  Future<List<TransactionRecord>?> getAccountTransactionRecords(
       String accountId) async {
-    final db = await _openDB();
-    final List<Map<String, dynamic>> maps = await db.query("transactions",
+    final List<Map<String, dynamic>> maps = await _moneyManagerDb.query(
+        "transactions",
         where: 'accountId = ? OR transferAccount2Id = ?',
         whereArgs: [accountId, accountId],
         orderBy: 'date DESC');
@@ -267,10 +258,9 @@ class DatabaseHelper {
   }
 
   // Retrieve all transaction records from the database
-  static Future<List<TransactionRecord>?> getAllTransactionRecords() async {
-    final db = await _openDB();
+  Future<List<TransactionRecord>?> getAllTransactionRecords() async {
     final List<Map<String, dynamic>> maps =
-        await db.query("transactions", orderBy: 'date DESC');
+        await _moneyManagerDb.query("transactions", orderBy: 'date DESC');
 
     if (maps.isEmpty) {
       return null;
@@ -283,10 +273,10 @@ class DatabaseHelper {
   }
 
   // Retrieve transaction records filtered by record type
-  static Future<List<TransactionRecord>?> getTransactionRecordsByRecordType(
+  Future<List<TransactionRecord>?> getTransactionRecordsByRecordType(
       RecordType recordType) async {
-    final db = await _openDB();
-    final List<Map<String, dynamic>> maps = await db.query("transactions",
+    final List<Map<String, dynamic>> maps = await _moneyManagerDb.query(
+        "transactions",
         where: 'recordType = ?',
         orderBy: 'date DESC',
         whereArgs: [recordType.name]);
@@ -302,17 +292,16 @@ class DatabaseHelper {
   }
 
   // Calculate the total amount for a specific record type within the last 30 days
-  static Future<Map<RecordType, double>> getTotalIncomeExpenseAmount() async {
-    final db = await _openDB();
+  Future<Map<RecordType, double>> getTotalIncomeExpenseAmount() async {
     int thirtyDaysAgoTimeStamp = DateTime.now()
         .subtract(const Duration(days: 30))
         .millisecondsSinceEpoch;
 
-    // List<Map<String, dynamic>> result = await db.rawQuery(
+    // List<Map<String, dynamic>> result = await _moneyManagerDb.rawQuery(
     //     'SELECT SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date >= ?',
     //     [recordType.name, thirtyDaysAgoTimeStamp]);
 
-    var batch = db.batch();
+    var batch = _moneyManagerDb.batch();
     batch.rawQuery(
         'SELECT SUM(amount) AS incomeAmount FROM transactions WHERE recordType = ? AND date >= ?',
         [RecordType.income.name, thirtyDaysAgoTimeStamp]);
@@ -328,15 +317,14 @@ class DatabaseHelper {
   }
 
   // Retrieve total amount by categories for a given date range and record type
-  static Future<List<PieChartData>> getTotalAmountByCategories(
+  Future<List<PieChartData>> getTotalAmountByCategories(
       DateTimeRange dateTimeRange, RecordType recordType) async {
-    final db = await _openDB();
     String categoryColumn =
         recordType == RecordType.expense ? 'expenseCategory' : 'incomeCategory';
 
     const now = Duration(hours: 24);
 
-    List<Map<String, dynamic>> maps = await db.rawQuery(
+    List<Map<String, dynamic>> maps = await _moneyManagerDb.rawQuery(
       'SELECT $categoryColumn, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date BETWEEN ? AND ? GROUP BY $categoryColumn',
       [
         recordType.name,
@@ -359,13 +347,11 @@ class DatabaseHelper {
   }
 
   // Retrieve total amount by date for a given date range and record type
-  static Future<List<LineChartData>> getTotalAmountByDate(
+  Future<List<LineChartData>> getTotalAmountByDate(
       DateTimeRange dateTimeRange, RecordType recordType) async {
-    final db = await _openDB();
-
     const now = Duration(hours: 24);
 
-    List<Map<String, dynamic>> maps = await db.rawQuery(
+    List<Map<String, dynamic>> maps = await _moneyManagerDb.rawQuery(
       'SELECT date, SUM(amount) AS totalAmount FROM transactions WHERE recordType = ? AND date BETWEEN ? AND ? GROUP BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch") ORDER BY STRFTIME("%Y-%m-%d", date/1000, "unixepoch") ASC',
       [
         recordType.name,

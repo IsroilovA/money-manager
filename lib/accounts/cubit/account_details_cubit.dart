@@ -17,8 +17,8 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
     emit(AccountDetailsLoading());
     try {
       final transactionRecords =
-          await DatabaseHelper.getAccountTransactionRecords(accountId);
-      final account = await DatabaseHelper.getAccountById(accountId);
+          await MoneyManagerRepository.getAccountTransactionRecords(accountId);
+      final account = await MoneyManagerRepository.getAccountById(accountId);
       emit(AccountTransactionsLoaded(account, transactionRecords));
     } catch (e) {
       emit(AccountDetailsError(e.toString()));
@@ -27,7 +27,7 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
 
   /// Navigates to the edit account screen and updates the account details if edited.
   void editAccount(BuildContext context, String accountId) async {
-    final account = await DatabaseHelper.getAccountById(accountId);
+    final account = await MoneyManagerRepository.getAccountById(accountId);
     if (context.mounted) {
       final editedAccount = await Navigator.of(context).push<Account>(
         MaterialPageRoute(
@@ -38,9 +38,11 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
         return;
       }
       try {
-        await DatabaseHelper.editAccount(editedAccount, account.balance);
+        await MoneyManagerRepository.editAccount(
+            editedAccount, account.balance);
         final transactionRecords =
-            await DatabaseHelper.getAccountTransactionRecords(accountId);
+            await MoneyManagerRepository.getAccountTransactionRecords(
+                accountId);
         emit(AccountEdited(editedAccount, transactionRecords));
       } catch (e) {
         emit(AccountDetailsError(e.toString()));
@@ -51,7 +53,7 @@ class AccountDetailsCubit extends Cubit<AccountDetailsState> {
   /// Deletes the specified account.
   void deleteAccount(Account account) async {
     try {
-      await DatabaseHelper.deleteAccount(account);
+      await MoneyManagerRepository.deleteAccount(account);
     } catch (e) {
       emit(AccountDetailsError(e.toString()));
     }

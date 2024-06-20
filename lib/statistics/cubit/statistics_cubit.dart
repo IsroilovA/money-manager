@@ -47,14 +47,17 @@ class StatisticsCubit extends Cubit<StatisticsState> {
     required DateTimeRange incomeLineChartRange,
   }) async {
     try {
-      final lineChartIncome = await DatabaseHelper.getTotalAmountByDate(
+      final lineChartIncome = await MoneyManagerRepository.getTotalAmountByDate(
           incomeLineChartRange, RecordType.income);
-      final lineChartExpense = await DatabaseHelper.getTotalAmountByDate(
-          expenseLineChartRange, RecordType.expense);
-      final pieChartExpenses = await DatabaseHelper.getTotalAmountByCategories(
-          expensePieChartRange, RecordType.expense);
-      final pieChartIncomes = await DatabaseHelper.getTotalAmountByCategories(
-          incomePieChartRange, RecordType.income);
+      final lineChartExpense =
+          await MoneyManagerRepository.getTotalAmountByDate(
+              expenseLineChartRange, RecordType.expense);
+      final pieChartExpenses =
+          await MoneyManagerRepository.getTotalAmountByCategories(
+              expensePieChartRange, RecordType.expense);
+      final pieChartIncomes =
+          await MoneyManagerRepository.getTotalAmountByCategories(
+              incomePieChartRange, RecordType.income);
 
       emit(StatisticsDataLoaded(
           pieChartExpense: pieChartExpenses,

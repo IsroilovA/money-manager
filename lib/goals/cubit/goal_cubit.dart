@@ -12,7 +12,7 @@ class GoalCubit extends Cubit<GoalState> {
   // Load all goals from the database and emit the appropriate state
   void loadGoals() async {
     try {
-      final goals = await DatabaseHelper.getAllGoals();
+      final goals = await MoneyManagerRepository.getAllGoals();
       if (goals != null && goals.isNotEmpty) {
         emit(GoalsLoaded(goals));
       } else {
@@ -26,8 +26,8 @@ class GoalCubit extends Cubit<GoalState> {
   // Add a specified amount to a goal and emit the updated goal state
   void addAmount(Goal goal, double addedBalance) async {
     try {
-      await DatabaseHelper.addGoalSavedAmount(goal, addedBalance);
-      final updatedGoal = await DatabaseHelper.getGoalById(goal.id);
+      await MoneyManagerRepository.addGoalSavedAmount(goal, addedBalance);
+      final updatedGoal = await MoneyManagerRepository.getGoalById(goal.id);
       emit(GoalEdited(updatedGoal));
     } catch (e) {
       emit(GoalError(e.toString()));
@@ -36,7 +36,7 @@ class GoalCubit extends Cubit<GoalState> {
 
   // Edit a goal by navigating to the AddEditGoalScreen and emitting the updated goal state
   void editGoal(BuildContext context, String goalId) async {
-    final goal = await DatabaseHelper.getGoalById(goalId);
+    final goal = await MoneyManagerRepository.getGoalById(goalId);
     final editedGoal = context.mounted
         ? await Navigator.of(context).push<Goal>(
             MaterialPageRoute(
@@ -48,8 +48,8 @@ class GoalCubit extends Cubit<GoalState> {
       return;
     }
     try {
-      await DatabaseHelper.editGoal(editedGoal);
-      final updatedGoal = await DatabaseHelper.getGoalById(goalId);
+      await MoneyManagerRepository.editGoal(editedGoal);
+      final updatedGoal = await MoneyManagerRepository.getGoalById(goalId);
       emit(GoalEdited(updatedGoal));
     } catch (e) {
       emit(GoalError(e.toString()));
@@ -59,7 +59,7 @@ class GoalCubit extends Cubit<GoalState> {
   // Delete a goal and emit an appropriate state
   void deleteGoal(Goal goal) async {
     try {
-      await DatabaseHelper.deleteGoal(goal);
+      await MoneyManagerRepository.deleteGoal(goal);
     } catch (e) {
       emit(GoalError(e.toString()));
     }
@@ -76,7 +76,7 @@ class GoalCubit extends Cubit<GoalState> {
       return;
     }
     try {
-      await DatabaseHelper.addGoal(newGoal);
+      await MoneyManagerRepository.addGoal(newGoal);
       emit(GoalInitial());
     } catch (e) {
       emit(GoalError(e.toString()));
