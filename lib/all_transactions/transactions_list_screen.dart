@@ -80,7 +80,7 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
                                 .copyWith(
                                     color: Theme.of(context)
                                         .colorScheme
-                                        .onBackground),
+                                        .onSurface),
                           ),
                           selected: selectedIndex == index,
                           onSelected: (isSelected) {
@@ -104,8 +104,7 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
                               .textTheme
                               .titleLarge!
                               .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                         ),
                       );
@@ -131,8 +130,7 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
                               .textTheme
                               .titleLarge!
                               .copyWith(
-                                color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                color: Theme.of(context).colorScheme.onSurface,
                               ),
                         ),
                       );
@@ -144,9 +142,8 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
                               .textTheme
                               .titleMedium!
                               .copyWith(
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground),
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface),
                         ),
                       );
                     }
@@ -160,8 +157,10 @@ class _TransactionsListScreenState extends State<TransactionsListScreen> {
             return Center(
               child: Text(
                 "Something is wrong",
-                style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                    color: Theme.of(context).colorScheme.onBackground),
+                style: Theme.of(context)
+                    .textTheme
+                    .titleMedium!
+                    .copyWith(color: Theme.of(context).colorScheme.onSurface),
               ),
             );
           }

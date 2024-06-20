@@ -45,7 +45,7 @@ class GoalDetails extends StatelessWidget {
                       Text(
                         "${insertCommas(goal.currentBalance.toString())} / ${insertCommas(goal.goalBalance.toString())} UZS",
                         style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                              color: Theme.of(context).colorScheme.onBackground,
+                              color: Theme.of(context).colorScheme.onSurface,
                             ),
                       )
                     ],

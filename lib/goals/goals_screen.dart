@@ -36,7 +36,7 @@ class GoalsScreen extends StatelessWidget {
                           },
                           icon: Icon(
                             Icons.add,
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                         );
                 },
@@ -52,7 +52,7 @@ class GoalsScreen extends StatelessWidget {
                       "No goals yet",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
                             fontSize: 20,
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                     ),
                     IconButton(
@@ -61,7 +61,7 @@ class GoalsScreen extends StatelessWidget {
                       },
                       icon: Icon(
                         Icons.add,
-                        color: Theme.of(context).colorScheme.onBackground,
+                        color: Theme.of(context).colorScheme.onSurface,
                       ),
                     ),
                   ],

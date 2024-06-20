@@ -21,7 +21,7 @@ class CategoryItem extends StatelessWidget {
       onTap: onCLick,
       child: Container(
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.surfaceVariant,
+          color: Theme.of(context).colorScheme.surfaceDim,
           border: Border.all(
             width: 0.3,
           ),

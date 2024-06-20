@@ -19,7 +19,7 @@ class FormListTile extends StatelessWidget {
       // Sets the text style for the leading and trailing text.
       leadingAndTrailingTextStyle:
           Theme.of(context).textTheme.bodyLarge!.copyWith(
-                color: Theme.of(context).colorScheme.onBackground,
+                color: Theme.of(context).colorScheme.onSurface,
               ),
       // Displays the leading text.
       leading: Text(leadingText),

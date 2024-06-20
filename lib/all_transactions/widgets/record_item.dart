@@ -36,12 +36,12 @@ class RecordItem extends StatelessWidget {
               color: Colors.red,
               child: Icon(
                 Icons.delete,
-                color: Theme.of(context).colorScheme.background,
+                color: Theme.of(context).colorScheme.surface,
               ),
             ),
             key: ValueKey(transactionRecord.id),
             child: Material(
-              color: Theme.of(context).colorScheme.surfaceVariant,
+              color: Theme.of(context).colorScheme.surfaceDim,
               borderRadius: BorderRadius.circular(9),
               child: buildListTile(transactionRecord, accounts, context),
             ),

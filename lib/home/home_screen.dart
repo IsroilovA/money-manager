@@ -29,7 +29,7 @@ class HomeScreen extends StatelessWidget {
               "Accounts",
               style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                   fontWeight: FontWeight.bold,
-                  color: Theme.of(context).colorScheme.onBackground),
+                  color: Theme.of(context).colorScheme.onSurface),
             ),
             const SizedBox(height: 10),
             //List of all Accounts
@@ -73,7 +73,7 @@ class HomeScreen extends StatelessWidget {
                       child: Text(
                     "Something went wrong",
                     style: Theme.of(context).textTheme.titleLarge!.copyWith(
-                        color: Theme.of(context).colorScheme.onBackground),
+                        color: Theme.of(context).colorScheme.onSurface),
                   ));
                 }
               },
@@ -87,7 +87,7 @@ class HomeScreen extends StatelessWidget {
                   "Recent Transactions",
                   style: Theme.of(context).textTheme.headlineSmall!.copyWith(
                       fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onBackground),
+                      color: Theme.of(context).colorScheme.onSurface),
                 ),
                 TextButton(
                   onPressed: () {
@@ -151,9 +151,8 @@ class HomeScreen extends StatelessWidget {
                                 .titleMedium!
                                 .copyWith(
                                   fontSize: 20,
-                                  color: Theme.of(context)
-                                      .colorScheme
-                                      .onBackground,
+                                  color:
+                                      Theme.of(context).colorScheme.onSurface,
                                 ),
                           ),
                         );

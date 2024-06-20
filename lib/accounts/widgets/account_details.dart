@@ -42,8 +42,7 @@ class AccountDetails extends StatelessWidget {
           // Display account balance
           ListTile(
             titleTextStyle: Theme.of(context).textTheme.titleLarge!.copyWith(
-                fontSize: 27,
-                color: Theme.of(context).colorScheme.onBackground),
+                fontSize: 27, color: Theme.of(context).colorScheme.onSurface),
             leading: const Icon(
               Icons.account_balance_wallet,
               size: 50,
@@ -63,15 +62,17 @@ class AccountDetails extends StatelessWidget {
             style: Theme.of(context)
                 .textTheme
                 .titleLarge!
-                .copyWith(color: Theme.of(context).colorScheme.onBackground),
+                .copyWith(color: Theme.of(context).colorScheme.onSurface),
           ),
           const SizedBox(height: 20),
           // Display transaction records or a message if there are no transactions
           transactionRecords == null
               ? Text(
                   "No Account transactions",
-                  style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground),
+                  style: Theme.of(context)
+                      .textTheme
+                      .bodyLarge!
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                 )
               : Expanded(
                   child: BlocProvider.value(
@@ -167,8 +168,10 @@ class AccountDetails extends StatelessWidget {
               return Center(
                 child: Text(
                   "Something went wrong",
-                  style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                      color: Theme.of(context).colorScheme.onBackground),
+                  style: Theme.of(context)
+                      .textTheme
+                      .titleMedium!
+                      .copyWith(color: Theme.of(context).colorScheme.onSurface),
                 ),
               );
             }

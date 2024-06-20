@@ -50,7 +50,7 @@ class LineChartWidget extends StatelessWidget {
     );
     return Card(
       elevation: 1,
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceDim,
       child: Card(
         elevation: 2,
         child: Column(
@@ -69,7 +69,7 @@ class LineChartWidget extends StatelessWidget {
                     child: Text(
                       "No data for selected range",
                       style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                            color: Theme.of(context).colorScheme.onBackground,
+                            color: Theme.of(context).colorScheme.onSurface,
                           ),
                     ),
                   )

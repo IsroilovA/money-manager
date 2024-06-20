@@ -25,7 +25,7 @@ class PieChartWidget extends StatelessWidget {
     var toolTipBehavior = TooltipBehavior(enable: true);
     return Card(
       elevation: 1,
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceDim,
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -51,7 +51,7 @@ class PieChartWidget extends StatelessWidget {
                               .bodyLarge!
                               .copyWith(
                                 color:
-                                    Theme.of(context).colorScheme.onBackground,
+                                    Theme.of(context).colorScheme.onSurface,
                               ),
                         ),
                       )

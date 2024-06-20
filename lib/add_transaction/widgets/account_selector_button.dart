@@ -39,7 +39,7 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                     Text(
                       "Account",
                       style: Theme.of(context).textTheme.titleMedium!.copyWith(
-                          color: Theme.of(context).colorScheme.onBackground),
+                          color: Theme.of(context).colorScheme.onSurface),
                     ),
                     IconButton(
                       onPressed: () {
@@ -68,7 +68,7 @@ class _AccountSelectorButtonState extends State<AccountSelectorButton> {
                         },
                         child: Container(
                           decoration: BoxDecoration(
-                            color: Theme.of(context).colorScheme.surfaceVariant,
+                            color: Theme.of(context).colorScheme.surfaceDim,
                             border: Border.all(width: 0.3),
                           ),
                           child: Center(

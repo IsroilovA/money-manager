@@ -37,9 +37,8 @@ class MoneyManagerRepository {
   }
 
   // Add a saved amount to a specific goal
-  Future<void> addGoalSavedAmount(
-      Goal goal, double adde_moneyManagerDbalance) async {
-    var newCurrentBalance = goal.currentBalance + adde_moneyManagerDbalance;
+  Future<void> addGoalSavedAmount(Goal goal, double addedBalance) async {
+    var newCurrentBalance = goal.currentBalance + addedBalance;
 
     await _moneyManagerDb.update("goals", {'currentBalance': newCurrentBalance},
         where: 'id = ?', whereArgs: [goal.id]);
@@ -141,8 +140,7 @@ class MoneyManagerRepository {
   }
 
   // Helper method to update account balance when adding a transaction
-  Future<void> _updateAccountBalanceAdd(
-      Database _moneyManagerDb, TransactionRecord newRecord) async {
+  Future<void> _updateAccountBalanceAdd(TransactionRecord newRecord) async {
     final account = await getAccountById(newRecord.accountId);
     double newBalance;
     if (newRecord.recordType == RecordType.income) {
@@ -159,7 +157,7 @@ class MoneyManagerRepository {
 
   // Helper method to update account balance when deleting a transaction
   Future<void> _updateAccountBalanceDelete(
-      Database _moneyManagerDb, TransactionRecord deletedRecord) async {
+      TransactionRecord deletedRecord) async {
     if (deletedRecord.recordType == RecordType.transfer) {
       final accountSender = await getAccountById(deletedRecord.accountId);
       final accountReceiver =
@@ -206,7 +204,7 @@ class MoneyManagerRepository {
   // Insert a new transaction record and update account balance
   Future<void> addTransactionRecord(TransactionRecord transactionRecord) async {
     await _moneyManagerDb.insert("transactions", transactionRecord.toJson());
-    await _updateAccountBalanceAdd(_moneyManagerDb, transactionRecord);
+    await _updateAccountBalanceAdd(transactionRecord);
   }
 
   // Delete a transaction record and update account balance
@@ -214,7 +212,7 @@ class MoneyManagerRepository {
       TransactionRecord transactionRecord) async {
     await _moneyManagerDb.delete("transactions",
         where: 'id = ?', whereArgs: [transactionRecord.id]);
-    await _updateAccountBalanceDelete(_moneyManagerDb, transactionRecord);
+    await _updateAccountBalanceDelete(transactionRecord);
   }
 
   // Retrieve all transaction records for a specific account

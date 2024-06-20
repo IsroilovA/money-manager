@@ -9,7 +9,7 @@ class TopSpendingCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      color: Theme.of(context).colorScheme.surfaceVariant,
+      color: Theme.of(context).colorScheme.surfaceDim,
       child: Container(
         width: MediaQuery.of(context).size.width / 4.7,
         padding: const EdgeInsets.all(3),

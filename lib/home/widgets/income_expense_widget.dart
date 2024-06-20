@@ -70,7 +70,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                     widget.isIncome ? "Income" : "Expense",
                     style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: Theme.of(context).colorScheme.onBackground),
+                        color: Theme.of(context).colorScheme.onSurface),
                   ),
                   BlocBuilder<HomeCubit, HomeState>(
                     buildWhen: (previous, current) {
@@ -98,7 +98,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .onBackground),
+                                      .onSurface),
                         );
                       } else if (state is HomeNoTransactions) {
                         return Text(
@@ -110,7 +110,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                                   fontWeight: FontWeight.bold,
                                   color: Theme.of(context)
                                       .colorScheme
-                                      .onBackground),
+                                      .onSurface),
                         );
                       } else {
                         return const Center(
