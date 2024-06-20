@@ -4,6 +4,8 @@ import 'package:money_manager/add_account/add_edit_account_screen.dart';
 import 'package:money_manager/goals/goals_screen.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/home_screen.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/statistics/statistics_screen.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
@@ -91,7 +93,9 @@ class _TabsScreenState extends State<TabsScreen> {
               index: selectedTab,
               children: [
                 BlocProvider(
-                  create: (context) => HomeCubit(),
+                  create: (context) => HomeCubit(
+                      moneyManagerRepository:
+                          locator<MoneyManagerRepository>()),
                   child: const HomeScreen(),
                 ),
                 const StatisticsScreen(),

@@ -3,7 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/add_transaction/widgets/amount_text_field.dart';
 import 'package:money_manager/add_transaction/widgets/form_list_tile.dart';
 import 'package:money_manager/data/models/account.dart';
-import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/services/helper_functions.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
@@ -53,12 +54,13 @@ class _AddEditAccountScreenState extends State<AddEditAccountScreen> {
     if (hasPagePushed) {
       Navigator.of(context).pop(newAccount);
     } else {
-      await MoneyManagerRepository.addAccount(newAccount);
+      await locator<MoneyManagerRepository>().addAccount(newAccount);
       // ignore: use_build_context_synchronously
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(
           builder: (context) => BlocProvider(
-            create: (context) => TabsCubit(),
+            create: (context) => TabsCubit(
+                moneyManagerRepository: locator<MoneyManagerRepository>()),
             child: const TabsScreen(),
           ),
         ),

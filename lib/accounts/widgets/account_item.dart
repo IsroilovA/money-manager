@@ -6,6 +6,8 @@ import 'package:money_manager/accounts/cubit/account_details_cubit.dart';
 import 'package:money_manager/accounts/widgets/account_details.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/services/helper_functions.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 /// A widget that displays an account item with its name and balance.
@@ -25,10 +27,14 @@ class AccountItem extends StatelessWidget {
             builder: (context) => MultiBlocProvider(
               providers: [
                 BlocProvider(
-                  create: (context) => AccountDetailsCubit(),
+                  create: (context) => AccountDetailsCubit(
+                      moneyManagerRepository:
+                          locator<MoneyManagerRepository>()),
                 ),
                 BlocProvider(
-                  create: (context) => TabsCubit(),
+                  create: (context) => TabsCubit(
+                      moneyManagerRepository:
+                          locator<MoneyManagerRepository>()),
                 ),
               ],
               child: AccountDetails(

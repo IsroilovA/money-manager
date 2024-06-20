@@ -4,6 +4,8 @@ import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/goals/cubit/goal_cubit.dart';
 import 'package:money_manager/goals/widgets/goal_details.dart';
 import 'package:money_manager/services/helper_functions.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 
 /// A widget that displays a goal item with its details. When tapped, it navigates to the goal details screen.
 class GoalItem extends StatelessWidget {
@@ -20,7 +22,8 @@ class GoalItem extends StatelessWidget {
           await Navigator.of(context).push(
             MaterialPageRoute(
               builder: (context) => BlocProvider(
-                create: (context) => GoalCubit(),
+                create: (context) => GoalCubit(
+                    moneyManagerRepository: locator<MoneyManagerRepository>()),
                 child: GoalDetails(goal: goal),
               ),
             ),

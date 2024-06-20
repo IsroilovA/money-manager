@@ -5,6 +5,8 @@ import 'package:money_manager/all_transactions/transactions_list_screen.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/home/widgets/balance_card.dart';
 import 'package:money_manager/all_transactions/widgets/record_item.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -98,7 +100,9 @@ class HomeScreen extends StatelessWidget {
                               value: BlocProvider.of<TabsCubit>(context),
                             ),
                             BlocProvider(
-                              create: (context) => HomeCubit(),
+                              create: (context) => HomeCubit(
+                                  moneyManagerRepository:
+                                      locator<MoneyManagerRepository>()),
                             )
                           ],
                           child: const TransactionsListScreen(),

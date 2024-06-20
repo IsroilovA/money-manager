@@ -6,26 +6,30 @@ import 'package:money_manager/add_transaction/add_edit_transaction_screen.dart';
 import 'package:money_manager/add_transaction/cubit/add_transaction_cubit.dart';
 import 'package:money_manager/data/models/account.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 
 part 'tabs_state.dart';
 
 // Cubit for managing the state of the tabs in the application
 class TabsCubit extends Cubit<TabsState> {
-  TabsCubit() : super(TabsInitial());
+  TabsCubit({required MoneyManagerRepository moneyManagerRepository})
+      : _moneyManagerRepository = moneyManagerRepository,
+        super(TabsInitial());
+
+  final MoneyManagerRepository _moneyManagerRepository;
 
   int pageIndex = 0;
   List<Account> accounts = [];
 
   // Fetch the balance of a specific account by its ID
   Future<double> getAccountBalance(String id) async {
-    return (await MoneyManagerRepository.getAccountById(id)).balance;
+    return (await _moneyManagerRepository.getAccountById(id)).balance;
   }
 
   // Load all accounts from the database and update the state
   void loadAccounts() async {
     try {
-      final receivedAccounts = await MoneyManagerRepository.getAllAccounts();
+      final receivedAccounts = await _moneyManagerRepository.getAllAccounts();
       if (receivedAccounts != null) {
         accounts = receivedAccounts;
         emit(TabsAccountsLoaded(accounts));
@@ -47,7 +51,7 @@ class TabsCubit extends Cubit<TabsState> {
   void deleteTransaction(TransactionRecord transactionRecord) async {
     emit(TabsLoading());
     try {
-      await MoneyManagerRepository.deleteTransactionRecord(transactionRecord);
+      await _moneyManagerRepository.deleteTransactionRecord(transactionRecord);
       emit(TabsTransactionDeleted(transactionRecord));
     } catch (e) {
       emit(TabsError(e.toString()));
@@ -59,9 +63,9 @@ class TabsCubit extends Cubit<TabsState> {
     emit(TabsLoading());
     try {
       if (transactionRecord.recordType == RecordType.transfer) {
-        await MoneyManagerRepository.addTransferTransaction(transactionRecord);
+        await _moneyManagerRepository.addTransferTransaction(transactionRecord);
       } else {
-        await MoneyManagerRepository.addTransactionRecord(transactionRecord);
+        await _moneyManagerRepository.addTransactionRecord(transactionRecord);
       }
       emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
@@ -104,12 +108,13 @@ class TabsCubit extends Cubit<TabsState> {
       id: initialTransactionRecord.id,
     );
     try {
-      await MoneyManagerRepository.deleteTransactionRecord(
-          initialTransactionRecord);
+      await _moneyManagerRepository
+          .deleteTransactionRecord(initialTransactionRecord);
       if (updatedTransaction.recordType == RecordType.transfer) {
-        await MoneyManagerRepository.addTransferTransaction(updatedTransaction);
+        await _moneyManagerRepository
+            .addTransferTransaction(updatedTransaction);
       } else {
-        await MoneyManagerRepository.addTransactionRecord(updatedTransaction);
+        await _moneyManagerRepository.addTransactionRecord(updatedTransaction);
       }
       emit(TabsTransactionAdded(0));
     } catch (e) {
@@ -139,9 +144,9 @@ class TabsCubit extends Cubit<TabsState> {
     }
     try {
       if (newTransaction.recordType == RecordType.transfer) {
-        await MoneyManagerRepository.addTransferTransaction(newTransaction);
+        await _moneyManagerRepository.addTransferTransaction(newTransaction);
       } else {
-        await MoneyManagerRepository.addTransactionRecord(newTransaction);
+        await _moneyManagerRepository.addTransactionRecord(newTransaction);
       }
       emit(TabsTransactionAdded(pageIndex));
     } catch (e) {
@@ -160,7 +165,7 @@ class TabsCubit extends Cubit<TabsState> {
       return;
     }
     try {
-      await MoneyManagerRepository.addAccount(newAccount);
+      await _moneyManagerRepository.addAccount(newAccount);
       emit(TabsInitial());
     } catch (e) {
       emit(TabsError(e.toString()));

@@ -4,35 +4,14 @@ import 'package:money_manager/data/models/goal.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:sqflite/sqflite.dart';
-import 'package:path/path.dart';
 import 'package:sqflite/sqlite_api.dart';
 
 class MoneyManagerRepository {
   MoneyManagerRepository({required Database moneyManagerDb})
       : _moneyManagerDb = moneyManagerDb;
 
+  //database
   final Database _moneyManagerDb;
-
-  // const int _version = 1;
-  // const String __moneyManagerDbName = "MoneyManager._moneyManagerDb";
-
-  // // Open the database and create tables if they do not exist
-  // Future<Database> _open_moneyManagerDb() async {
-  //   return openDatabase(
-  //     join(await getDatabasesPath(), __moneyManagerDbName),
-  //     onCreate: (_moneyManagerDb, version) async {
-  //       var batch = _moneyManagerDb.batch();
-  //       batch.execute(
-  //           "CREATE TABLE accounts(id TEXT PRIMARY KEY, name TEXT, balance REAL)");
-  //       batch.execute(
-  //           "CREATE TABLE transactions(id TEXT PRIMARY KEY, date INT, amount REAL, transferAccount2Id TEXT, accountId TEXT, note TEXT, recordType TEXT, incomeCategory TEXT, expenseCategory TEXT)");
-  //       batch.execute(
-  //           "CREATE TABLE goals(id TEXT PRIMARY KEY, name TEXT, currentBalance REAL, goalBalance REAL)");
-  //       await batch.commit();
-  //     },
-  //     version: _version,
-  //   );
-  // }
 
   // Retrieve all goals from the database
   Future<List<Goal>?> getAllGoals() async {

@@ -1,12 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
-import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
-  HomeCubit() : super(HomeInitial());
+  HomeCubit({required MoneyManagerRepository moneyManagerRepository})
+      : _moneyManagerRepository = moneyManagerRepository,
+        super(HomeInitial());
+
+  final MoneyManagerRepository _moneyManagerRepository;
 
   // Load transactions from the database with an optional filter for record type
   void loadTransactions({RecordType? filter}) async {
@@ -14,16 +18,15 @@ class HomeCubit extends Cubit<HomeState> {
     try {
       List<TransactionRecord>? transactions;
       if (filter == null) {
-        transactions = await MoneyManagerRepository.getAllTransactionRecords();
+        transactions = await _moneyManagerRepository.getAllTransactionRecords();
       } else {
-        transactions =
-            await MoneyManagerRepository.getTransactionRecordsByRecordType(
-                filter);
+        transactions = await _moneyManagerRepository
+            .getTransactionRecordsByRecordType(filter);
       }
-      final totalBalance = await MoneyManagerRepository.getTotalBalance();
+      final totalBalance = await _moneyManagerRepository.getTotalBalance();
       if (transactions != null) {
         final balancesByCategories =
-            await MoneyManagerRepository.getTotalIncomeExpenseAmount();
+            await _moneyManagerRepository.getTotalIncomeExpenseAmount();
         emit(HomeTransactionsLoaded(
             transactions, totalBalance, balancesByCategories));
       } else {

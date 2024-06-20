@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:money_manager/goals/cubit/goal_cubit.dart';
 import 'package:money_manager/goals/widgets/goal_item.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 
 class GoalsScreen extends StatelessWidget {
   const GoalsScreen({super.key});
@@ -11,7 +13,8 @@ class GoalsScreen extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.all(12),
       child: BlocProvider(
-        create: (context) => GoalCubit(),
+        create: (context) => GoalCubit(
+            moneyManagerRepository: locator<MoneyManagerRepository>()),
         child: BlocBuilder<GoalCubit, GoalState>(
           buildWhen: (previous, current) {
             return true;

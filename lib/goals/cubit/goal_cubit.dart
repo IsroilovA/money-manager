@@ -2,17 +2,21 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:money_manager/add_goal/add_edit_goal_screen.dart';
 import 'package:money_manager/data/models/goal.dart';
-import 'package:money_manager/services/database_helper.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 
 part 'goal_state.dart';
 
 class GoalCubit extends Cubit<GoalState> {
-  GoalCubit() : super(GoalInitial());
+  GoalCubit({required MoneyManagerRepository moneyManagerRepository})
+      : _moneyManagerRepository = moneyManagerRepository,
+        super(GoalInitial());
+
+  final MoneyManagerRepository _moneyManagerRepository;
 
   // Load all goals from the database and emit the appropriate state
   void loadGoals() async {
     try {
-      final goals = await MoneyManagerRepository.getAllGoals();
+      final goals = await _moneyManagerRepository.getAllGoals();
       if (goals != null && goals.isNotEmpty) {
         emit(GoalsLoaded(goals));
       } else {
@@ -26,8 +30,8 @@ class GoalCubit extends Cubit<GoalState> {
   // Add a specified amount to a goal and emit the updated goal state
   void addAmount(Goal goal, double addedBalance) async {
     try {
-      await MoneyManagerRepository.addGoalSavedAmount(goal, addedBalance);
-      final updatedGoal = await MoneyManagerRepository.getGoalById(goal.id);
+      await _moneyManagerRepository.addGoalSavedAmount(goal, addedBalance);
+      final updatedGoal = await _moneyManagerRepository.getGoalById(goal.id);
       emit(GoalEdited(updatedGoal));
     } catch (e) {
       emit(GoalError(e.toString()));
@@ -36,7 +40,7 @@ class GoalCubit extends Cubit<GoalState> {
 
   // Edit a goal by navigating to the AddEditGoalScreen and emitting the updated goal state
   void editGoal(BuildContext context, String goalId) async {
-    final goal = await MoneyManagerRepository.getGoalById(goalId);
+    final goal = await _moneyManagerRepository.getGoalById(goalId);
     final editedGoal = context.mounted
         ? await Navigator.of(context).push<Goal>(
             MaterialPageRoute(
@@ -48,8 +52,8 @@ class GoalCubit extends Cubit<GoalState> {
       return;
     }
     try {
-      await MoneyManagerRepository.editGoal(editedGoal);
-      final updatedGoal = await MoneyManagerRepository.getGoalById(goalId);
+      await _moneyManagerRepository.editGoal(editedGoal);
+      final updatedGoal = await _moneyManagerRepository.getGoalById(goalId);
       emit(GoalEdited(updatedGoal));
     } catch (e) {
       emit(GoalError(e.toString()));
@@ -59,7 +63,7 @@ class GoalCubit extends Cubit<GoalState> {
   // Delete a goal and emit an appropriate state
   void deleteGoal(Goal goal) async {
     try {
-      await MoneyManagerRepository.deleteGoal(goal);
+      await _moneyManagerRepository.deleteGoal(goal);
     } catch (e) {
       emit(GoalError(e.toString()));
     }
@@ -76,7 +80,7 @@ class GoalCubit extends Cubit<GoalState> {
       return;
     }
     try {
-      await MoneyManagerRepository.addGoal(newGoal);
+      await _moneyManagerRepository.addGoal(newGoal);
       emit(GoalInitial());
     } catch (e) {
       emit(GoalError(e.toString()));

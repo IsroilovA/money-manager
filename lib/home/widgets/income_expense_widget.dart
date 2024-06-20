@@ -4,6 +4,8 @@ import 'package:money_manager/all_transactions/transactions_list_screen.dart';
 import 'package:money_manager/data/models/transaction_record.dart';
 import 'package:money_manager/home/cubit/home_cubit.dart';
 import 'package:money_manager/services/helper_functions.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 
 class IncomeExpenseWidget extends StatefulWidget {
@@ -31,7 +33,9 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                   value: BlocProvider.of<TabsCubit>(context),
                 ),
                 BlocProvider(
-                  create: (context) => HomeCubit(),
+                  create: (context) => HomeCubit(
+                      moneyManagerRepository:
+                          locator<MoneyManagerRepository>()),
                 )
               ],
               child: TransactionsListScreen(
@@ -96,11 +100,9 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                                       .colorScheme
                                       .onBackground),
                         );
-                      } else if(state is HomeNoTransactions){
+                      } else if (state is HomeNoTransactions) {
                         return Text(
-                          widget.isIncome
-                              ? "0.00"
-                              : "0.00",
+                          widget.isIncome ? "0.00" : "0.00",
                           style: Theme.of(context)
                               .textTheme
                               .bodyMedium!
@@ -110,8 +112,7 @@ class _IncomeExpenseWidgetState extends State<IncomeExpenseWidget> {
                                       .colorScheme
                                       .onBackground),
                         );
-                      }
-                      else {
+                      } else {
                         return const Center(
                           child: CircularProgressIndicator.adaptive(
                             strokeWidth: 2,

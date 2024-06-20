@@ -1,4 +1,5 @@
 import 'package:get_it/get_it.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 
@@ -6,12 +7,12 @@ final GetIt locator = GetIt.instance;
 
 Future<void> initialiseLocator() async {
   //key
-  const int _version = 1;
-  const String _dbName = "MoneyManager.db";
+  const int version = 1;
+  const String dbName = "MoneyManager.db";
 
   //database
   final db = await openDatabase(
-    join(await getDatabasesPath(), _dbName),
+    join(await getDatabasesPath(), dbName),
     onCreate: (db, version) async {
       var batch = db.batch();
       batch.execute(
@@ -22,7 +23,7 @@ Future<void> initialiseLocator() async {
           "CREATE TABLE goals(id TEXT PRIMARY KEY, name TEXT, currentBalance REAL, goalBalance REAL)");
       await batch.commit();
     },
-    version: _version,
+    version: version,
   );
 
   // // const currenciesKey = 'currencies';
@@ -33,8 +34,5 @@ Future<void> initialiseLocator() async {
   // final currenciesPinnedBox =
   //     await Hive.openBox<CurrencyPinned?>(currenciesPinnedKey);
   //locator
-  locator.registerSingleton(
-    CurrenciesRepository(
-        currenciesBox: currenciesBox, currenciesPinnedBox: currenciesPinnedBox),
-  );
+  locator.registerSingleton(MoneyManagerRepository(moneyManagerDb: db));
 }

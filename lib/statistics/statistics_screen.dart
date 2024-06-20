@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/statistics/cubit/statistics_cubit.dart';
 import 'package:money_manager/statistics/widgets/line_chart_widget.dart';
 import 'package:money_manager/statistics/widgets/pie_chart_widget.dart';
@@ -71,7 +73,8 @@ class _StatisticsScreenState extends State<StatisticsScreen> {
             ],
           ),
           BlocProvider(
-            create: (context) => StatisticsCubit(),
+            create: (context) => StatisticsCubit(
+                moneyManagerRepository: locator<MoneyManagerRepository>()),
             child: BlocBuilder<TabsCubit, TabsState>(
               buildWhen: (previous, current) {
                 if (current is TabsTransactionDeleted ||

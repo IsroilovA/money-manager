@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:money_manager/services/locator.dart';
+import 'package:money_manager/services/money_manager_repository.dart';
 import 'package:money_manager/tabs/cubit/tabs_cubit.dart';
 import 'package:money_manager/tabs/tabs.dart';
 
@@ -8,23 +10,29 @@ import 'package:money_manager/tabs/tabs.dart';
 final lightTheme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color.fromARGB(255, 86, 38, 190), // Primary color for the light theme
+    seedColor: const Color.fromARGB(
+        255, 86, 38, 190), // Primary color for the light theme
     brightness: Brightness.light, // Brightness setting for the light theme
   ),
-  textTheme: GoogleFonts.poppinsTextTheme(), // Using Poppins font for the light theme
+  textTheme:
+      GoogleFonts.poppinsTextTheme(), // Using Poppins font for the light theme
 );
 
 // Theme for the dark mode
 final darkTheme = ThemeData(
   useMaterial3: true,
   colorScheme: ColorScheme.fromSeed(
-    seedColor: const Color.fromARGB(230, 98, 14, 14), // Primary color for the dark theme
+    seedColor: const Color.fromARGB(
+        230, 98, 14, 14), // Primary color for the dark theme
     brightness: Brightness.dark, // Brightness setting for the dark theme
   ),
-  textTheme: GoogleFonts.poppinsTextTheme(), // Using Poppins font for the dark theme
+  textTheme:
+      GoogleFonts.poppinsTextTheme(), // Using Poppins font for the dark theme
 );
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initialiseLocator();
   runApp(const App());
 }
 
@@ -38,7 +46,9 @@ class App extends StatelessWidget {
       theme: lightTheme, // Applying the light theme
       darkTheme: darkTheme, // Applying the dark theme
       home: BlocProvider(
-        create: (context) => TabsCubit(), // Providing the TabsCubit for state management
+        create: (context) => TabsCubit(
+            moneyManagerRepository: locator<
+                MoneyManagerRepository>()), // Providing the TabsCubit for state management
         child: const TabsScreen(), // The initial screen of the app
       ),
     );
