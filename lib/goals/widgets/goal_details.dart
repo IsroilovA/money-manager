@@ -12,6 +12,22 @@ class GoalDetails extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    /// Confirms the deletion of the account and all related transactions.
+    void confirmDeletion() {
+      showWarningAlertDialog(
+        context: context,
+        text: "Are you sure you want to delete the Goal?",
+        onYesClicked: () {
+          // Delete the account and all related transactions
+          BlocProvider.of<GoalCubit>(context).deleteGoal(goal);
+          // Pop the confirmation dialog
+          Navigator.pop(context);
+          // Pop the account details screen
+          Navigator.pop(context);
+        },
+      );
+    }
+
     // Function to build the goal details screen
     Widget buildGoalDetailsScreen(Goal goal) {
       var width = MediaQuery.of(context).size.width;
@@ -149,10 +165,7 @@ class GoalDetails extends StatelessWidget {
         actions: [
           // Button to delete the goal
           IconButton(
-            onPressed: () {
-              BlocProvider.of<GoalCubit>(context).deleteGoal(goal);
-              Navigator.pop(context);
-            },
+            onPressed: confirmDeletion,
             icon: const Icon(Icons.delete),
           ),
           // Button to edit the goal
